@@ -1,5 +1,6 @@
 ---
 import Base from '@layouts/Base.astro';
+import OptimizedImage from '@components/OptimizedImage.astro';
 import { loadAllProduits, loadProduitBySlug } from '@lib/data';
 import { buildCloudinaryUrl } from '@lib/cloudinary';
 import { others } from '@lib/filters';
@@ -54,12 +55,13 @@ const ogImage = product.couverture;
         <!-- Gallery -->
         <div>
           <div class="relative flex aspect-square items-center justify-center overflow-hidden rounded-4xl border border-ink/10 bg-offwhite">
-            <img
-              id="product-main-image"
+            <OptimizedImage
               src={product.couverture}
               alt={product.nom}
-              class="h-full w-full object-contain p-6"
+              width={800}
+              height={800}
               loading="eager"
+              class="h-full w-full object-contain p-6"
             />
             {product.statut === 'rupture' && <span class="product-badge product-badge-out">Rupture</span>}
             {product.nouveaute && <span class="product-badge product-badge-new">Nouveau</span>}

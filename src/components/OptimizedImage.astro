@@ -1,0 +1,133 @@
+---
+// Optimized image component with Cloudinary support
+// Automatically generates responsive URLs with WebP, compression, etc.
+
+import { buildCloudinaryUrl, isCloudinaryUrl } from '@lib/cloudinary';
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  sizes?: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  quality?: 'auto' | number;
+  aspectRatio?: string;
+}
+
+const {
+  src,
+  alt,
+  width = 800,
+  height = 600,
+  sizes,
+  class: className,
+  loading = 'lazy',
+  decoding = 'async',
+  quality = 'auto',
+  aspectRatio,
+} = Astro.props;
+
+// Check if this is a Cloudinary URL
+const isCloudinary = isCloudinaryUrl(src);
+
+// Generate responsive image URLs
+let srcSet: string = '';
+let srcSetWebP: string = '';
+
+if (isCloudinary) {
+  // Extract public ID from URL
+  const publicId = src.split('/').pop()?.split('.')[0] || src;
+
+  // Generate URLs for different breakpoints
+  const mobile = buildCloudinaryUrl(publicId, {
+    width: 375,
+    quality: 80,
+    format: 'webp',
+  });
+  const tablet = buildCloudinaryUrl(publicId, {
+    width: 768,
+    quality: 85,
+    format: 'webp',
+  });
+  const desktop = buildCloudinaryUrl(publicId, {
+    width: 1280,
+    quality: 90,
+    format: 'webp',
+  });
+  const full = buildCloudinaryUrl(publicId, {
+    width: 1920,
+    quality: 'auto',
+    format: 'webp',
+  });
+
+  srcSet = `${mobile} 375w, ${tablet} 768w, ${desktop} 1280w, ${full} 1920w`;
+
+  // Generate srcSet without WebP (fallback for old browsers)
+  const mobileJpg = buildCloudinaryUrl(publicId, {
+    width: 375,
+    quality: 80,
+    format: 'jpg',
+  });
+  const tabletJpg = buildCloudinaryUrl(publicId, {
+    width: 768,
+    quality: 85,
+    format: 'jpg',
+  });
+  const desktopJpg = buildCloudinaryUrl(publicId, {
+    width: 1280,
+    quality: 90,
+    format: 'jpg',
+  });
+
+  srcSetWebP = `${mobileJpg} 375w, ${tabletJpg} 768w, ${desktopJpg} 1280w`;
+} else {
+  // Local images - no optimization
+  srcSet = src;
+}
+
+// Default sizes if not provided
+const defaultSizes =
+  sizes ||
+  '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 1280px';
+---
+
+<picture class={`image-container ${isCloudinary ? 'cloudinary' : 'local'}`}>
+  {
+    isCloudinary && (
+      <>
+        <source srcSet={srcSet} sizes={defaultSizes} type="image/webp" />
+        <source srcSet={srcSetWebP} sizes={defaultSizes} type="image/jpeg" />
+      </>
+    )
+  }
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    {...(isCloudinary && { srcSet, sizes: defaultSizes })}
+  />
+</picture>
+
+<style>
+  picture {
+    display: block;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* For images with explicit aspect ratio */
+  picture.cloudinary img {
+    aspect-ratio: auto;
+  }
+</style>
