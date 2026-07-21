@@ -135,7 +135,7 @@ export async function loadImagesForProjet(projet: Projet): Promise<ProjetImage[]
 
 export interface AccueilContent {
   clients: { name: string; url: string }[];
-  solutions: Record<string, string>; // cle → image url
+  solutions: Record<string, { image: string; titre: string }>; // cle → { image, titre }
   diffs: { titre: string; a: string; b: string }[];
   lancement: { image: string; image2: string } | null;
   temoignages: { titre: string; image: string }[];
@@ -145,7 +145,9 @@ function groupAccueil(items: AccueilItem[]): AccueilContent {
   const active = items.filter((i) => i.actif !== false);
   return {
     clients: active.filter((i) => i.zone === 'Clients' && i.image).map((i) => ({ name: i.titre, url: i.image })),
-    solutions: Object.fromEntries(active.filter((i) => i.zone === 'Solutions' && i.image).map((i) => [i.cle, i.image])),
+    solutions: Object.fromEntries(
+      active.filter((i) => i.zone === 'Solutions').map((i) => [i.cle, { image: i.image, titre: i.titre }])
+    ),
     diffs: active.filter((i) => i.zone === 'Différence' && i.image).map((i) => ({ titre: i.titre, a: i.image, b: i.image2 })),
     lancement: (() => {
       const l = active.find((i) => i.zone === 'Lancement' && i.image);

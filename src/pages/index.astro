@@ -7,7 +7,8 @@ import { loadAllProjets, loadAccueil } from '@lib/data';
 const projets = await loadAllProjets();
 const accueil = await loadAccueil();
 // Helper: Airtable image for a solution card, fallback to local
-const solImg = (cle: string, local: string) => accueil.solutions[cle] || local;
+const solImg = (cle: string, local: string) => accueil.solutions[cle]?.image || local;
+const solTitle = (cle: string, local: string) => accueil.solutions[cle]?.titre || local;
 // Projects flagged "Mis en avant" in Airtable drive the homepage; fallback to first ones.
 const marked = projets.filter((p) => p.misEnAvant);
 const featured = marked.length ? marked : projets.slice(0, 6);
@@ -17,17 +18,17 @@ const heroProjects = (marked.length ? marked : projets).slice(0, 4);
 const heroCards = heroProjects.map((p) => ({
   img: p.couverture,
   alt: p.titre,
-  badge: p.familles[0] || 'Réalisation',
-  mark: (p.familles[0] || p.titre).charAt(0).toUpperCase(),
-  brand: p.familles[0] || 'Micro Office',
-  role: p.client || `${p.nombreImages} visuels`,
+  badge: p.familles[0] || 'Réalisation', // top-left pill: category
+  mark: 'M',
+  brand: p.client || 'Micro Office', // content line: client if set in Airtable, else agency stamp
+  role: `${p.nombreImages} visuel${p.nombreImages > 1 ? 's' : ''}`,
   name: p.titre,
 }));
 
 const solutionCards = [
-  { n: '01', title: 'Branding, signalétique & 3D', text: 'Une identité forte, visualisée dans vos espaces avant fabrication.', img: solImg('solution-branding', '/images/portfolio/solution-branding.jpg'), url: '/solutions/branding-signaletique-3d/', cta: 'Visualiser mon projet', items: ['Création de logo', 'Enseignes & façades', 'Visualisation 3D'] },
-  { n: '02', title: 'Création digitale & print', text: "Des supports cohérents, du téléphone du client jusqu'à l'imprimé.", img: solImg('solution-digital', '/images/portfolio/solution-digital.jpg'), url: '/solutions/creation-digitale-print/', cta: 'Créer mes supports', items: ['Affiches & flyers', 'Réseaux sociaux', 'Packaging'] },
-  { n: '03', title: 'Sites web, applications & gestion', text: 'Présentez votre entreprise et centralisez votre activité.', img: solImg('solution-web', '/images/portfolio/solution-web.jpg'), url: '/solutions/sites-web-applications-gestion/', cta: 'Créer ma solution', items: ['Sites & e-commerce', 'Applications', 'Tableaux de bord'] },
+  { n: '01', title: solTitle('solution-branding', 'Branding, signalétique & 3D'), text: 'Une identité forte, visualisée dans vos espaces avant fabrication.', img: solImg('solution-branding', '/images/portfolio/solution-branding.jpg'), url: '/solutions/branding-signaletique-3d/', cta: 'Visualiser mon projet', items: ['Création de logo', 'Enseignes & façades', 'Visualisation 3D'] },
+  { n: '02', title: solTitle('solution-digital', 'Création digitale & print'), text: "Des supports cohérents, du téléphone du client jusqu'à l'imprimé.", img: solImg('solution-digital', '/images/portfolio/solution-digital.jpg'), url: '/solutions/creation-digitale-print/', cta: 'Créer mes supports', items: ['Affiches & flyers', 'Réseaux sociaux', 'Packaging'] },
+  { n: '03', title: solTitle('solution-web', 'Sites web, applications & gestion'), text: 'Présentez votre entreprise et centralisez votre activité.', img: solImg('solution-web', '/images/portfolio/solution-web.jpg'), url: '/solutions/sites-web-applications-gestion/', cta: 'Créer ma solution', items: ['Sites & e-commerce', 'Applications', 'Tableaux de bord'] },
   { n: '04', title: 'Automatisation & IA', text: 'Réduisez les tâches répétitives, répondez plus vite à vos clients.', img: '', url: '/solutions/automatisation-ia/', cta: 'Automatiser mon activité', items: ['Chatbot WhatsApp', 'Relances automatiques', 'Suivi des demandes'] },
 ];
 
