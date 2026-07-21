@@ -1,0 +1,10 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="T-shirt Oversize">
+  <rect width="400" height="400" fill="#f4f4f1"/>
+  <g fill="#ffffff" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M158 120 C158 120 130 128 104 150 L84 176 L112 208 L134 192 L134 300 C134 306 139 310 145 310 L255 310 C261 310 266 306 266 300 L266 192 L288 208 L316 176 L296 150 C270 128 242 120 242 120 C242 148 158 148 158 120 Z"/>
+    <path d="M158 120 C168 146 232 146 242 120" fill="#f4f4f1"/>
+  </g>
+  <circle cx="200" cy="230" r="34" fill="none" stroke="#f01b2d" stroke-width="6"/>
+  <path d="M186 230 l10 10 l20 -22" fill="none" stroke="#f01b2d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="200" y="356" text-anchor="middle" font-family="Geist, Arial, sans-serif" font-size="24" font-weight="700" fill="#1a1a1a">T-shirt Oversize</text>
+</svg>

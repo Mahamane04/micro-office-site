@@ -1,0 +1,11 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sac à dos Tech">
+  <rect width="400" height="400" fill="#f4f4f1"/>
+  <g fill="#ffffff" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M150 140 C150 110 250 110 250 140 C286 152 300 186 300 220 L300 300 C300 306 295 310 289 310 L111 310 C105 310 100 306 100 300 L100 220 C100 186 114 152 150 140 Z"/>
+    <path d="M150 140 C150 124 250 124 250 140" fill="#f4f4f1"/>
+  </g>
+  <path d="M132 210 h136 v54 a10 10 0 0 1 -10 10 h-116 a10 10 0 0 1 -10 -10 Z" fill="#f4f4f1" stroke="#1a1a1a" stroke-width="6"/>
+  <path d="M170 176 h60 a8 8 0 0 1 8 8 v8 h-76 v-8 a8 8 0 0 1 8 -8 Z" fill="#f01b2d"/>
+  <line x1="200" y1="210" x2="200" y2="274" stroke="#1a1a1a" stroke-width="5"/>
+  <text x="200" y="352" text-anchor="middle" font-family="Geist, Arial, sans-serif" font-size="24" font-weight="700" fill="#1a1a1a">Sac à dos Tech</text>
+</svg>

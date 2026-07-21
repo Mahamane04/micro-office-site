@@ -1,0 +1,11 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Casquette Brodée">
+  <rect width="400" height="400" fill="#f4f4f1"/>
+  <g fill="#ffffff" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M108 232 C108 160 160 128 208 128 C260 128 300 168 300 224 L300 232 C300 238 295 242 289 242 L118 242 C112 242 108 238 108 232 Z"/>
+    <path d="M108 232 C90 232 70 238 62 250 C58 256 62 262 70 262 L118 262 C120 250 116 242 108 232 Z"/>
+  </g>
+  <path d="M208 128 C176 138 160 176 160 232 L256 232 C256 176 240 138 208 128 Z" fill="#f01b2d" opacity="0.9"/>
+  <circle cx="208" cy="132" r="7" fill="#1a1a1a"/>
+  <text x="200" y="330" text-anchor="middle" font-family="Geist, Arial, sans-serif" font-size="26" font-weight="700" fill="#1a1a1a">Casquette</text>
+  <text x="200" y="356" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" letter-spacing="2" fill="#9a9a95">MICRO OFFICE · BOUTIQUE</text>
+</svg>

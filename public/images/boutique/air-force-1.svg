@@ -1,0 +1,14 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Air Force 1 Low">
+  <rect width="400" height="400" fill="#f4f4f1"/>
+  <g fill="none" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M60 250 C70 210 110 190 150 195 C175 198 185 175 215 172 C250 168 262 205 300 214 C325 220 345 224 348 245 L349 262 C349 270 343 276 335 276 L74 276 C64 276 57 268 58 258 Z" fill="#ffffff"/>
+    <path d="M150 195 C165 200 176 214 182 230" stroke-width="5"/>
+    <path d="M214 172 C214 200 214 240 214 258" stroke-width="5"/>
+  </g>
+  <path d="M232 214 c22 -14 44 -6 40 14 c-4 16 -30 18 -40 4 Z" fill="#f01b2d"/>
+  <g fill="#1a1a1a">
+    <circle cx="120" cy="238" r="4"/><circle cx="150" cy="234" r="4"/><circle cx="180" cy="232" r="4"/>
+  </g>
+  <text x="200" y="330" text-anchor="middle" font-family="Geist, Arial, sans-serif" font-size="26" font-weight="700" fill="#1a1a1a">Air Force 1</text>
+  <text x="200" y="356" text-anchor="middle" font-family="Geist Mono, monospace" font-size="12" letter-spacing="2" fill="#9a9a95">MICRO OFFICE · BOUTIQUE</text>
+</svg>

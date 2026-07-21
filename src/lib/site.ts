@@ -24,6 +24,23 @@ export const site = {
     { label: 'Sites, applications & gestion', url: '/solutions/sites-web-applications-gestion/' },
     { label: 'Automatisation & IA', url: '/solutions/automatisation-ia/' },
   ],
+  trustedClients: [
+    { name: 'NBB', file: 'nbb.png' },
+    { name: 'BAH Automobile', file: 'bah-automobile.png' },
+    { name: 'COOFIX & EMS', file: 'ems.png' },
+    { name: 'SSE — Sonikara Solar Electro', file: 'sse.png' },
+    { name: 'AMADER', file: 'amader.png' },
+    { name: 'BK Gaz', file: 'bk-gaz.png' },
+    { name: 'Balim', file: 'balim.png' },
+    { name: 'FEBAK — Thé Andalousi', file: 'the-andalousi-febak.png' },
+    { name: 'Gandhi Malien TV', file: 'gandhi-malien-tv.png' },
+    { name: 'Thé Barika', file: 'the-barika.png' },
+    { name: 'Oryx Energies', file: 'oryx-energies.png' },
+    { name: 'IRA', file: 'ira.png' },
+    { name: 'GB Carrières & BTP', file: 'gb-carrieres-btp.png' },
+    { name: 'Hollantex', file: 'hollantex.png' },
+    { name: 'Partenaire Micro Office', file: 'partenaire.png' },
+  ],
 } as const;
 
 export type SiteConfig = typeof site;

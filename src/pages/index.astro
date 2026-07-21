@@ -1,71 +1,383 @@
 ---
 import Base from '@layouts/Base.astro';
+import ClientsMarquee from '@components/ClientsMarquee.astro';
+import CtaBand from '@components/CtaBand.astro';
+import { loadAllProjets } from '@lib/data';
+
+const projets = await loadAllProjets();
+const featured = projets.slice(0, 6);
+
+const heroCards = [
+  { img: '/images/portfolio/hero-3d.jpg', alt: "Rendu 3D d'un espace de marque avant réalisation", badge: 'Rendu 3D', mark: '3D', brand: 'Visualisation 3D', role: 'Aperçu avant fabrication', name: 'COOFIX & EMS' },
+  { img: '/images/portfolio/hero-final.jpg', alt: 'Le même espace de marque, réalisé et installé', badge: 'Réalisé', mark: 'S', brand: 'Signalétique', role: 'Aménagement installé', name: 'Espace intérieur' },
+  { img: '/images/portfolio/realisation-signaletique-exterieure.jpg', alt: 'Enseigne et façade extérieure réalisées sur mesure', badge: 'Enseigne', mark: 'F', brand: 'Signalétique ext.', role: 'Façade sur mesure', name: 'COOFIX Façade' },
+  { img: '/images/portfolio/solution-branding.jpg', alt: 'Identité de marque en lettres dorées 3D', badge: 'Branding', mark: 'B', brand: 'Branding', role: 'Identité & logo 3D', name: "Jina's Collection" },
+];
+
+const solutionCards = [
+  { n: '01', title: 'Branding, signalétique & 3D', text: 'Une identité forte, visualisée dans vos espaces avant fabrication.', img: '/images/portfolio/solution-branding.jpg', url: '/solutions/branding-signaletique-3d/', cta: 'Visualiser mon projet', items: ['Création de logo', 'Enseignes & façades', 'Visualisation 3D'] },
+  { n: '02', title: 'Création digitale & print', text: "Des supports cohérents, du téléphone du client jusqu'à l'imprimé.", img: '/images/portfolio/solution-digital.jpg', url: '/solutions/creation-digitale-print/', cta: 'Créer mes supports', items: ['Affiches & flyers', 'Réseaux sociaux', 'Packaging'] },
+  { n: '03', title: 'Sites web, applications & gestion', text: 'Présentez votre entreprise et centralisez votre activité.', img: '/images/portfolio/solution-web.jpg', url: '/solutions/sites-web-applications-gestion/', cta: 'Créer ma solution', items: ['Sites & e-commerce', 'Applications', 'Tableaux de bord'] },
+  { n: '04', title: 'Automatisation & IA', text: 'Réduisez les tâches répétitives, répondez plus vite à vos clients.', img: '', url: '/solutions/automatisation-ia/', cta: 'Automatiser mon activité', items: ['Chatbot WhatsApp', 'Relances automatiques', 'Suivi des demandes'] },
+];
+
+const diffs = [
+  { a: '/images/portfolio/diff-1a.jpg', b: '/images/portfolio/diff-1b.jpg', label: 'Espace actuel → proposition 3D' },
+  { a: '/images/portfolio/diff-2a.jpg', b: '/images/portfolio/diff-2b.jpg', label: 'Façade actuelle → façade brandée' },
+  { a: '/images/portfolio/diff-3a.jpg', b: '/images/portfolio/diff-3b.jpg', label: 'Visualisation 3D → résultat fabriqué' },
+];
+
+const steps = [
+  { name: 'Analyse', icon: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>' },
+  { name: 'Identité', icon: '<path d="M4 4h7l9 9-7 7-9-9V4Z"/><circle cx="8" cy="8" r="1.4"/>' },
+  { name: 'Packaging', icon: '<path d="M4 8h16l-1 11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>' },
+  { name: 'Modélisation', icon: '<path d="M12 2 3 7v10l9 5 9-5V7l-9-5Z"/><path d="M3 7l9 5 9-5"/><path d="M12 12v10"/>' },
+  { name: 'Matières', icon: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><circle cx="16.5" cy="16.5" r="3.5"/>' },
+  { name: 'Rendu réaliste', icon: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>' },
+  { name: 'Validation', icon: '<circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.4 2.5L16 9"/>' },
+];
+
+const oldWay = ['Vous découvrez le résultat une fois fabriqué', 'Corrections coûteuses après production', 'Devis flous et jargon technique', 'Prestataires dispersés à coordonner', 'Peu de visibilité sur les étapes'];
+const newWay = ['Vous voyez le rendu 3D avant de produire', "Corrections faites à l'écran, sans surcoût", 'Un accompagnement clair, en langage simple', "Un seul interlocuteur, de l'idée à la pose", 'Une méthode lisible à chaque étape'];
+const methodSteps = ['Comprendre', 'Concevoir', 'Visualiser', 'Valider', 'Réaliser', 'Accompagner'];
+const faqs = [
+  { q: 'Je ne connais pas le terme technique de mon projet, est-ce un problème ?', a: 'Non. Expliquez-nous simplement ce que vous voulez créer, améliorer ou organiser — nous identifions ensemble la solution adaptée.' },
+  { q: "Puis-je voir mon projet avant qu'il ne soit fabriqué ?", a: "Oui, c'est notre différence. Grâce à la visualisation 3D, vous validez proportions, couleurs et matières avant toute production." },
+  { q: 'Travaillez-vous uniquement à Bamako ?', a: 'Nous sommes basés à Bamako et intervenons au Mali. Précisez votre ville ou zone dans le formulaire de projet.' },
+  { q: 'Comment obtenir un devis ?', a: 'Présentez votre projet via le formulaire, par téléphone ou sur WhatsApp. Notre équipe vous recontacte par le moyen que vous choisissez.' },
+];
 ---
 
 <Base
-  title="Accueil | Micro Office"
-  description="Solutions numériques innovantes pour votre entreprise. Boutique, services, et réalisations."
+  title="Agence de communication et de branding à Bamako, Mali"
+  description="Micro Office, agence de communication et de branding au Mali depuis 2014 : création de logo, signalétique intérieure et extérieure, visualisation 3D, création de packaging, sites internet, applications et automatisation."
 >
-  <!-- Hero section -->
-  <section class="section-pad bg-gradient-to-b from-white to-offwhite">
-    <div class="container-content">
-      <h1 class="font-heading text-4xl md:text-5xl font-bold leading-tight max-w-3xl">
-        Solutions numériques innovantes pour votre entreprise
-      </h1>
-      <p class="mt-6 text-lg text-ink/70 max-w-2xl">
-        Découvrez notre sélection de produits, services et réalisations conçus pour transformer votre vision en réalité.
-      </p>
-      <div class="mt-10 flex flex-wrap gap-4">
-        <a href="/boutique" class="btn-primary">Découvrir la boutique</a>
-        <a href="/contact" class="btn-secondary">Contactez-nous</a>
+  {/* 1. HERO */}
+  <section class="px-4 pt-4 md:px-6 md:pt-6">
+    <div class="container-content relative overflow-hidden rounded-5xl bg-ink text-offwhite">
+      <div class="pointer-events-none absolute inset-0 bg-blueprint-dark" aria-hidden="true"></div>
+      <div class="panel-grid aligned-grid relative grid grid-cols-1 gap-y-12 py-16 md:py-20 lg:grid-cols-2 lg:items-center lg:py-24">
+        <div>
+          <span class="pill-light">Agence créative &amp; digitale · depuis 2014</span>
+          <h1 class="mt-6 font-heading text-4xl font-extrabold leading-[1.02] tracking-tight text-white md:text-6xl">Nous donnons forme à vos idées avant de les réaliser.</h1>
+          <p class="mt-6 max-w-lg text-base leading-relaxed text-offwhite/70 md:text-lg">Micro Office accompagne les entreprises, les institutions, les marques et les entrepreneurs : identité, visualisation 3D et solutions digitales, du croquis au résultat installé.</p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="/presenter-mon-projet/" class="btn-primary">Présenter mon projet</a>
+            <a href="/realisations/" class="btn-secondary-light">Voir nos réalisations</a>
+          </div>
+          <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-white/10 pt-8">
+            <div><p class="font-heading text-2xl font-bold text-white">10+</p><p class="tag-mono text-offwhite/50">ans d'expérience</p></div>
+            <div><p class="font-heading text-2xl font-bold text-white">4</p><p class="tag-mono text-offwhite/50">pôles de métiers</p></div>
+            <div><p class="font-heading text-2xl font-bold text-white">3D</p><p class="tag-mono text-offwhite/50">avant fabrication</p></div>
+          </div>
+        </div>
+
+        <div class="min-w-0">
+          <div class="hero-gallery" aria-label="Aperçu de nos réalisations">
+            {heroCards.map((c, i) => (
+              <article class:list={['hero-card', i === 0 && 'is-active']} tabindex="0">
+                <img src={c.img} alt={c.alt} loading={i === 0 ? 'eager' : 'lazy'} />
+                <span class="hero-card-badge">{c.badge}</span>
+                <div class="hero-card-content">
+                  <div class="hero-card-brand"><span class="hero-card-mark">{c.mark}</span>{c.brand}</div>
+                  <div class="hero-card-sep"></div>
+                  <p class="hero-card-role">{c.role}</p>
+                  <h3 class="hero-card-name">{c.name}</h3>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Features section -->
+  {/* 2. TRUST STRIP */}
+  <section class="px-4 py-14 md:px-6">
+    <div class="container-content panel-grid">
+      <p class="text-center tag-mono text-ink/45">Ils nous font confiance</p>
+      <div class="mt-8"><ClientsMarquee /></div>
+    </div>
+  </section>
+
+  {/* 3. NOS SOLUTIONS */}
+  <section class="px-4 md:px-6">
+    <div class="container-content relative overflow-hidden rounded-5xl bg-anthracite text-offwhite">
+      <div class="pointer-events-none absolute inset-0 bg-blueprint-dark" aria-hidden="true"></div>
+      <div class="panel-grid relative py-16 md:py-20">
+        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div class="max-w-2xl">
+            <span class="pill-light">Nos solutions</span>
+            <h2 class="mt-5 font-heading text-3xl font-bold leading-tight text-white md:text-4xl">Tout commence par votre besoin.</h2>
+            <p class="mt-5 text-base leading-relaxed text-offwhite/70">Pas besoin de connaître le terme technique. Expliquez-nous simplement ce que vous voulez créer, améliorer ou organiser.</p>
+          </div>
+          <a href="/solutions/" class="btn-secondary-light shrink-0">Toutes nos solutions</a>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {solutionCards.map((s) => (
+            <a href={s.url} class="group flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-ink transition-all duration-250 hover:border-red hover:shadow-soft-dark">
+              {s.img ? (
+                <div class="relative aspect-[16/10] overflow-hidden">
+                  <img src={s.img} alt={s.title} loading="lazy" class="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.05]" />
+                </div>
+              ) : (
+                <div class="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-gradient-to-br from-anthracite to-ink">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="h-14 w-14 text-red" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <rect x="8" y="14" width="48" height="34" rx="3"/><path d="M8 22h48"/><circle cx="32" cy="35" r="7"/><path d="M32 28v14M25 35h14"/>
+                  </svg>
+                </div>
+              )}
+              <div class="flex flex-1 flex-col p-6">
+                <p class="tag-mono text-red">{s.n}</p>
+                <h3 class="mt-2 font-heading text-lg font-bold text-white">{s.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-offwhite/60">{s.text}</p>
+                <ul class="mt-5 space-y-2 border-t border-white/10 pt-4">
+                  {s.items.map((item) => (
+                    <li class="flex items-center gap-2 text-xs text-offwhite/70"><span class="h-1 w-1 shrink-0 rounded-full bg-red"></span>{item}</li>
+                  ))}
+                </ul>
+                <span class="mt-auto inline-flex items-center gap-2 pt-6 font-heading text-sm font-semibold text-white group-hover:text-red">{s.cta} <span aria-hidden="true">→</span></span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 4. NOTRE DIFFÉRENCE */}
   <section class="section-pad">
     <div class="container-content">
-      <h2 class="font-heading text-3xl font-bold mb-12">Pourquoi nous choisir ?</h2>
-      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="p-6 border border-ink/10 rounded-2xl hover:border-red transition-colors">
-          <div class="w-12 h-12 rounded-full bg-red/10 flex items-center justify-center mb-4">
-            <span class="text-red font-bold">✓</span>
+      <div class="max-w-2xl">
+        <span class="eyebrow">Notre différence</span>
+        <h2 class="font-heading text-3xl font-bold leading-tight md:text-5xl">Voyez le résultat avant de produire.</h2>
+        <p class="mt-6 text-base leading-relaxed text-ink/70">La visualisation 3D vous permet d'examiner proportions, couleurs, matières et intégration avant toute fabrication, impression ou installation.</p>
+      </div>
+
+      <div class="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
+        {diffs.map((d) => (
+          <div class="card overflow-hidden p-3">
+            <div class="grid grid-cols-2 gap-2">
+              <img src={d.a} alt="Avant" loading="lazy" class="aspect-square w-full rounded-2xl object-cover" />
+              <img src={d.b} alt="Après" loading="lazy" class="aspect-square w-full rounded-2xl object-cover" />
+            </div>
+            <p class="px-2 py-3 tag-mono text-ink/50">{d.label}</p>
           </div>
-          <h3 class="font-heading font-bold mb-2">Innovation</h3>
-          <p class="text-ink/70">Technologies modernes et solutions avant-gardistes.</p>
+        ))}
+      </div>
+
+      <div class="mt-10 flex flex-col items-start gap-6 rounded-4xl bg-ink px-6 py-8 text-offwhite md:flex-row md:items-center md:justify-between md:px-10">
+        <p class="font-heading text-xl font-semibold text-white md:text-2xl">Visualisez. <span class="text-red">Corrigez.</span> Validez. Puis réalisez.</p>
+        <a href="/solutions/branding-signaletique-3d/" class="btn-secondary-light shrink-0">Découvrir notre méthode 3D</a>
+      </div>
+    </div>
+  </section>
+
+  {/* 5. LANCEMENT DE PRODUIT */}
+  <section class="px-4 md:px-6">
+    <div class="container-content relative overflow-hidden rounded-5xl bg-ink text-offwhite">
+      <div class="pointer-events-none absolute inset-0 bg-blueprint-dark" aria-hidden="true"></div>
+      <div class="panel-grid relative py-16 md:py-20">
+        <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1.05fr]">
+          <div>
+            <span class="pill-light">Lancement de produit</span>
+            <h2 class="mt-6 font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-[2.75rem]">Votre produit existe d'abord dans votre imagination.</h2>
+            <p class="mt-6 text-base leading-relaxed text-offwhite/70">Une idée de boisson, de produit alimentaire, de cosmétique ou de nouvelle marque ? Nous vous accompagnons de l'analyse du concept jusqu'à la présentation réaliste.</p>
+            <p class="mt-6 font-heading text-lg font-semibold text-white">Avant de fabriquer votre produit, découvrez ce qu'il peut devenir.</p>
+            <a href="/presenter-mon-projet/" class="btn-primary mt-8">Présenter mon idée de produit</a>
+          </div>
+
+          <div class="relative mx-auto w-full max-w-md lg:mr-0">
+            <div class="relative overflow-hidden rounded-4xl border border-white/10 shadow-soft-dark">
+              <img src="/images/portfolio/realisation-packaging-3d.jpg" alt="Rendu 3D réaliste d'un packaging de produit" loading="lazy" class="aspect-[4/3] w-full object-cover" />
+              <span class="absolute left-4 top-4 rounded-full bg-red px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white">Rendu 3D réaliste</span>
+            </div>
+            <div class="absolute -bottom-7 -left-5 hidden w-36 overflow-hidden rounded-3xl border-4 border-ink shadow-soft-dark sm:block">
+              <img src="/images/portfolio/lancement-1.jpg" alt="Concept du produit avant fabrication" loading="lazy" class="aspect-square w-full object-cover" />
+              <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 to-transparent px-3 pb-2 pt-6 font-mono text-[9px] uppercase tracking-wider text-white">Concept</span>
+            </div>
+          </div>
         </div>
 
-        <div class="p-6 border border-ink/10 rounded-2xl hover:border-red transition-colors">
-          <div class="w-12 h-12 rounded-full bg-red/10 flex items-center justify-center mb-4">
-            <span class="text-red font-bold">✓</span>
-          </div>
-          <h3 class="font-heading font-bold mb-2">Qualité</h3>
-          <p class="text-ink/70">Standards élevés et attention aux détails.</p>
-        </div>
-
-        <div class="p-6 border border-ink/10 rounded-2xl hover:border-red transition-colors">
-          <div class="w-12 h-12 rounded-full bg-red/10 flex items-center justify-center mb-4">
-            <span class="text-red font-bold">✓</span>
-          </div>
-          <h3 class="font-heading font-bold mb-2">Support</h3>
-          <p class="text-ink/70">Équipe dédiée pour vous accompagner.</p>
+        <div class="mt-16 border-t border-white/10 pt-10">
+          <p class="tag-mono text-offwhite/45">Notre processus · de l'idée au rendu réaliste</p>
+          <ol class="mt-8 grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-4 lg:grid-cols-7">
+            {steps.map((step, i) => (
+              <li class="group flex flex-col items-center gap-3 text-center">
+                <span class:list={['inline-flex h-14 w-14 items-center justify-center rounded-2xl border transition-all duration-250 group-hover:-translate-y-1', i === steps.length - 1 ? 'border-red bg-red text-white shadow-btn' : 'border-white/12 bg-white/5 text-red group-hover:border-red/50 group-hover:bg-white/10']}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true" set:html={step.icon}></svg>
+                </span>
+                <div>
+                  <span class="tag-mono text-offwhite/40">0{i + 1}</span>
+                  <p class="mt-1 font-heading text-sm font-semibold text-white">{step.name}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA section -->
-  <section class="section-pad bg-ink text-white">
-    <div class="container-content text-center">
-      <h2 class="font-heading text-3xl font-bold">Prêt à commencer ?</h2>
-      <p class="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
-        Explorez nos produits, services et réalisations pour trouver la solution idéale.
-      </p>
-      <div class="mt-8">
-        <a href="/boutique" class="btn-primary bg-red hover:bg-red-dark">
-          Aller à la boutique
-        </a>
+  {/* 6. COMPARAISON */}
+  <section class="section-pad">
+    <div class="container-content">
+      <div class="mx-auto max-w-2xl text-center">
+        <span class="eyebrow">Pourquoi Micro Office</span>
+        <h2 class="font-heading text-3xl font-bold leading-tight md:text-4xl">Une autre façon de travailler.</h2>
+      </div>
+      <div class="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div class="rounded-4xl border border-ink/10 bg-white p-8 md:p-10">
+          <p class="tag-mono text-ink/40">Approche classique</p>
+          <ul class="mt-6 space-y-4">
+            {oldWay.map((o) => (
+              <li class="flex items-start gap-3 text-sm text-ink/60">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-ink/30" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6l8 8M14 6l-8 8" stroke-linecap="round"/></svg>
+                {o}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="relative overflow-hidden rounded-4xl bg-ink p-8 text-offwhite md:p-10">
+          <div class="pointer-events-none absolute inset-0 bg-blueprint-dark" aria-hidden="true"></div>
+          <div class="relative">
+            <p class="tag-mono text-red">La méthode Micro Office</p>
+            <ul class="mt-6 space-y-4">
+              {newWay.map((n) => (
+                <li class="flex items-start gap-3 text-sm text-offwhite/85">
+                  <svg class="mt-0.5 h-5 w-5 shrink-0 text-red" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 10.5l3.5 3.5L15 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  {n}
+                </li>
+              ))}
+            </ul>
+            <a href="/presenter-mon-projet/" class="btn-primary mt-8">Démarrer avec Micro Office</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+
+  {/* 7. RÉALISATIONS (Airtable) */}
+  <section class="section-pad pt-0">
+    <div class="container-content">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-xl">
+          <span class="eyebrow">Réalisations</span>
+          <h2 class="font-heading text-3xl font-bold leading-tight md:text-4xl">Des idées devenues réalité.</h2>
+          <p class="mt-6 text-base leading-relaxed text-ink/70">Comment nous avons accompagné nos clients depuis leur besoin initial jusqu'à la réalisation finale.</p>
+        </div>
+        <a href="/realisations/" class="btn-secondary shrink-0">Toutes nos réalisations</a>
+      </div>
+
+      <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {featured.map((p) => (
+          <a href={`/realisations/${p.slug}/`} class="group flex flex-col overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-soft transition-all duration-250 hover:-translate-y-1 hover:shadow-soft">
+            <div class="relative aspect-[4/3] overflow-hidden">
+              <img src={p.couverture} alt={p.titre} loading="lazy" class="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.05]" />
+              {p.categories[0] && (
+                <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-ink backdrop-blur">{p.categories[0]}</span>
+              )}
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="font-heading text-lg font-bold group-hover:text-red">{p.titre}</h3>
+              {p.client && <p class="mt-1 tag-mono text-ink/40">Client — {p.client}</p>}
+              {p.accroche ? (
+                <p class="mt-3 text-sm text-ink/60">{p.accroche}</p>
+              ) : (
+                p.nombreImages > 0 && <p class="mt-3 text-sm text-ink/60">{p.nombreImages} image{p.nombreImages > 1 ? 's' : ''}</p>
+              )}
+              <span class="mt-auto inline-flex items-center gap-2 pt-5 font-heading text-sm font-semibold text-ink group-hover:text-red">Voir le projet <span aria-hidden="true">→</span></span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* 8. MÉTHODE */}
+  <section class="px-4 pb-8 md:px-6">
+    <div class="container-content relative overflow-hidden rounded-5xl bg-anthracite text-offwhite">
+      <div class="pointer-events-none absolute inset-0 bg-blueprint-dark" aria-hidden="true"></div>
+      <div class="panel-grid relative py-16 md:py-20">
+        <div class="max-w-2xl">
+          <span class="pill-light">Notre méthode</span>
+          <h2 class="mt-5 font-heading text-3xl font-bold leading-tight text-white md:text-4xl">Une méthode simple, de l'idée à la réalisation.</h2>
+        </div>
+        <ol class="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          {methodSteps.map((step, i) => (
+            <li class="rounded-2xl border border-white/10 bg-ink/60 p-5">
+              <span class="tag-mono text-red">0{i + 1}</span>
+              <p class="mt-3 font-heading text-base font-semibold text-white">{step}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  {/* 9. CONFIANCE / TÉMOIGNAGES */}
+  <section class="section-pad">
+    <div class="container-content">
+      <div class="max-w-2xl">
+        <span class="eyebrow">Confiance</span>
+        <h2 class="font-heading text-3xl font-bold leading-tight md:text-4xl">Une expérience construite depuis 2014.</h2>
+        <p class="mt-6 text-base leading-relaxed text-ink/70">Depuis plus d'une décennie, Micro Office évolue avec les besoins de ses clients — ce qui nous permet aujourd'hui d'accompagner un projet de sa réflexion jusqu'à sa réalisation.</p>
+      </div>
+      <div class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <blockquote class="card p-8">
+          <p class="text-ink/40 italic">« [Emplacement réservé — témoignage client authentique à ajouter] »</p>
+          <footer class="mt-6 tag-mono text-ink/40">Client — secteur à préciser</footer>
+        </blockquote>
+        <blockquote class="card p-8">
+          <p class="text-ink/40 italic">« [Emplacement réservé — témoignage client authentique à ajouter] »</p>
+          <footer class="mt-6 tag-mono text-ink/40">Client — secteur à préciser</footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  {/* 10. FAQ */}
+  <section class="section-pad pt-0">
+    <div class="container-content grid grid-cols-1 gap-10 lg:grid-cols-3">
+      <div class="lg:col-span-1">
+        <span class="eyebrow">Questions fréquentes</span>
+        <h2 class="font-heading text-3xl font-bold leading-tight md:text-4xl">Vous vous posez peut-être ces questions.</h2>
+        <p class="mt-6 text-sm text-ink/60">Une autre question ? <a href="/contact/" class="font-semibold text-red hover:underline">Contactez-nous</a>.</p>
+      </div>
+      <div class="lg:col-span-2">
+        <div class="divide-y divide-ink/10 overflow-hidden rounded-4xl border border-ink/10 bg-white">
+          {faqs.map((f) => (
+            <details class="group px-6 py-5">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-heading text-base font-semibold">
+                {f.q}
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-ink/15 text-ink/60 transition-transform duration-250 group-open:rotate-45">
+                  <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 4v12M4 10h12" stroke-linecap="round"/></svg>
+                </span>
+              </summary>
+              <p class="mt-4 text-sm leading-relaxed text-ink/65">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 11. CTA FINAL */}
+  <CtaBand />
 </Base>
+
+<script>
+  const gallery = document.querySelector('.hero-gallery');
+  if (gallery) {
+    const cards = Array.from(gallery.querySelectorAll('.hero-card'));
+    const defaultCard = cards[0];
+    const activate = (card: Element) => cards.forEach((c) => c.classList.toggle('is-active', c === card));
+    cards.forEach((card) => {
+      card.addEventListener('pointerenter', () => activate(card));
+      card.addEventListener('focus', () => activate(card));
+      card.addEventListener('click', () => activate(card));
+    });
+    gallery.addEventListener('pointerleave', () => activate(defaultCard));
+  }
+</script>
