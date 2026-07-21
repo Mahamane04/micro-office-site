@@ -103,6 +103,17 @@ export interface Commande {
   note?: string;
 }
 
+// Homepage dynamic content — mapped from Airtable "Accueil" table
+export interface AccueilItem {
+  cle: string;
+  zone: 'Clients' | 'Solutions' | 'Différence' | 'Lancement' | 'Témoignages' | string;
+  titre: string;
+  image: string;
+  image2: string;
+  ordre: number;
+  actif: boolean;
+}
+
 export interface AirtableRecord<T> {
   id: string;
   fields: T;

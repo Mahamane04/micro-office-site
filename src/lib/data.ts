@@ -1,6 +1,6 @@
 // Data loaders — fetch and cache portfolio data from Airtable
 
-import type { Projet, ProjetImage } from './types';
+import type { Projet, ProjetImage, AccueilItem } from './types';
 import { getAirtableClient } from './airtable/client';
 import { cachedFetch, invalidateCache } from './cache';
 
@@ -131,11 +131,53 @@ export async function loadImagesForProjet(projet: Projet): Promise<ProjetImage[]
   }
 }
 
+// ---- Homepage dynamic content (Accueil table) ------------------------------
+
+export interface AccueilContent {
+  clients: { name: string; url: string }[];
+  solutions: Record<string, string>; // cle → image url
+  diffs: { titre: string; a: string; b: string }[];
+  lancement: { image: string; image2: string } | null;
+  temoignages: { titre: string; image: string }[];
+}
+
+function groupAccueil(items: AccueilItem[]): AccueilContent {
+  const active = items.filter((i) => i.actif !== false);
+  return {
+    clients: active.filter((i) => i.zone === 'Clients' && i.image).map((i) => ({ name: i.titre, url: i.image })),
+    solutions: Object.fromEntries(active.filter((i) => i.zone === 'Solutions' && i.image).map((i) => [i.cle, i.image])),
+    diffs: active.filter((i) => i.zone === 'Différence' && i.image).map((i) => ({ titre: i.titre, a: i.image, b: i.image2 })),
+    lancement: (() => {
+      const l = active.find((i) => i.zone === 'Lancement' && i.image);
+      return l ? { image: l.image, image2: l.image2 } : null;
+    })(),
+    temoignages: active.filter((i) => i.zone === 'Témoignages' && i.image).map((i) => ({ titre: i.titre, image: i.image })),
+  };
+}
+
+const emptyAccueil: AccueilContent = { clients: [], solutions: {}, diffs: [], lancement: null, temoignages: [] };
+
+/** Load homepage dynamic content from Airtable. Returns empty (site uses local fallbacks) if unavailable. */
+export async function loadAccueil(): Promise<AccueilContent> {
+  try {
+    const client = getAirtableClient();
+    if (!client) return emptyAccueil;
+    return await cachedFetch('accueil:all', async () => groupAccueil(await client.getAccueil()), 300);
+  } catch (error) {
+    console.warn('Airtable error loading accueil, using local fallbacks:', error);
+    return emptyAccueil;
+  }
+}
+
 // ---- Cache invalidation (called by webhooks) -------------------------------
 export function invalidateProjetsCache(): void {
   invalidateCache('projet:');
   invalidateCache('projets:');
   invalidateCache('images:');
+}
+
+export function invalidateAccueilCache(): void {
+  invalidateCache('accueil:');
 }
 
 export function invalidateProduitsCache(): void {

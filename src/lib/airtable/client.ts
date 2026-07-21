@@ -1,6 +1,6 @@
 // Airtable API client for Micro Office — Portfolio (Projets + Images)
 
-import type { Projet, ProjetImage, AirtableRecord, AirtableResponse } from '../types';
+import type { Projet, ProjetImage, AccueilItem, AirtableRecord, AirtableResponse } from '../types';
 
 const AIRTABLE_API_URL = 'https://api.airtable.com/v0';
 
@@ -9,6 +9,7 @@ interface AirtableClientConfig {
   baseId: string;
   projetsTableName?: string;
   imagesTableName?: string;
+  accueilTableName?: string;
 }
 
 // ---- Field mapping helpers -------------------------------------------------
@@ -86,12 +87,14 @@ export class AirtableClient {
   private baseId: string;
   private projetsTableName: string;
   private imagesTableName: string;
+  private accueilTableName: string;
 
   constructor(config: AirtableClientConfig) {
     this.token = config.token;
     this.baseId = config.baseId;
     this.projetsTableName = config.projetsTableName || 'Projets';
     this.imagesTableName = config.imagesTableName || 'Images';
+    this.accueilTableName = config.accueilTableName || 'Accueil';
   }
 
   private async request<T = Record<string, any>>(
@@ -167,6 +170,22 @@ export class AirtableClient {
     });
     return records.map(mapImage);
   }
+
+  // Fetch homepage dynamic content (Accueil table).
+  async getAccueil(): Promise<AccueilItem[]> {
+    const records = await this.request(this.accueilTableName);
+    return records
+      .map((r) => ({
+        cle: pick(r.fields, 'Cle', 'cle') || '',
+        zone: pick(r.fields, 'Zone', 'zone') || '',
+        titre: pick(r.fields, 'Titre', 'titre') || '',
+        image: toUrl(pick(r.fields, 'Image', 'image')),
+        image2: toUrl(pick(r.fields, 'Image 2', 'image2')),
+        ordre: Number(pick(r.fields, 'Ordre', 'ordre')) || 0,
+        actif: Boolean(pick(r.fields, 'Actif', 'actif')),
+      }))
+      .sort((a, b) => a.ordre - b.ordre);
+  }
 }
 
 // ---- Singleton -------------------------------------------------------------
@@ -189,6 +208,7 @@ export function getAirtableClient(): AirtableClient | null {
       baseId,
       projetsTableName: env('AIRTABLE_TABLE_PORTFOLIO') || 'Projets',
       imagesTableName: env('AIRTABLE_TABLE_IMAGES') || 'Images',
+      accueilTableName: env('AIRTABLE_TABLE_ACCUEIL') || 'Accueil',
     });
   }
   return client;

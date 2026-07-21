@@ -2,9 +2,12 @@
 import Base from '@layouts/Base.astro';
 import ClientsMarquee from '@components/ClientsMarquee.astro';
 import CtaBand from '@components/CtaBand.astro';
-import { loadAllProjets } from '@lib/data';
+import { loadAllProjets, loadAccueil } from '@lib/data';
 
 const projets = await loadAllProjets();
+const accueil = await loadAccueil();
+// Helper: Airtable image for a solution card, fallback to local
+const solImg = (cle: string, local: string) => accueil.solutions[cle] || local;
 // Projects flagged "Mis en avant" in Airtable drive the homepage; fallback to first ones.
 const marked = projets.filter((p) => p.misEnAvant);
 const featured = marked.length ? marked : projets.slice(0, 6);
@@ -22,17 +25,27 @@ const heroCards = heroProjects.map((p) => ({
 }));
 
 const solutionCards = [
-  { n: '01', title: 'Branding, signalétique & 3D', text: 'Une identité forte, visualisée dans vos espaces avant fabrication.', img: '/images/portfolio/solution-branding.jpg', url: '/solutions/branding-signaletique-3d/', cta: 'Visualiser mon projet', items: ['Création de logo', 'Enseignes & façades', 'Visualisation 3D'] },
-  { n: '02', title: 'Création digitale & print', text: "Des supports cohérents, du téléphone du client jusqu'à l'imprimé.", img: '/images/portfolio/solution-digital.jpg', url: '/solutions/creation-digitale-print/', cta: 'Créer mes supports', items: ['Affiches & flyers', 'Réseaux sociaux', 'Packaging'] },
-  { n: '03', title: 'Sites web, applications & gestion', text: 'Présentez votre entreprise et centralisez votre activité.', img: '/images/portfolio/solution-web.jpg', url: '/solutions/sites-web-applications-gestion/', cta: 'Créer ma solution', items: ['Sites & e-commerce', 'Applications', 'Tableaux de bord'] },
+  { n: '01', title: 'Branding, signalétique & 3D', text: 'Une identité forte, visualisée dans vos espaces avant fabrication.', img: solImg('solution-branding', '/images/portfolio/solution-branding.jpg'), url: '/solutions/branding-signaletique-3d/', cta: 'Visualiser mon projet', items: ['Création de logo', 'Enseignes & façades', 'Visualisation 3D'] },
+  { n: '02', title: 'Création digitale & print', text: "Des supports cohérents, du téléphone du client jusqu'à l'imprimé.", img: solImg('solution-digital', '/images/portfolio/solution-digital.jpg'), url: '/solutions/creation-digitale-print/', cta: 'Créer mes supports', items: ['Affiches & flyers', 'Réseaux sociaux', 'Packaging'] },
+  { n: '03', title: 'Sites web, applications & gestion', text: 'Présentez votre entreprise et centralisez votre activité.', img: solImg('solution-web', '/images/portfolio/solution-web.jpg'), url: '/solutions/sites-web-applications-gestion/', cta: 'Créer ma solution', items: ['Sites & e-commerce', 'Applications', 'Tableaux de bord'] },
   { n: '04', title: 'Automatisation & IA', text: 'Réduisez les tâches répétitives, répondez plus vite à vos clients.', img: '', url: '/solutions/automatisation-ia/', cta: 'Automatiser mon activité', items: ['Chatbot WhatsApp', 'Relances automatiques', 'Suivi des demandes'] },
 ];
 
-const diffs = [
+const localDiffs = [
   { a: '/images/portfolio/diff-1a.jpg', b: '/images/portfolio/diff-1b.jpg', label: 'Espace actuel → proposition 3D' },
   { a: '/images/portfolio/diff-2a.jpg', b: '/images/portfolio/diff-2b.jpg', label: 'Façade actuelle → façade brandée' },
   { a: '/images/portfolio/diff-3a.jpg', b: '/images/portfolio/diff-3b.jpg', label: 'Visualisation 3D → résultat fabriqué' },
 ];
+// Airtable-driven before/after pairs, fallback to local
+const diffs = accueil.diffs.length
+  ? accueil.diffs.map((d) => ({ a: d.a, b: d.b, label: d.titre }))
+  : localDiffs;
+
+// Lancement produit visuals (Airtable → local fallback)
+const lancementMain = accueil.lancement?.image || '/images/portfolio/realisation-packaging-3d.jpg';
+const lancementThumb = accueil.lancement?.image2 || '/images/portfolio/lancement-1.jpg';
+// Testimonial screenshot (optional, from Airtable)
+const temoignageImg = accueil.temoignages[0]?.image || '';
 
 const steps = [
   { name: 'Analyse', icon: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>' },
@@ -103,7 +116,7 @@ const faqs = [
   <section class="px-4 py-14 md:px-6">
     <div class="container-content panel-grid">
       <p class="text-center tag-mono text-ink/45">Ils nous font confiance</p>
-      <div class="mt-8"><ClientsMarquee /></div>
+      <div class="mt-8"><ClientsMarquee items={accueil.clients} /></div>
     </div>
   </section>
 
@@ -197,11 +210,11 @@ const faqs = [
 
           <div class="relative mx-auto w-full max-w-md lg:mr-0">
             <div class="relative overflow-hidden rounded-4xl border border-white/10 shadow-soft-dark">
-              <img src="/images/portfolio/realisation-packaging-3d.jpg" alt="Rendu 3D réaliste d'un packaging de produit" loading="lazy" class="aspect-[4/3] w-full object-cover" />
+              <img src={lancementMain} alt="Rendu 3D réaliste d'un packaging de produit" loading="lazy" class="aspect-[4/3] w-full object-cover" />
               <span class="absolute left-4 top-4 rounded-full bg-red px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white">Rendu 3D réaliste</span>
             </div>
             <div class="absolute -bottom-7 -left-5 hidden w-36 overflow-hidden rounded-3xl border-4 border-ink shadow-soft-dark sm:block">
-              <img src="/images/portfolio/lancement-1.jpg" alt="Concept du produit avant fabrication" loading="lazy" class="aspect-square w-full object-cover" />
+              <img src={lancementThumb} alt="Concept du produit avant fabrication" loading="lazy" class="aspect-square w-full object-cover" />
               <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 to-transparent px-3 pb-2 pt-6 font-mono text-[9px] uppercase tracking-wider text-white">Concept</span>
             </div>
           </div>
@@ -331,16 +344,22 @@ const faqs = [
         <h2 class="font-heading text-3xl font-bold leading-tight md:text-4xl">Une expérience construite depuis 2014.</h2>
         <p class="mt-6 text-base leading-relaxed text-ink/70">Depuis plus d'une décennie, Micro Office évolue avec les besoins de ses clients — ce qui nous permet aujourd'hui d'accompagner un projet de sa réflexion jusqu'à sa réalisation.</p>
       </div>
-      <div class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <blockquote class="card p-8">
-          <p class="text-ink/40 italic">« [Emplacement réservé — témoignage client authentique à ajouter] »</p>
-          <footer class="mt-6 tag-mono text-ink/40">Client — secteur à préciser</footer>
-        </blockquote>
-        <blockquote class="card p-8">
-          <p class="text-ink/40 italic">« [Emplacement réservé — témoignage client authentique à ajouter] »</p>
-          <footer class="mt-6 tag-mono text-ink/40">Client — secteur à préciser</footer>
-        </blockquote>
-      </div>
+      {temoignageImg ? (
+        <div class="mt-12 overflow-hidden rounded-4xl border border-ink/10 bg-white shadow-soft">
+          <img src={temoignageImg} alt="Témoignage client" loading="lazy" class="w-full object-cover" />
+        </div>
+      ) : (
+        <div class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
+          <blockquote class="card p-8">
+            <p class="text-ink/40 italic">« [Emplacement réservé — témoignage client authentique à ajouter] »</p>
+            <footer class="mt-6 tag-mono text-ink/40">Client — secteur à préciser</footer>
+          </blockquote>
+          <blockquote class="card p-8">
+            <p class="text-ink/40 italic">« [Emplacement réservé — témoignage client authentique à ajouter] »</p>
+            <footer class="mt-6 tag-mono text-ink/40">Client — secteur à préciser</footer>
+          </blockquote>
+        </div>
+      )}
     </div>
   </section>
 

@@ -2,9 +2,15 @@
 import { site } from '@lib/site';
 interface Props {
   dark?: boolean;
+  items?: { name: string; url: string }[]; // from Airtable Accueil (Cloudinary URLs)
 }
-const { dark = false } = Astro.props;
-const clients = [...site.trustedClients, ...site.trustedClients];
+const { dark = false, items } = Astro.props;
+// Airtable-driven logos if provided, else local fallback from site.trustedClients
+const base =
+  items && items.length
+    ? items.map((c) => ({ name: c.name, src: c.url }))
+    : site.trustedClients.map((c) => ({ name: c.name, src: `/images/clients/${c.file}` }));
+const clients = [...base, ...base];
 ---
 <div class="relative overflow-hidden">
   <div class={`pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r ${dark ? 'from-ink' : 'from-offwhite'} to-transparent md:w-28`}></div>
@@ -13,7 +19,7 @@ const clients = [...site.trustedClients, ...site.trustedClients];
   <div class="flex w-max animate-marquee gap-4 hover:[animation-play-state:paused] motion-reduce:animate-none">
     {clients.map((c) => (
       <div class="flex h-24 w-40 shrink-0 items-center justify-center rounded-2xl bg-white p-5">
-        <img src={`/images/clients/${c.file}`} alt={c.name} loading="lazy" class="max-h-full max-w-full object-contain" />
+        <img src={c.src} alt={c.name} loading="lazy" class="max-h-full max-w-full object-contain" />
       </div>
     ))}
   </div>
