@@ -275,8 +275,8 @@ const faqs = [
           <a href={`/realisations/${p.slug}/`} class="group flex flex-col overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-soft transition-all duration-250 hover:-translate-y-1 hover:shadow-soft">
             <div class="relative aspect-[4/3] overflow-hidden">
               <img src={p.couverture} alt={p.titre} loading="lazy" class="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.05]" />
-              {p.categories[0] && (
-                <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-ink backdrop-blur">{p.categories[0]}</span>
+              {(p.familles[0] || p.categories[0]) && (
+                <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-ink backdrop-blur">{p.familles[0] || p.categories[0]}</span>
               )}
             </div>
             <div class="flex flex-1 flex-col p-5">

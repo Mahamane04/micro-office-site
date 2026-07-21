@@ -38,7 +38,8 @@ export interface Projet {
   id: string;
   slug: string;
   titre: string; // ← Airtable "Nom"
-  categories: string[]; // ← Airtable "Catégories" split on "|"
+  categories: string[]; // ← Airtable "Catégories" split on "|" (granular, legacy)
+  familles: string[]; // ← Airtable "Famille" (multipleSelects, clean groups)
   couverture: string; // ← Airtable "URL Couverture" (fallback "Couverture")
   nombreImages: number; // ← Airtable "Nombre d'images"
   dossierCloudinary?: string; // ← Airtable "Dossier Cloudinary"

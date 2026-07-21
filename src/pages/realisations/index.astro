@@ -6,7 +6,8 @@ import CtaBand from '@components/CtaBand.astro';
 import { loadAllProjets } from '@lib/data';
 
 const projets = await loadAllProjets();
-const categories = [...new Set(projets.flatMap((p) => p.categories))].sort();
+// Filter by clean families (from Airtable "Famille"), fallback to raw categories
+const familles = [...new Set(projets.flatMap((p) => (p.familles.length ? p.familles : p.categories)))].sort();
 ---
 
 <Base
@@ -33,8 +34,8 @@ const categories = [...new Set(projets.flatMap((p) => p.categories))].sort();
       <div class="flex flex-col gap-6 border-t border-ink/10 pt-8 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrer par catégorie">
           <button type="button" data-filter="all" class="filter-btn is-active border border-ink px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors">Tous</button>
-          {categories.map((cat) => (
-            <button type="button" data-filter={cat} class="filter-btn border border-ink/20 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70 transition-colors">{cat}</button>
+          {familles.map((fam) => (
+            <button type="button" data-filter={fam} class="filter-btn border border-ink/20 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70 transition-colors">{fam}</button>
           ))}
         </div>
 
@@ -50,10 +51,10 @@ const categories = [...new Set(projets.flatMap((p) => p.categories))].sort();
       {/* Cards grid */}
       <div id="portfolio-grid" class="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
         {projets.map((p) => (
-          <article class="portfolio-card" data-categories={p.categories.join('|')} data-title={p.titre}>
+          <article class="portfolio-card" data-categories={(p.familles.length ? p.familles : p.categories).join('|')} data-title={p.titre}>
             <a href={`/realisations/${p.slug}/`} class="group block">
               <FramedImage src={p.couverture} alt={p.titre} ratio="aspect-[4/3]" label="Voir le projet →" />
-              {p.categories.length > 0 && <p class="tag-mono mt-5 text-red">{p.categories[0]}</p>}
+              {(p.familles[0] || p.categories[0]) && <p class="tag-mono mt-5 text-red">{p.familles[0] || p.categories[0]}</p>}
               <h2 class="mt-2 font-heading text-lg font-bold group-hover:text-red">{p.titre}</h2>
               {p.client && <p class="tag-mono mt-1 text-ink/40">Client — {p.client}</p>}
               {p.accroche && <p class="mt-2 text-sm text-ink/60">{p.accroche}</p>}

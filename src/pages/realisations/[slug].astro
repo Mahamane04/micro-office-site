@@ -20,7 +20,7 @@ if (!projet) {
 }
 
 const images = await loadImagesForProjet(projet);
-const primaryCategory = projet.categories[0] || '';
+const primaryCategory = projet.familles[0] || projet.categories[0] || '';
 ---
 
 <Base
@@ -42,8 +42,8 @@ const primaryCategory = projet.categories[0] || '';
         {projet.client && (
           <p class="tag-mono text-ink/50">Client — <span class="text-ink">{projet.client}</span></p>
         )}
-        {projet.categories.length > 0 && (
-          <p class="tag-mono text-ink/50">Catégorie — <span class="text-ink">{projet.categories.join(', ')}</span></p>
+        {(projet.familles.length ? projet.familles : projet.categories).length > 0 && (
+          <p class="tag-mono text-ink/50">Catégorie — <span class="text-ink">{(projet.familles.length ? projet.familles : projet.categories).join(', ')}</span></p>
         )}
         {projet.nombreImages > 0 && (
           <p class="tag-mono text-ink/50">Images — <span class="text-ink">{projet.nombreImages}</span></p>

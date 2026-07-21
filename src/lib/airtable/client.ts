@@ -49,6 +49,10 @@ function mapProjet(record: AirtableRecord<Record<string, any>>): Projet {
     titre: pick(f, 'Nom', 'Titre', 'titre', 'nom') || '',
     slug: pick(f, 'Slug', 'slug') || '',
     categories: splitCategories(pick(f, 'Catégories', 'Categories', 'categorie', 'Catégorie')),
+    familles: (() => {
+      const v = pick(f, 'Famille', 'Familles', 'famille');
+      return Array.isArray(v) ? v : splitCategories(v);
+    })(),
     couverture: toUrl(pick(f, 'URL Couverture', 'Couverture', 'couverture')),
     nombreImages: Number(pick(f, "Nombre d'images", 'Nombre d’images', 'nombreImages')) || 0,
     dossierCloudinary: pick(f, 'Dossier Cloudinary', 'dossierCloudinary'),
