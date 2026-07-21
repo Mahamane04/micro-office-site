@@ -1,0 +1,125 @@
+---
+import Base from '@layouts/Base.astro';
+import { year } from '@lib/filters';
+---
+
+<Base
+  title="Politique de confidentialité | Micro Office"
+  description="Politique de confidentialité et protection des données personnelles de Micro Office."
+>
+  <section class="section-pad bg-gradient-to-b from-white to-offwhite">
+    <div class="container-content">
+      <h1 class="font-heading text-3xl md:text-4xl font-bold">Politique de confidentialité</h1>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-content max-w-3xl prose prose-sm">
+      <h2>1. Introduction</h2>
+      <p>
+        Chez Micro Office, nous prenons la protection de vos données personnelles très au sérieux.
+        Cette politique explique comment nous collectons, utilisons et protégeons vos données.
+      </p>
+
+      <h2>2. Données collectées</h2>
+      <p>Nous collectons les données personnelles suivantes:</p>
+      <ul>
+        <li>Nom et prénom</li>
+        <li>Adresse email</li>
+        <li>Numéro de téléphone</li>
+        <li>Adresse physique</li>
+        <li>Informations de paiement</li>
+        <li>Données de navigation (cookies, adresse IP)</li>
+      </ul>
+
+      <h2>3. Utilisation des données</h2>
+      <p>Nous utilisons vos données pour:</p>
+      <ul>
+        <li>Traiter vos commandes et paiements</li>
+        <li>Vous contacter concernant vos demandes</li>
+        <li>Améliorer nos services</li>
+        <li>Envoyer des communications marketing (avec consentement)</li>
+        <li>Respecter nos obligations légales</li>
+      </ul>
+
+      <h2>4. Partage des données</h2>
+      <p>
+        Nous ne partageons vos données personnelles que:
+      </p>
+      <ul>
+        <li>Avec les prestataires nécessaires au traitement de vos commandes</li>
+        <li>Si requis par la loi</li>
+        <li>Avec votre consentement explicite</li>
+      </ul>
+
+      <h2>5. Sécurité des données</h2>
+      <p>
+        Nous mettons en place des mesures de sécurité appropriées pour protéger vos données contre
+        l'accès non autorisé, la modification ou la divulgation. Cependant, aucune transmission sur Internet
+        n'est 100% sécurisée.
+      </p>
+
+      <h2>6. Cookies</h2>
+      <p>
+        Notre site utilise des cookies pour améliorer votre expérience. Vous pouvez contrôler les cookies
+        via les paramètres de votre navigateur.
+      </p>
+
+      <h2>7. Droits de l'utilisateur</h2>
+      <p>Vous avez le droit de:</p>
+      <ul>
+        <li>Accéder à vos données personnelles</li>
+        <li>Demander la correction de données inexactes</li>
+        <li>Demander la suppression de vos données</li>
+        <li>Vous opposer au traitement de vos données</li>
+        <li>Retirer votre consentement</li>
+      </ul>
+
+      <h2>8. Conservation des données</h2>
+      <p>
+        Nous conservons vos données personnelles aussi longtemps que nécessaire pour les finalités pour
+        lesquelles elles ont été collectées, ou selon les exigences légales.
+      </p>
+
+      <h2>9. Contact</h2>
+      <p>
+        Pour toute question concernant cette politique ou vos données personnelles, contactez-nous à:
+        <br />
+        Email: contact@microofficeml.com<br />
+        Téléphone: +223 XX XX XX XX
+      </p>
+
+      <h2>10. Modifications</h2>
+      <p>
+        Nous pouvons modifier cette politique à tout moment. Les modifications seront publiées sur cette page
+        avec une date de mise à jour.
+      </p>
+
+      <p class="text-sm text-ink/50 mt-8">
+        Dernière mise à jour: {year()}
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .prose {
+    @apply max-w-none;
+  }
+
+  .prose h2 {
+    @apply font-heading text-xl font-bold mt-8 mb-4;
+  }
+
+  .prose p {
+    @apply text-ink/70 leading-relaxed mb-4;
+  }
+
+  .prose ul {
+    @apply list-disc list-inside space-y-2 text-ink/70 mb-4;
+  }
+
+  .prose a {
+    @apply text-red hover:text-red-dark transition-colors;
+  }
+</style>

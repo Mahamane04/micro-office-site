@@ -1,0 +1,94 @@
+---
+import Base from '@layouts/Base.astro';
+import { year } from '@lib/filters';
+---
+
+<Base
+  title="Mentions légales | Micro Office"
+  description="Informations légales et conditions d'utilisation du site Micro Office."
+>
+  <section class="section-pad bg-gradient-to-b from-white to-offwhite">
+    <div class="container-content">
+      <h1 class="font-heading text-3xl md:text-4xl font-bold">Mentions légales</h1>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-content max-w-3xl prose prose-sm">
+      <h2>1. Identification du site</h2>
+      <p>
+        <strong>Micro Office</strong><br />
+        Email: contact@microofficeml.com<br />
+        Téléphone: +223 XX XX XX XX<br />
+        Lieu: Bamako, Mali
+      </p>
+
+      <h2>2. Propriété et responsabilité</h2>
+      <p>
+        Le site www.microofficeml.com est la propriété exclusive de Micro Office. Le contenu est protégé par
+        les lois sur les droits d'auteur et la propriété intellectuelle.
+      </p>
+
+      <h2>3. Utilisation du site</h2>
+      <p>
+        L'utilisateur s'engage à utiliser le site dans le respect des lois en vigueur et des conditions
+        énoncées ci-dessous. Toute utilisation frauduleuse, abusive ou non conforme est strictement interdite.
+      </p>
+
+      <h2>4. Limitation de responsabilité</h2>
+      <p>
+        Micro Office ne peut être tenu responsable des dommages directs ou indirects résultant de l'accès,
+        de l'utilisation ou de l'incapacité à utiliser le site, même si Micro Office a été informé de la
+        possibilité de tels dommages.
+      </p>
+
+      <h2>5. Données personnelles</h2>
+      <p>
+        Les données personnelles collectées sur ce site sont traitées conformément à notre politique de
+        confidentialité. Voir <a href="/politique-de-confidentialite/" class="text-red hover:text-red-dark">Politique de confidentialité</a>.
+      </p>
+
+      <h2>6. Liens externes</h2>
+      <p>
+        Le site peut contenir des liens vers d'autres sites. Micro Office n'est pas responsable du contenu
+        de ces sites externes.
+      </p>
+
+      <h2>7. Modification des conditions</h2>
+      <p>
+        Micro Office se réserve le droit de modifier les présentes mentions légales à tout moment, sans préavis.
+      </p>
+
+      <h2>8. Loi applicable</h2>
+      <p>
+        Ces mentions légales sont soumises aux lois en vigueur au Mali.
+      </p>
+
+      <p class="text-sm text-ink/50 mt-8">
+        Dernière mise à jour: {year()}
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .prose {
+    @apply max-w-none;
+  }
+
+  .prose h2 {
+    @apply font-heading text-xl font-bold mt-8 mb-4;
+  }
+
+  .prose p {
+    @apply text-ink/70 leading-relaxed mb-4;
+  }
+
+  .prose strong {
+    @apply font-semibold text-ink;
+  }
+
+  .prose a {
+    @apply text-red hover:text-red-dark transition-colors;
+  }
+</style>

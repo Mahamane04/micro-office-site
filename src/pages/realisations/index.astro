@@ -1,0 +1,154 @@
+---
+import Base from '@layouts/Base.astro';
+import { loadAllProjets } from '@lib/data';
+import { uniqueCategories, featured } from '@lib/filters';
+
+const projets = await loadAllProjets();
+const categories = uniqueCategories(projets);
+const featuredProjets = featured(projets);
+---
+
+<Base
+  title="Réalisations | Micro Office"
+  description="Découvrez nos projets et réalisations. Cas d'usage, études de cas, et portfolios."
+>
+  <section class="section-pad bg-gradient-to-b from-white to-offwhite">
+    <div class="container-content">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Réalisations</p>
+        <h1 class="font-heading text-4xl md:text-5xl font-bold leading-tight">
+          Nos projets et cas d'usage
+        </h1>
+        <p class="mt-6 text-lg text-ink/70">
+          Découvrez comment nous transformons des visions en solutions numériques innovantes.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-content">
+      <!-- Filters -->
+      <div class="mb-12">
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrer par catégorie">
+          <button
+            type="button"
+            class="filter-btn is-active border border-ink px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors"
+            data-filter="all"
+          >
+            Tous ({projets.length})
+          </button>
+          {
+            categories.map((cat) => (
+              <button
+                type="button"
+                class="filter-btn border border-ink/20 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70 transition-colors"
+                data-filter={cat}
+              >
+                {cat} ({projets.filter((p) => p.categorie === cat).length})
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Projects Grid -->
+      <div id="portfolio-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          projets.map((p) => (
+            <article
+              class="project-card group border border-ink/10 rounded-2xl overflow-hidden hover:border-red transition-colors cursor-pointer"
+              data-slug={p.slug}
+              data-category={p.categorie}
+              data-title={p.titre}
+              data-featured={p.misEnAvant ? '1' : '0'}
+            >
+              <div class="relative overflow-hidden bg-offwhite h-64">
+                <img
+                  src={p.couverture}
+                  alt={p.titre}
+                  loading="lazy"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                {p.misEnAvant && (
+                  <span class="absolute top-3 right-3 px-3 py-1 bg-red text-white text-xs font-semibold rounded-lg">
+                    À la une
+                  </span>
+                )}
+              </div>
+
+              <div class="p-6">
+                <a href={`/realisations/${p.slug}/`} class="block group/link">
+                  <p class="eyebrow">{p.categorie}</p>
+                  <h3 class="font-heading text-lg font-bold mt-2 group-hover/link:text-red transition-colors">
+                    {p.titre}
+                  </h3>
+                </a>
+                <p class="text-sm text-ink/70 mt-2">{p.client}</p>
+                <p class="text-sm text-ink/50 mt-3">{p.accroche}</p>
+
+                <a
+                  href={`/realisations/${p.slug}/`}
+                  class="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-red hover:gap-3 transition-all"
+                >
+                  Voir le projet
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <!-- Empty state -->
+      <p id="portfolio-empty" class="hidden mt-12 text-center text-ink/60">
+        Aucun projet dans cette catégorie pour le moment.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .filter-btn.is-active {
+    @apply border-ink bg-ink text-white;
+  }
+</style>
+
+<script>
+  // Client-side filtering
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const grid = document.getElementById('portfolio-grid');
+  const emptyState = document.getElementById('portfolio-empty');
+
+  function updateDisplay() {
+    const activeFilter = document.querySelector('.filter-btn.is-active')?.dataset.filter || 'all';
+
+    const cards = Array.from(document.querySelectorAll('.project-card')) as HTMLElement[];
+
+    let visibleCards = cards.filter((card) => {
+      const category = card.dataset.category;
+      return activeFilter === 'all' || category === activeFilter;
+    });
+
+    // Sort by featured first
+    visibleCards.sort((a, b) => Number(b.dataset.featured) - Number(a.dataset.featured));
+
+    grid?.replaceChildren(...visibleCards);
+
+    if (visibleCards.length === 0) {
+      emptyState?.classList.remove('hidden');
+    } else {
+      emptyState?.classList.add('hidden');
+    }
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      updateDisplay();
+    });
+  });
+</script>

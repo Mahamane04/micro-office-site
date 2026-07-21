@@ -1,0 +1,109 @@
+---
+import Base from '@layouts/Base.astro';
+import { year } from '@lib/filters';
+---
+
+<Base
+  title="À propos | Micro Office"
+  description="Découvrez l'histoire et les valeurs de Micro Office, votre partenaire numérique de confiance au Mali."
+>
+  <section class="section-pad bg-gradient-to-b from-white to-offwhite">
+    <div class="container-content">
+      <div class="max-w-2xl">
+        <p class="eyebrow">À propos</p>
+        <h1 class="font-heading text-4xl md:text-5xl font-bold leading-tight">
+          Qui sommes-nous ?
+        </h1>
+        <p class="mt-6 text-lg text-ink/70">
+          Micro Office est une agence numérique créative et innovante basée à Bamako, Mali.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-content max-w-3xl">
+      <div class="space-y-12">
+        <div>
+          <h2 class="font-heading text-2xl font-bold mb-4">Notre mission</h2>
+          <p class="text-ink/70 leading-relaxed">
+            Nous accompagnons les entreprises et entrepreneurs dans leur transformation numérique.
+            Notre mission est de créer des solutions innovantes, accessibles et durables qui créent
+            de la valeur réelle pour nos clients.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-heading text-2xl font-bold mb-4">Nos valeurs</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <h3 class="font-heading font-semibold mb-2">Innovation</h3>
+              <p class="text-sm text-ink/70">
+                Nous recherchons constamment les meilleures technologies et méthodes pour rester à l'avant-garde.
+              </p>
+            </div>
+            <div>
+              <h3 class="font-heading font-semibold mb-2">Qualité</h3>
+              <p class="text-sm text-ink/70">
+                Chaque projet est réalisé avec soin et attention aux détails pour dépasser les attentes.
+              </p>
+            </div>
+            <div>
+              <h3 class="font-heading font-semibold mb-2">Transparence</h3>
+              <p class="text-sm text-ink/70">
+                Nous communiquons ouvertement avec nos clients à chaque étape du projet.
+              </p>
+            </div>
+            <div>
+              <h3 class="font-heading font-semibold mb-2">Impact</h3>
+              <p class="text-sm text-ink/70">
+                Nous visons à créer des solutions qui ont un impact positif mesurable.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="font-heading text-2xl font-bold mb-4">Notre expertise</h2>
+          <ul class="space-y-2 text-ink/70">
+            <li class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Création de sites web et applications
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Design et identité visuelle
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Stratégie numérique et marketing
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Consulting et accompagnement
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="font-heading text-2xl font-bold mb-4">Nous rejoindre</h2>
+          <p class="text-ink/70 mb-4">
+            Vous partagez nos valeurs et souhaitez nous rejoindre ? Nous sommes toujours à la recherche
+            de talents passionnés et motivés.
+          </p>
+          <a href="mailto:contact@microofficeml.com" class="btn-primary">
+            Nous contacter
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

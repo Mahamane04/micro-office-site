@@ -111,10 +111,13 @@ def upload_one(
     api_secret: str,
 ) -> dict:
     public_id = remote_public_id(source_root, image, destination_root)
+    asset_folder = public_id.rsplit("/", 1)[0]
     last_error: Exception | None = None
     for attempt in range(1, 4):
         timestamp = str(int(time.time()))
         parameters = {
+            "asset_folder": asset_folder,
+            "display_name": image.stem,
             "invalidate": "true",
             "overwrite": "true",
             "public_id": public_id,
@@ -143,6 +146,8 @@ def upload_one(
             return {
                 "local": str(image.relative_to(source_root)),
                 "public_id": payload["public_id"],
+                "asset_folder": payload.get("asset_folder", asset_folder),
+                "display_name": payload.get("display_name", image.stem),
                 "asset_id": payload.get("asset_id"),
                 "secure_url": payload.get("secure_url"),
                 "bytes": payload.get("bytes"),
