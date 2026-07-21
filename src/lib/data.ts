@@ -134,6 +134,7 @@ export async function loadImagesForProjet(projet: Projet): Promise<ProjetImage[]
 // ---- Homepage dynamic content (Accueil table) ------------------------------
 
 export interface AccueilContent {
+  hero: { titre: string; image: string; badge: string; sousTitre: string }[];
   clients: { name: string; url: string }[];
   solutions: Record<string, { image: string; titre: string }>; // cle → { image, titre }
   diffs: { titre: string; a: string; b: string }[];
@@ -144,6 +145,9 @@ export interface AccueilContent {
 function groupAccueil(items: AccueilItem[]): AccueilContent {
   const active = items.filter((i) => i.actif !== false);
   return {
+    hero: active
+      .filter((i) => i.zone === 'Hero' && i.image)
+      .map((i) => ({ titre: i.titre, image: i.image, badge: i.badge, sousTitre: i.sousTitre })),
     clients: active.filter((i) => i.zone === 'Clients' && i.image).map((i) => ({ name: i.titre, url: i.image })),
     solutions: Object.fromEntries(
       active.filter((i) => i.zone === 'Solutions').map((i) => [i.cle, { image: i.image, titre: i.titre }])
@@ -157,7 +161,7 @@ function groupAccueil(items: AccueilItem[]): AccueilContent {
   };
 }
 
-const emptyAccueil: AccueilContent = { clients: [], solutions: {}, diffs: [], lancement: null, temoignages: [] };
+const emptyAccueil: AccueilContent = { hero: [], clients: [], solutions: {}, diffs: [], lancement: null, temoignages: [] };
 
 /** Load homepage dynamic content from Airtable. Returns empty (site uses local fallbacks) if unavailable. */
 export async function loadAccueil(): Promise<AccueilContent> {

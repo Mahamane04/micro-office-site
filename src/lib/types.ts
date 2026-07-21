@@ -106,10 +106,12 @@ export interface Commande {
 // Homepage dynamic content — mapped from Airtable "Accueil" table
 export interface AccueilItem {
   cle: string;
-  zone: 'Clients' | 'Solutions' | 'Différence' | 'Lancement' | 'Témoignages' | string;
+  zone: 'Hero' | 'Clients' | 'Solutions' | 'Différence' | 'Lancement' | 'Témoignages' | string;
   titre: string;
   image: string;
   image2: string;
+  badge: string;
+  sousTitre: string;
   ordre: number;
   actif: boolean;
 }

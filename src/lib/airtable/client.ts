@@ -181,6 +181,8 @@ export class AirtableClient {
         titre: pick(r.fields, 'Titre', 'titre') || '',
         image: toUrl(pick(r.fields, 'Image', 'image')),
         image2: toUrl(pick(r.fields, 'Image 2', 'image2')),
+        badge: pick(r.fields, 'Badge', 'badge') || '',
+        sousTitre: pick(r.fields, 'Sous-titre', 'Sous titre', 'sousTitre') || '',
         ordre: Number(pick(r.fields, 'Ordre', 'ordre')) || 0,
         actif: Boolean(pick(r.fields, 'Actif', 'actif')),
       }))
