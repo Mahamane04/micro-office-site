@@ -168,17 +168,23 @@ export class AirtableClient {
 // ---- Singleton -------------------------------------------------------------
 let client: AirtableClient | null = null;
 
+function env(key: string): string | undefined {
+  // Server-side secrets can live on either import.meta.env (Astro/Vite)
+  // or process.env (Node adapter / Netlify functions).
+  return import.meta.env[key] ?? (typeof process !== 'undefined' ? process.env?.[key] : undefined);
+}
+
 export function getAirtableClient(): AirtableClient | null {
   if (!client) {
-    const token = import.meta.env.AIRTABLE_API_TOKEN;
-    const baseId = import.meta.env.AIRTABLE_BASE_ID;
+    const token = env('AIRTABLE_API_TOKEN');
+    const baseId = env('AIRTABLE_BASE_ID');
     if (!token || !baseId) return null;
 
     client = new AirtableClient({
       token,
       baseId,
-      projetsTableName: import.meta.env.AIRTABLE_TABLE_PORTFOLIO || 'Projets',
-      imagesTableName: import.meta.env.AIRTABLE_TABLE_IMAGES || 'Images',
+      projetsTableName: env('AIRTABLE_TABLE_PORTFOLIO') || 'Projets',
+      imagesTableName: env('AIRTABLE_TABLE_IMAGES') || 'Images',
     });
   }
   return client;
