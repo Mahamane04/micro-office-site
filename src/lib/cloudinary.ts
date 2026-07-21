@@ -124,6 +124,22 @@ export function getProductImageUrl(publicId: string): string {
 }
 
 /**
+ * Insert a smart-crop transformation into an existing full Cloudinary delivery URL
+ * (as stored in Airtable: https://res.cloudinary.com/<cloud>/image/upload/v123/path/img.jpg).
+ * Uses g_auto (content-aware/saliency cropping) so the subject stays framed
+ * regardless of the source image's original orientation or aspect ratio —
+ * works for any image dropped into Airtable without manual curation.
+ */
+export function smartCrop(url: string, width: number, height: number): string {
+  if (!url || !isCloudinaryUrl(url)) return url;
+  const marker = '/image/upload/';
+  const idx = url.indexOf(marker);
+  if (idx === -1) return url;
+  const transform = `c_fill,g_auto,w_${width},h_${height},q_auto,f_auto,dpr_auto`;
+  return url.slice(0, idx + marker.length) + transform + '/' + url.slice(idx + marker.length);
+}
+
+/**
  * Check if URL is already a Cloudinary URL
  */
 export function isCloudinaryUrl(url: string): boolean {

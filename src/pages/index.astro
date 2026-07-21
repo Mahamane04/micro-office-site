@@ -3,9 +3,16 @@ import Base from '@layouts/Base.astro';
 import ClientsMarquee from '@components/ClientsMarquee.astro';
 import CtaBand from '@components/CtaBand.astro';
 import { loadAllProjets, loadAccueil } from '@lib/data';
+import { smartCrop } from '@lib/cloudinary';
 
 const projets = await loadAllProjets();
 const accueil = await loadAccueil();
+// Hero cards flip between a narrow (16%) and wide (52%) frame on hover; a plain
+// CSS object-cover center-crop of the raw source image cuts subjects off
+// depending on their original orientation. Pre-crop via Cloudinary's
+// content-aware gravity (g_auto) at a portrait ratio close to the resting
+// (narrow) frame so the subject stays in view in both states.
+const heroImg = (url: string) => smartCrop(url, 640, 900);
 // Helper: Airtable image for a solution card, fallback to local
 const solImg = (cle: string, local: string) => accueil.solutions[cle]?.image || local;
 const solTitle = (cle: string, local: string) => accueil.solutions[cle]?.titre || local;
@@ -17,16 +24,16 @@ const featured = marked.length ? marked : projets.slice(0, 6);
 // falling back to "Mis en avant" project covers if that zone is empty.
 const heroCards = accueil.hero.length
   ? accueil.hero.map((h) => ({
-      img: h.image,
+      img: heroImg(h.image),
       alt: h.titre,
       badge: h.badge || 'Réalisation',
       mark: 'M',
       brand: 'Micro Office',
-      role: h.sousTitre || h.titre,
+      role: h.sousTitre, // may be empty — Sous-titre is optional in Airtable, don't repeat titre
       name: h.titre,
     }))
   : (marked.length ? marked : projets).slice(0, 4).map((p) => ({
-      img: p.couverture,
+      img: heroImg(p.couverture),
       alt: p.titre,
       badge: p.familles[0] || 'Réalisation',
       mark: 'M',
@@ -112,7 +119,7 @@ const faqs = [
                 <div class="hero-card-content">
                   <div class="hero-card-brand"><span class="hero-card-mark">{c.mark}</span>{c.brand}</div>
                   <div class="hero-card-sep"></div>
-                  <p class="hero-card-role">{c.role}</p>
+                  {c.role && <p class="hero-card-role">{c.role}</p>}
                   <h3 class="hero-card-name">{c.name}</h3>
                 </div>
               </article>
