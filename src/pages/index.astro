@@ -1,0 +1,71 @@
+---
+import Base from '@layouts/Base.astro';
+---
+
+<Base
+  title="Accueil | Micro Office"
+  description="Solutions numériques innovantes pour votre entreprise. Boutique, services, et réalisations."
+>
+  <!-- Hero section -->
+  <section class="section-pad bg-gradient-to-b from-white to-offwhite">
+    <div class="container-content">
+      <h1 class="font-heading text-4xl md:text-5xl font-bold leading-tight max-w-3xl">
+        Solutions numériques innovantes pour votre entreprise
+      </h1>
+      <p class="mt-6 text-lg text-ink/70 max-w-2xl">
+        Découvrez notre sélection de produits, services et réalisations conçus pour transformer votre vision en réalité.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="/boutique" class="btn-primary">Découvrir la boutique</a>
+        <a href="/contact" class="btn-secondary">Contactez-nous</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features section -->
+  <section class="section-pad">
+    <div class="container-content">
+      <h2 class="font-heading text-3xl font-bold mb-12">Pourquoi nous choisir ?</h2>
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="p-6 border border-ink/10 rounded-2xl hover:border-red transition-colors">
+          <div class="w-12 h-12 rounded-full bg-red/10 flex items-center justify-center mb-4">
+            <span class="text-red font-bold">✓</span>
+          </div>
+          <h3 class="font-heading font-bold mb-2">Innovation</h3>
+          <p class="text-ink/70">Technologies modernes et solutions avant-gardistes.</p>
+        </div>
+
+        <div class="p-6 border border-ink/10 rounded-2xl hover:border-red transition-colors">
+          <div class="w-12 h-12 rounded-full bg-red/10 flex items-center justify-center mb-4">
+            <span class="text-red font-bold">✓</span>
+          </div>
+          <h3 class="font-heading font-bold mb-2">Qualité</h3>
+          <p class="text-ink/70">Standards élevés et attention aux détails.</p>
+        </div>
+
+        <div class="p-6 border border-ink/10 rounded-2xl hover:border-red transition-colors">
+          <div class="w-12 h-12 rounded-full bg-red/10 flex items-center justify-center mb-4">
+            <span class="text-red font-bold">✓</span>
+          </div>
+          <h3 class="font-heading font-bold mb-2">Support</h3>
+          <p class="text-ink/70">Équipe dédiée pour vous accompagner.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA section -->
+  <section class="section-pad bg-ink text-white">
+    <div class="container-content text-center">
+      <h2 class="font-heading text-3xl font-bold">Prêt à commencer ?</h2>
+      <p class="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
+        Explorez nos produits, services et réalisations pour trouver la solution idéale.
+      </p>
+      <div class="mt-8">
+        <a href="/boutique" class="btn-primary bg-red hover:bg-red-dark">
+          Aller à la boutique
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

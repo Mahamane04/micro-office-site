@@ -211,14 +211,15 @@ def write_report(root: Path, report: dict) -> None:
         "",
         f"Fichiers source pris en charge : {report['source_files_converted']}",
         f"JPEG produits : {report['jpeg_outputs']}",
-        f"Dossiers JPG_WEB créés : {report['output_folders']}",
+        f"Dossiers de sortie : {report['output_folders']}",
         f"Vidéos laissées intactes : {report['videos_untouched']}",
         f"Erreurs : {len(report['errors'])}",
         f"Poids des sources converties : {report['source_bytes'] / 1024 / 1024:.1f} Mo",
         f"Poids des JPEG web : {report['output_bytes'] / 1024 / 1024:.1f} Mo",
-        "",
-        "Répartition des sources :",
     ]
+    if report.get("central_folder"):
+        lines.append(f"Dossier central : {report['central_folder']}")
+    lines.extend(["", "Répartition des sources :"])
     for extension, count in sorted(report["source_extensions"].items()):
         lines.append(f"- {extension or '[sans extension]'} : {count}")
     lines.extend(["", "Doublons exacts détectés (originaux conservés) :"])

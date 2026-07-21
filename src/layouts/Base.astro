@@ -1,0 +1,142 @@
+---
+// Base layout for all pages
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+}
+
+const { title, description = '', ogImage = '', canonical = '' } = Astro.props;
+const siteName = 'Micro Office';
+const siteUrl = import.meta.env.SITE_URL || 'https://www.microofficeml.com';
+const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+---
+
+<!doctype html>
+<html lang="fr" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
+    {description && <meta name="description" content={description} />}
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical || siteUrl} />
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonical || siteUrl} />
+    <meta property="twitter:title" content={fullTitle} />
+    {description && <meta property="twitter:description" content={description} />}
+    {ogImage && <meta property="twitter:image" content={ogImage} />}
+
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://res.cloudinary.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#050505" />
+
+    <!-- Fonts (self-hosted or external) -->
+    <!-- Add font imports here if needed -->
+
+    <!-- No-script fallback -->
+    <noscript>
+      <p>Ce site nécessite JavaScript pour fonctionner correctement.</p>
+    </noscript>
+  </head>
+  <body class="bg-white text-ink">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white border-b border-ink/10">
+      <nav class="container-content flex items-center justify-between py-4">
+        <a href="/" class="flex items-center gap-2 font-heading font-bold text-xl">
+          Micro Office
+        </a>
+        <div class="flex items-center gap-6">
+          <a href="/boutique" class="text-sm font-medium hover:text-red">Boutique</a>
+          <a href="/realisations" class="text-sm font-medium hover:text-red">Réalisations</a>
+          <a href="/a-propos" class="text-sm font-medium hover:text-red">À propos</a>
+          <a href="/contact" class="btn-primary">Contact</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main content -->
+    <main class="min-h-screen">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-ink/10 bg-white py-12">
+      <div class="container-content">
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-12">
+          <!-- About -->
+          <div>
+            <h3 class="font-heading font-bold mb-4">Micro Office</h3>
+            <p class="text-sm text-ink/70">
+              Solutions numériques innovantes pour votre entreprise.
+            </p>
+          </div>
+
+          <!-- Quick links -->
+          <div>
+            <h3 class="font-heading font-bold mb-4">Navigation</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/boutique" class="hover:text-red">Boutique</a></li>
+              <li><a href="/realisations" class="hover:text-red">Réalisations</a></li>
+              <li><a href="/services" class="hover:text-red">Services</a></li>
+              <li><a href="/contact" class="hover:text-red">Contact</a></li>
+            </ul>
+          </div>
+
+          <!-- Legal -->
+          <div>
+            <h3 class="font-heading font-bold mb-4">Légal</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/mentions-legales" class="hover:text-red">Mentions légales</a></li>
+              <li><a href="/politique-de-confidentialite" class="hover:text-red">Politique de confidentialité</a></li>
+            </ul>
+          </div>
+
+          <!-- Contact -->
+          <div>
+            <h3 class="font-heading font-bold mb-4">Contact</h3>
+            <p class="text-sm text-ink/70 mb-2">
+              <a href="mailto:contact@microofficeml.com" class="hover:text-red">
+                contact@microofficeml.com
+              </a>
+            </p>
+            <p class="text-sm text-ink/70">
+              <a href="tel:+223XXXXXXXX" class="hover:text-red">+223 XX XX XX XX</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="border-t border-ink/10 pt-8 text-center text-sm text-ink/50">
+          <p>&copy; {new Date().getFullYear()} Micro Office. Tous droits réservés.</p>
+          <p class="mt-2 text-xs">
+            Built with <a href="https://astro.build" class="hover:text-red">Astro</a> + <a href="https://airtable.com" class="hover:text-red">Airtable</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  /* Any global Astro component-specific styles here */
+</style>
