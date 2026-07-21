@@ -5,14 +5,21 @@ import CtaBand from '@components/CtaBand.astro';
 import { loadAllProjets } from '@lib/data';
 
 const projets = await loadAllProjets();
-const featured = projets.slice(0, 6);
+// Projects flagged "Mis en avant" in Airtable drive the homepage; fallback to first ones.
+const marked = projets.filter((p) => p.misEnAvant);
+const featured = marked.length ? marked : projets.slice(0, 6);
+const heroProjects = (marked.length ? marked : projets).slice(0, 4);
 
-const heroCards = [
-  { img: '/images/portfolio/hero-3d.jpg', alt: "Rendu 3D d'un espace de marque avant réalisation", badge: 'Rendu 3D', mark: '3D', brand: 'Visualisation 3D', role: 'Aperçu avant fabrication', name: 'COOFIX & EMS' },
-  { img: '/images/portfolio/hero-final.jpg', alt: 'Le même espace de marque, réalisé et installé', badge: 'Réalisé', mark: 'S', brand: 'Signalétique', role: 'Aménagement installé', name: 'Espace intérieur' },
-  { img: '/images/portfolio/realisation-signaletique-exterieure.jpg', alt: 'Enseigne et façade extérieure réalisées sur mesure', badge: 'Enseigne', mark: 'F', brand: 'Signalétique ext.', role: 'Façade sur mesure', name: 'COOFIX Façade' },
-  { img: '/images/portfolio/solution-branding.jpg', alt: 'Identité de marque en lettres dorées 3D', badge: 'Branding', mark: 'B', brand: 'Branding', role: 'Identité & logo 3D', name: "Jina's Collection" },
-];
+// Build the hero expanding gallery from real Airtable projects (Cloudinary covers).
+const heroCards = heroProjects.map((p) => ({
+  img: p.couverture,
+  alt: p.titre,
+  badge: p.familles[0] || 'Réalisation',
+  mark: (p.familles[0] || p.titre).charAt(0).toUpperCase(),
+  brand: p.familles[0] || 'Micro Office',
+  role: p.client || `${p.nombreImages} visuels`,
+  name: p.titre,
+}));
 
 const solutionCards = [
   { n: '01', title: 'Branding, signalétique & 3D', text: 'Une identité forte, visualisée dans vos espaces avant fabrication.', img: '/images/portfolio/solution-branding.jpg', url: '/solutions/branding-signaletique-3d/', cta: 'Visualiser mon projet', items: ['Création de logo', 'Enseignes & façades', 'Visualisation 3D'] },
