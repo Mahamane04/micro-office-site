@@ -1,154 +1,123 @@
 ---
 import Base from '@layouts/Base.astro';
+import MotifArc from '@components/MotifArc.astro';
+import FramedImage from '@components/FramedImage.astro';
+import CtaBand from '@components/CtaBand.astro';
 import { loadAllProjets } from '@lib/data';
-import { uniqueCategories, featured } from '@lib/filters';
 
 const projets = await loadAllProjets();
-const categories = uniqueCategories(projets);
-const featuredProjets = featured(projets);
+const categories = [...new Set(projets.flatMap((p) => p.categories))].sort();
 ---
 
 <Base
-  title="Réalisations | Micro Office"
-  description="Découvrez nos projets et réalisations. Cas d'usage, études de cas, et portfolios."
+  title="Réalisations : branding, signalétique, 3D et digital au Mali"
+  description="Découvrez les réalisations de Micro Office : branding, signalétique, visualisation 3D et supports digitaux au Mali."
 >
-  <section class="section-pad bg-gradient-to-b from-white to-offwhite">
-    <div class="container-content">
+  <section class="relative overflow-hidden section-pad pb-10">
+    <div class="pointer-events-none absolute inset-0 bg-blueprint-light [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" aria-hidden="true"></div>
+    <MotifArc position="right-[-4rem] top-[-4rem] text-ink" />
+    <div class="container-content relative">
       <div class="max-w-2xl">
         <p class="eyebrow">Réalisations</p>
-        <h1 class="font-heading text-4xl md:text-5xl font-bold leading-tight">
-          Nos projets et cas d'usage
-        </h1>
-        <p class="mt-6 text-lg text-ink/70">
-          Découvrez comment nous transformons des visions en solutions numériques innovantes.
+        <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Des idées devenues réalité.</h1>
+        <p class="mt-6 text-lg leading-relaxed text-ink/70">
+          Découvrez comment nous avons accompagné nos clients depuis leur besoin initial jusqu'à la réalisation finale.
         </p>
       </div>
     </div>
   </section>
 
-  <section class="section-pad">
+  <section class="section-pad pt-6">
     <div class="container-content">
-      <!-- Filters -->
-      <div class="mb-12">
+      {/* Filters */}
+      <div class="flex flex-col gap-6 border-t border-ink/10 pt-8 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrer par catégorie">
-          <button
-            type="button"
-            class="filter-btn is-active border border-ink px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors"
-            data-filter="all"
-          >
-            Tous ({projets.length})
-          </button>
-          {
-            categories.map((cat) => (
-              <button
-                type="button"
-                class="filter-btn border border-ink/20 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70 transition-colors"
-                data-filter={cat}
-              >
-                {cat} ({projets.filter((p) => p.categorie === cat).length})
-              </button>
-            ))
-          }
+          <button type="button" data-filter="all" class="filter-btn is-active border border-ink px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors">Tous</button>
+          {categories.map((cat) => (
+            <button type="button" data-filter={cat} class="filter-btn border border-ink/20 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70 transition-colors">{cat}</button>
+          ))}
+        </div>
+
+        <div class="flex shrink-0 items-center gap-3">
+          <span class="font-mono text-[11px] uppercase tracking-[0.15em] text-ink/50">Trier</span>
+          <select id="portfolio-sort" class="rounded-full border border-ink/20 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink transition-colors hover:border-ink focus:border-red focus:outline-none">
+            <option value="default">Par défaut</option>
+            <option value="az">A → Z</option>
+          </select>
         </div>
       </div>
 
-      <!-- Projects Grid -->
-      <div id="portfolio-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          projets.map((p) => (
-            <article
-              class="project-card group border border-ink/10 rounded-2xl overflow-hidden hover:border-red transition-colors cursor-pointer"
-              data-slug={p.slug}
-              data-category={p.categorie}
-              data-title={p.titre}
-              data-featured={p.misEnAvant ? '1' : '0'}
-            >
-              <div class="relative overflow-hidden bg-offwhite h-64">
-                <img
-                  src={p.couverture}
-                  alt={p.titre}
-                  loading="lazy"
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {p.misEnAvant && (
-                  <span class="absolute top-3 right-3 px-3 py-1 bg-red text-white text-xs font-semibold rounded-lg">
-                    À la une
-                  </span>
-                )}
-              </div>
-
-              <div class="p-6">
-                <a href={`/realisations/${p.slug}/`} class="block group/link">
-                  <p class="eyebrow">{p.categorie}</p>
-                  <h3 class="font-heading text-lg font-bold mt-2 group-hover/link:text-red transition-colors">
-                    {p.titre}
-                  </h3>
-                </a>
-                <p class="text-sm text-ink/70 mt-2">{p.client}</p>
-                <p class="text-sm text-ink/50 mt-3">{p.accroche}</p>
-
-                <a
-                  href={`/realisations/${p.slug}/`}
-                  class="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-red hover:gap-3 transition-all"
-                >
-                  Voir le projet
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </a>
-              </div>
-            </article>
-          ))
-        }
+      {/* Cards grid */}
+      <div id="portfolio-grid" class="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        {projets.map((p) => (
+          <article class="portfolio-card" data-categories={p.categories.join('|')} data-title={p.titre}>
+            <a href={`/realisations/${p.slug}/`} class="group block">
+              <FramedImage src={p.couverture} alt={p.titre} ratio="aspect-[4/3]" label="Voir le projet →" />
+              {p.categories.length > 0 && <p class="tag-mono mt-5 text-red">{p.categories[0]}</p>}
+              <h2 class="mt-2 font-heading text-lg font-bold group-hover:text-red">{p.titre}</h2>
+              {p.client && <p class="tag-mono mt-1 text-ink/40">Client — {p.client}</p>}
+              {p.accroche && <p class="mt-2 text-sm text-ink/60">{p.accroche}</p>}
+              {!p.accroche && p.nombreImages > 0 && (
+                <p class="mt-2 text-sm text-ink/60">{p.nombreImages} image{p.nombreImages > 1 ? 's' : ''}</p>
+              )}
+            </a>
+          </article>
+        ))}
       </div>
 
-      <!-- Empty state -->
-      <p id="portfolio-empty" class="hidden mt-12 text-center text-ink/60">
-        Aucun projet dans cette catégorie pour le moment.
-      </p>
+      <p id="portfolio-empty" class="mt-12 hidden border-l-2 border-red pl-6 text-ink/60">Aucun projet dans cette catégorie pour le moment.</p>
     </div>
   </section>
+
+  <CtaBand />
 </Base>
 
-<style>
-  .filter-btn.is-active {
-    @apply border-ink bg-ink text-white;
-  }
-</style>
-
 <script>
-  // Client-side filtering
-  const filterBtns = document.querySelectorAll('.filter-btn');
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const sortSelect = document.getElementById('portfolio-sort') as HTMLSelectElement | null;
   const grid = document.getElementById('portfolio-grid');
-  const emptyState = document.getElementById('portfolio-empty');
+  const empty = document.getElementById('portfolio-empty');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.portfolio-card'));
+  const originalOrder = [...cards];
 
-  function updateDisplay() {
-    const activeFilter = document.querySelector('.filter-btn.is-active')?.dataset.filter || 'all';
+  function apply() {
+    const active = document.querySelector<HTMLButtonElement>('.filter-btn.is-active')?.dataset.filter || 'all';
+    const sort = sortSelect?.value || 'default';
 
-    const cards = Array.from(document.querySelectorAll('.project-card')) as HTMLElement[];
-
-    let visibleCards = cards.filter((card) => {
-      const category = card.dataset.category;
-      return activeFilter === 'all' || category === activeFilter;
+    let visible = cards.filter((card) => {
+      if (active === 'all') return true;
+      const cats = (card.dataset.categories || '').split('|');
+      return cats.includes(active);
     });
 
-    // Sort by featured first
-    visibleCards.sort((a, b) => Number(b.dataset.featured) - Number(a.dataset.featured));
-
-    grid?.replaceChildren(...visibleCards);
-
-    if (visibleCards.length === 0) {
-      emptyState?.classList.remove('hidden');
+    if (sort === 'az') {
+      visible = [...visible].sort((a, b) =>
+        (a.dataset.title || '').localeCompare(b.dataset.title || '', 'fr')
+      );
     } else {
-      emptyState?.classList.add('hidden');
+      visible = originalOrder.filter((c) => visible.includes(c));
     }
+
+    cards.forEach((c) => (c.style.display = 'none'));
+    visible.forEach((c) => {
+      c.style.display = '';
+      grid?.appendChild(c);
+    });
+
+    empty?.classList.toggle('hidden', visible.length > 0);
   }
 
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      filterBtns.forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      updateDisplay();
+      filterBtns.forEach((b) => {
+        b.classList.remove('is-active', 'border-ink');
+        b.classList.add('border-ink/20', 'text-ink/70');
+      });
+      btn.classList.add('is-active', 'border-ink');
+      btn.classList.remove('border-ink/20', 'text-ink/70');
+      apply();
     });
   });
+
+  sortSelect?.addEventListener('change', apply);
 </script>

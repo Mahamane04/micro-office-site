@@ -7,6 +7,9 @@ export default defineConfig({
   // Output mode: hybrid = SSG + ISR on-demand
   output: 'hybrid',
 
+  // Dev server port (matches .claude/launch.json)
+  server: { port: 8080 },
+
   // Netlify adapter for ISR + Edge Functions
   adapter: netlify({
     edgeMiddleware: true,

@@ -1,0 +1,17 @@
+---
+// Rounded image card (Augment-style)
+interface Props {
+  src: string;
+  alt: string;
+  ratio?: string;
+  label?: string | false;
+  radius?: string;
+}
+const { src, alt, ratio = 'aspect-[4/5]', label = false, radius = 'rounded-3xl' } = Astro.props;
+---
+<div class={`group relative ${ratio} overflow-hidden ${radius} bg-anthracite/5`}>
+  <img src={src} alt={alt} loading="lazy" class="h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.05]">
+  {label && (
+    <span class="pointer-events-none absolute bottom-4 left-4 translate-y-2 rounded-full bg-white/90 px-4 py-1.5 font-heading text-xs font-semibold text-ink opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">{label}</span>
+  )}
+</div>

@@ -1,213 +1,185 @@
-// Airtable API client for Micro Office CMS
+// Airtable API client for Micro Office — Portfolio (Projets + Images)
 
-import type {
-  Produit,
-  Projet,
-  SiteConfig,
-  Commande,
-  AirtableRecord,
-  AirtableResponse,
-} from '../types';
+import type { Projet, ProjetImage, AirtableRecord, AirtableResponse } from '../types';
 
 const AIRTABLE_API_URL = 'https://api.airtable.com/v0';
 
 interface AirtableClientConfig {
   token: string;
   baseId: string;
-  produitTableName?: string;
-  portfolioTableName?: string;
-  configTableName?: string;
-  commandeTableName?: string;
+  projetsTableName?: string;
+  imagesTableName?: string;
 }
 
+// ---- Field mapping helpers -------------------------------------------------
+// Read a field trying several possible names (accents/apostrophes vary).
+function pick(fields: Record<string, any>, ...names: string[]): any {
+  for (const name of names) {
+    if (fields[name] !== undefined && fields[name] !== null && fields[name] !== '') {
+      return fields[name];
+    }
+  }
+  return undefined;
+}
+
+// Airtable attachment field → first URL; plain string → itself.
+function toUrl(value: any): string {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value) && value.length > 0) {
+    return value[0]?.url || value[0]?.thumbnails?.large?.url || '';
+  }
+  return '';
+}
+
+// "3D - Stand | Affiches | Documents" → ["3D - Stand", "Affiches", "Documents"]
+function splitCategories(value: any): string[] {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.map((v) => String(v).trim()).filter(Boolean);
+  return String(value)
+    .split('|')
+    .map((c) => c.trim())
+    .filter(Boolean);
+}
+
+function mapProjet(record: AirtableRecord<Record<string, any>>): Projet {
+  const f = record.fields;
+  return {
+    id: record.id,
+    titre: pick(f, 'Nom', 'Titre', 'titre', 'nom') || '',
+    slug: pick(f, 'Slug', 'slug') || '',
+    categories: splitCategories(pick(f, 'Catégories', 'Categories', 'categorie', 'Catégorie')),
+    couverture: toUrl(pick(f, 'URL Couverture', 'Couverture', 'couverture')),
+    nombreImages: Number(pick(f, "Nombre d'images", 'Nombre d’images', 'nombreImages')) || 0,
+    dossierCloudinary: pick(f, 'Dossier Cloudinary', 'dossierCloudinary'),
+    misEnAvant: Boolean(pick(f, 'Mis en avant', 'misEnAvant', 'Featured')),
+    // Optional narrative fields (flexible templates)
+    client: pick(f, 'Client', 'client'),
+    accroche: pick(f, 'Accroche', 'accroche'),
+    description: pick(f, 'Description', 'description'),
+    createdAt: record.createdTime,
+  };
+}
+
+function mapImage(record: AirtableRecord<Record<string, any>>): ProjetImage {
+  const f = record.fields;
+  const projetRaw = pick(f, 'Projet', 'projet');
+  // "Projet" may be a linked-record array of ids/names, or a plain string.
+  const projet = Array.isArray(projetRaw) ? String(projetRaw[0] ?? '') : String(projetRaw ?? '');
+  return {
+    id: record.id,
+    nom: pick(f, 'Nom', 'nom') || '',
+    projet,
+    categorie: pick(f, 'Catégorie', 'Categorie', 'categorie') || '',
+    url: toUrl(pick(f, 'URL Cloudinary', 'Image', 'url')),
+    publicId: pick(f, 'Public ID', 'publicId'),
+  };
+}
+
+// ---- Client ----------------------------------------------------------------
 export class AirtableClient {
   private token: string;
   private baseId: string;
-  private produitTableName: string;
-  private portfolioTableName: string;
-  private configTableName: string;
-  private commandeTableName: string;
+  private projetsTableName: string;
+  private imagesTableName: string;
 
   constructor(config: AirtableClientConfig) {
     this.token = config.token;
     this.baseId = config.baseId;
-    this.produitTableName = config.produitTableName || 'Produits';
-    this.portfolioTableName = config.portfolioTableName || 'Projets';
-    this.configTableName = config.configTableName || 'Configuration';
-    this.commandeTableName = config.commandeTableName || 'Commandes';
+    this.projetsTableName = config.projetsTableName || 'Projets';
+    this.imagesTableName = config.imagesTableName || 'Images';
   }
 
-  private async request<T>(
+  private async request<T = Record<string, any>>(
     tableName: string,
     options?: {
       view?: string;
       maxRecords?: number;
+      pageSize?: number;
       filterByFormula?: string;
       sortBy?: { field: string; direction: 'asc' | 'desc' }[];
     }
-  ): Promise<AirtableResponse<T>> {
-    const params = new URLSearchParams();
+  ): Promise<AirtableRecord<T>[]> {
+    const all: AirtableRecord<T>[] = [];
+    let offset: string | undefined;
 
-    if (options?.view) params.append('view', options.view);
-    if (options?.maxRecords) params.append('maxRecords', String(options.maxRecords));
-    if (options?.filterByFormula) params.append('filterByFormula', options.filterByFormula);
-    if (options?.sortBy) {
-      options.sortBy.forEach((sort, idx) => {
-        params.append(`sort[${idx}][field]`, sort.field);
-        params.append(`sort[${idx}][direction]`, sort.direction);
+    do {
+      const params = new URLSearchParams();
+      if (options?.view) params.append('view', options.view);
+      if (options?.maxRecords) params.append('maxRecords', String(options.maxRecords));
+      params.append('pageSize', String(options?.pageSize ?? 100));
+      if (options?.filterByFormula) params.append('filterByFormula', options.filterByFormula);
+      if (options?.sortBy) {
+        options.sortBy.forEach((sort, idx) => {
+          params.append(`sort[${idx}][field]`, sort.field);
+          params.append(`sort[${idx}][direction]`, sort.direction);
+        });
+      }
+      if (offset) params.append('offset', offset);
+
+      const url = `${AIRTABLE_API_URL}/${this.baseId}/${encodeURIComponent(tableName)}?${params.toString()}`;
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/json',
+        },
       });
-    }
 
-    const url = `${AIRTABLE_API_URL}/${this.baseId}/${tableName}?${params.toString()}`;
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(`Airtable API error (${response.status}): ${error?.error?.message || response.statusText}`);
+      }
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+      const data = (await response.json()) as AirtableResponse<T>;
+      all.push(...data.records);
+      offset = data.offset;
+    } while (offset);
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Airtable API error: ${error.error.message}`);
-    }
-
-    return response.json();
+    return all;
   }
 
-  async getProduits(options?: {
-    view?: string;
-    maxRecords?: number;
-    filterByFormula?: string;
-  }): Promise<Produit[]> {
-    const response = await this.request<Produit>(this.produitTableName, options);
-    return response.records.map((record) => ({
-      id: record.id,
-      ...record.fields,
-    }));
-  }
-
-  async getProduitBySlug(slug: string): Promise<Produit | null> {
-    const response = await this.request<Produit>(this.produitTableName, {
-      filterByFormula: `{slug} = "${slug}"`,
-      maxRecords: 1,
-    });
-
-    if (response.records.length === 0) return null;
-
-    const record = response.records[0];
-    return {
-      id: record.id,
-      ...record.fields,
-    };
-  }
-
-  async getProjets(options?: {
-    view?: string;
-    maxRecords?: number;
-  }): Promise<Projet[]> {
-    const response = await this.request<Projet>(this.portfolioTableName, options);
-    return response.records.map((record) => ({
-      id: record.id,
-      ...record.fields,
-    }));
+  async getProjets(): Promise<Projet[]> {
+    const records = await this.request(this.projetsTableName);
+    return records.map(mapProjet);
   }
 
   async getProjetBySlug(slug: string): Promise<Projet | null> {
-    const response = await this.request<Projet>(this.portfolioTableName, {
-      filterByFormula: `{slug} = "${slug}"`,
+    const records = await this.request(this.projetsTableName, {
+      filterByFormula: `{Slug} = "${slug.replace(/"/g, '\\"')}"`,
       maxRecords: 1,
     });
-
-    if (response.records.length === 0) return null;
-
-    const record = response.records[0];
-    return {
-      id: record.id,
-      ...record.fields,
-    };
+    return records.length ? mapProjet(records[0]) : null;
   }
 
-  async getConfig(): Promise<SiteConfig | null> {
-    const response = await this.request<SiteConfig>(this.configTableName, {
-      maxRecords: 1,
-    });
-
-    if (response.records.length === 0) return null;
-
-    const record = response.records[0];
-    return {
-      id: record.id,
-      ...record.fields,
-    };
+  async getImages(): Promise<ProjetImage[]> {
+    const records = await this.request(this.imagesTableName);
+    return records.map(mapImage);
   }
 
-  async createCommande(data: Omit<Commande, 'id' | 'createdAt'>): Promise<Commande> {
-    const url = `${AIRTABLE_API_URL}/${this.baseId}/${this.commandeTableName}`;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fields: data,
-      }),
+  // Fetch gallery images for a given project (by project name).
+  async getImagesForProjet(projetNom: string): Promise<ProjetImage[]> {
+    const records = await this.request(this.imagesTableName, {
+      filterByFormula: `{Projet} = "${projetNom.replace(/"/g, '\\"')}"`,
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Airtable API error: ${error.error.message}`);
-    }
-
-    const record = await response.json();
-    return {
-      id: record.id,
-      createdAt: record.createdTime,
-      ...record.fields,
-    };
-  }
-
-  async getCommande(reference: string): Promise<Commande | null> {
-    const response = await this.request<Commande>(this.commandeTableName, {
-      filterByFormula: `{reference} = "${reference}"`,
-      maxRecords: 1,
-    });
-
-    if (response.records.length === 0) return null;
-
-    const record = response.records[0];
-    return {
-      id: record.id,
-      createdAt: record.createdTime,
-      ...record.fields,
-    };
+    return records.map(mapImage);
   }
 }
 
-// Singleton instance (initialized on first use)
+// ---- Singleton -------------------------------------------------------------
 let client: AirtableClient | null = null;
 
 export function getAirtableClient(): AirtableClient | null {
   if (!client) {
     const token = import.meta.env.AIRTABLE_API_TOKEN;
     const baseId = import.meta.env.AIRTABLE_BASE_ID;
-
-    // Return null if credentials are missing (will use fallback)
-    if (!token || !baseId) {
-      return null;
-    }
+    if (!token || !baseId) return null;
 
     client = new AirtableClient({
       token,
       baseId,
-      produitTableName: import.meta.env.AIRTABLE_TABLE_PRODUITS || 'Produits',
-      portfolioTableName: import.meta.env.AIRTABLE_TABLE_PORTFOLIO || 'Projets',
-      configTableName: import.meta.env.AIRTABLE_TABLE_CONFIG || 'Configuration',
+      projetsTableName: import.meta.env.AIRTABLE_TABLE_PORTFOLIO || 'Projets',
+      imagesTableName: import.meta.env.AIRTABLE_TABLE_IMAGES || 'Images',
     });
   }
-
   return client;
 }

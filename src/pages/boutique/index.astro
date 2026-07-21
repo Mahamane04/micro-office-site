@@ -1,6 +1,6 @@
 ---
 import Base from '@layouts/Base.astro';
-import { loadAllProduits } from '@lib/data';
+import { loadAllProduits } from '@lib/produits';
 import { uniqueCategories, sortBy } from '@lib/filters';
 
 const produits = await loadAllProduits();

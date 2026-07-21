@@ -31,21 +31,34 @@ export interface Produit {
   createdAt?: string;
 }
 
+// Portfolio project — mapped from Airtable "Projets" table
+// Airtable fields: Nom, Slug, Nombre d'images, Catégories (pipe-separated),
+//                  Dossier Cloudinary, Couverture, URL Couverture
 export interface Projet {
   id: string;
   slug: string;
-  titre: string;
-  client: string;
-  categorie: string;
-  accroche: string;
-  description: string;
-  couverture: string;
-  images?: Array<{
-    src: string;
-    alt: string;
-  }>;
-  misEnAvant: boolean;
+  titre: string; // ← Airtable "Nom"
+  categories: string[]; // ← Airtable "Catégories" split on "|"
+  couverture: string; // ← Airtable "URL Couverture" (fallback "Couverture")
+  nombreImages: number; // ← Airtable "Nombre d'images"
+  dossierCloudinary?: string; // ← Airtable "Dossier Cloudinary"
+  misEnAvant: boolean; // ← Airtable "Mis en avant" (checkbox, optional)
+  // Optional narrative fields (flexible templates — show if present in Airtable)
+  client?: string;
+  accroche?: string;
+  description?: string;
   createdAt?: string;
+}
+
+// Gallery image — mapped from Airtable "Images" table
+// Airtable fields: Nom, Projet (link/name), Catégorie, Image, URL Cloudinary, Public ID
+export interface ProjetImage {
+  id: string;
+  nom: string; // ← Airtable "Nom" (e.g. "img-5702.jpg")
+  projet: string; // ← Airtable "Projet" (project name or linked record id)
+  categorie: string; // ← Airtable "Catégorie"
+  url: string; // ← Airtable "URL Cloudinary" (fallback "Image")
+  publicId?: string; // ← Airtable "Public ID"
 }
 
 export interface SiteConfig {

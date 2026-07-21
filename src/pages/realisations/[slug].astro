@@ -1,186 +1,83 @@
 ---
 import Base from '@layouts/Base.astro';
-import { loadAllProjets, loadProjetBySlug } from '@lib/data';
-import { others } from '@lib/filters';
+import MotifArc from '@components/MotifArc.astro';
+import FramedImage from '@components/FramedImage.astro';
+import CtaBand from '@components/CtaBand.astro';
+import { loadAllProjets, loadProjetBySlug, loadImagesForProjet } from '@lib/data';
 
 export const prerender = false; // On-demand ISR
 
 export async function getStaticPaths() {
   const projets = await loadAllProjets();
-  return projets.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+  return projets.map((p) => ({ params: { slug: p.slug } }));
 }
 
 const { slug } = Astro.params;
-const project = await loadProjetBySlug(slug!);
+const projet = await loadProjetBySlug(slug!);
 
-if (!project) {
+if (!projet) {
   return Astro.redirect('/realisations/');
 }
 
-const allProjects = await loadAllProjets();
-const relatedProjects = others(allProjects, project.slug, 3);
-
-const title = `${project.titre} | Réalisations Micro Office`;
-const description = project.accroche;
-const ogImage = project.couverture;
+const images = await loadImagesForProjet(projet);
+const primaryCategory = projet.categories[0] || '';
 ---
 
 <Base
-  title={title}
-  description={description}
-  ogImage={ogImage}
-  canonical={`https://www.microofficeml.com/realisations/${project.slug}/`}
+  title={`${projet.titre} — Réalisation Micro Office`}
+  description={projet.accroche || `${projet.titre} — réalisation Micro Office`}
+  ogImage={projet.couverture}
 >
-  <section class="section-pad pb-10">
-    <div class="container-content">
-      <!-- Back link -->
-      <div class="mb-8">
-        <a href="/realisations/" class="inline-flex items-center gap-2 text-sm font-medium text-ink/50 hover:text-red transition-colors">
-          ← Retour aux réalisations
-        </a>
+  <section class="relative overflow-hidden section-pad pb-10">
+    <MotifArc position="right-[-4rem] top-[-4rem] text-ink" />
+    <div class="container-content relative">
+      <div>
+        <a href="/realisations/" class="tag-mono inline-flex items-center gap-2 text-ink/50 hover:text-red">← Toutes les réalisations</a>
       </div>
 
-      <!-- Project hero -->
-      <div class="mb-12">
-        <div class="relative overflow-hidden rounded-4xl h-96 sm:h-[500px] lg:h-[600px] bg-offwhite">
-          <img
-            src={project.couverture}
-            alt={project.titre}
-            class="w-full h-full object-cover"
-          />
-        </div>
+      {primaryCategory && <p class="eyebrow mt-8">{primaryCategory}</p>}
+      <h1 class="max-w-3xl font-heading text-4xl font-bold leading-tight md:text-5xl">{projet.titre}</h1>
+
+      <div class="mt-6 flex flex-wrap gap-x-10 gap-y-2">
+        {projet.client && (
+          <p class="tag-mono text-ink/50">Client — <span class="text-ink">{projet.client}</span></p>
+        )}
+        {projet.categories.length > 0 && (
+          <p class="tag-mono text-ink/50">Catégorie — <span class="text-ink">{projet.categories.join(', ')}</span></p>
+        )}
+        {projet.nombreImages > 0 && (
+          <p class="tag-mono text-ink/50">Images — <span class="text-ink">{projet.nombreImages}</span></p>
+        )}
       </div>
 
-      <!-- Project info -->
-      <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
-        <!-- Main content -->
-        <div class="lg:col-span-2">
-          <div class="mb-8">
-            <p class="eyebrow">{project.categorie}</p>
-            <h1 class="font-heading text-4xl md:text-5xl font-bold leading-tight mt-2">
-              {project.titre}
-            </h1>
-            <p class="text-lg text-ink/50 mt-4">{project.accroche}</p>
-          </div>
-
-          {
-            project.description && (
-              <div class="prose prose-sm max-w-none mb-12">
-                <p>{project.description}</p>
-              </div>
-            )
-          }
-
-          <!-- Gallery -->
-          {
-            project.images && project.images.length > 0 && (
-              <div class="mt-12">
-                <h2 class="font-heading text-2xl font-bold mb-6">Galerie</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {project.images.map((img) => (
-                    <div class="relative overflow-hidden rounded-2xl h-80 bg-offwhite">
-                      <img src={img.src} alt={img.alt} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          }
-        </div>
-
-        <!-- Sidebar -->
-        <div class="lg:col-span-1">
-          <div class="sticky top-20 space-y-6">
-            <!-- Project details -->
-            <div class="border border-ink/10 rounded-2xl p-6">
-              <h3 class="font-heading font-bold mb-4">Détails du projet</h3>
-              <div class="space-y-4">
-                <div>
-                  <p class="text-xs text-ink/50 uppercase tracking-wider mb-1">Client</p>
-                  <p class="font-semibold">{project.client}</p>
-                </div>
-                <div>
-                  <p class="text-xs text-ink/50 uppercase tracking-wider mb-1">Catégorie</p>
-                  <p class="font-semibold">{project.categorie}</p>
-                </div>
-                {
-                  project.createdAt && (
-                    <div>
-                      <p class="text-xs text-ink/50 uppercase tracking-wider mb-1">Date</p>
-                      <p class="font-semibold">
-                        {new Date(project.createdAt).toLocaleDateString('fr-FR', {
-                          year: 'numeric',
-                          month: 'long',
-                        })}
-                      </p>
-                    </div>
-                  )
-                }
-              </div>
-            </div>
-
-            <!-- CTA -->
-            <a href="/contact" class="btn-primary w-full text-center">
-              Lancer votre projet
-            </a>
-          </div>
-        </div>
-      </div>
+      {projet.description && (
+        <p class="mt-8 max-w-2xl text-lg leading-relaxed text-ink/70">{projet.description}</p>
+      )}
     </div>
   </section>
 
-  <!-- Related projects -->
-  {
-    relatedProjects.length > 0 && (
-      <section class="section-pad pt-4 border-t border-ink/10">
-        <div class="container-content">
-          <h2 class="font-heading text-2xl md:text-3xl font-bold mb-8">Autres projets</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedProjects.map((p) => (
-              <article class="project-card group border border-ink/10 rounded-2xl overflow-hidden hover:border-red transition-colors">
-                <div class="relative overflow-hidden bg-offwhite h-64">
-                  <img
-                    src={p.couverture}
-                    alt={p.titre}
-                    loading="lazy"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-
-                <div class="p-6">
-                  <a href={`/realisations/${p.slug}/`} class="block group/link">
-                    <p class="eyebrow">{p.categorie}</p>
-                    <h3 class="font-heading text-lg font-bold mt-2 group-hover/link:text-red transition-colors">
-                      {p.titre}
-                    </h3>
-                  </a>
-                  <p class="text-sm text-ink/70 mt-2">{p.client}</p>
-
-                  <a
-                    href={`/realisations/${p.slug}/`}
-                    class="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-red hover:gap-3 transition-all"
-                  >
-                    Voir le projet
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+  {images.length > 0 && (
+    <section class="section-pad pt-4">
+      <div class="container-content">
+        <div class:list={['grid grid-cols-1 gap-3', images.length > 1 && 'sm:grid-cols-2']}>
+          {images.map((img) => (
+            <FramedImage src={img.url} alt={img.nom || projet.titre} ratio="aspect-[4/3]" />
+          ))}
         </div>
-      </section>
-    )
-  }
+      </div>
+    </section>
+  )}
+
+  {images.length === 0 && projet.couverture && (
+    <section class="section-pad pt-4">
+      <div class="container-content">
+        <FramedImage src={projet.couverture} alt={projet.titre} ratio="aspect-[16/9]" />
+      </div>
+    </section>
+  )}
+
+  <CtaBand
+    title="Un projet similaire en tête ?"
+    text="Décrivez votre besoin : nous vous montrons à quoi votre projet peut ressembler avant de le réaliser."
+  />
 </Base>
-
-<style is:global>
-  .prose {
-    @apply max-w-none;
-  }
-
-  .prose p {
-    @apply text-ink/70 leading-relaxed;
-  }
-</style>
