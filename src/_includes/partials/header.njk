@@ -1,0 +1,56 @@
+<header class="sticky top-0 z-40 px-4 pt-4 md:px-6">
+  <div class="container-content">
+    <div class="flex items-center justify-between gap-4 rounded-full border border-white/10 bg-ink/90 px-4 py-2.5 shadow-soft-dark backdrop-blur-md md:px-5">
+      <a href="/" class="flex shrink-0 items-center gap-2 pl-1" aria-label="Micro Office — Accueil">
+        <span class="h-6 w-5 text-white" aria-hidden="true">
+          {% include "partials/svg-mark.njk" %}
+        </span>
+        <span class="font-heading text-lg font-bold tracking-tight">
+          <span class="text-red">micro</span><span class="text-white">Office</span>
+        </span>
+      </a>
+
+      <nav aria-label="Navigation principale" class="hidden lg:block">
+        <ul class="flex items-center gap-1 font-body text-sm font-medium tracking-tight">
+          {% for item in site.nav %}
+          <li>
+            <a href="{{ item.url }}" class="rounded-full px-4 py-2 transition-colors {% if page.url == item.url %}bg-white/10 text-white{% else %}text-white/70 hover:bg-white/5 hover:text-white{% endif %}">{{ item.label }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      <div class="hidden shrink-0 items-center gap-3 lg:flex">
+        <button type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:bg-white/10" data-cart-toggle aria-label="Ouvrir le panier">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v13a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="absolute -right-1 -top-1 hidden h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red px-1 font-mono text-[10px] font-bold text-white" data-cart-count>0</span>
+        </button>
+        <a href="/presenter-mon-projet/" class="btn-primary btn-sm">Présenter mon projet</a>
+      </div>
+
+      <div class="flex items-center gap-2 lg:hidden">
+        <button type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white" data-cart-toggle aria-label="Ouvrir le panier">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v13a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="absolute -right-1 -top-1 hidden h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red px-1 font-mono text-[10px] font-bold text-white" data-cart-count>0</span>
+        </button>
+      <button type="button" id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white" aria-expanded="false" aria-controls="mobile-menu" aria-label="Ouvrir le menu">
+        <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="mt-2 hidden overflow-hidden rounded-3xl border border-white/10 bg-ink shadow-soft-dark lg:hidden">
+      <nav aria-label="Navigation mobile" class="flex flex-col p-4">
+        {% for item in site.nav %}
+        <a href="{{ item.url }}" class="rounded-2xl px-4 py-3 font-body text-base font-semibold {% if page.url == item.url %}bg-white/10 text-white{% else %}text-white/80 hover:bg-white/5{% endif %}">{{ item.label }}</a>
+        {% endfor %}
+        <a href="/presenter-mon-projet/" class="btn-primary mt-3 w-full">Présenter mon projet</a>
+      </nav>
+    </div>
+  </div>
+</header>

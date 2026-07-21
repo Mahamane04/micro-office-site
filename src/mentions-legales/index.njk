@@ -1,0 +1,42 @@
+---
+layout: layouts/base.njk
+title: "Mentions légales"
+description: "Mentions légales du site Micro Office."
+---
+
+<section class="section-pad">
+  <div class="container-content">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Informations légales</p>
+      <h1 class="font-heading text-3xl font-bold md:text-4xl">Mentions légales</h1>
+
+    <div class="prose prose-neutral mt-10 max-w-none prose-headings:font-heading prose-a:text-red">
+      <h2>Éditeur du site</h2>
+      <p>
+        Micro Office<br>
+        Forme juridique : {{ site.legal.formeJuridique }}<br>
+        N° RCCM : {{ site.legal.rccm }}<br>
+        NIF : {{ site.legal.nif }}<br>
+        Siège social : {{ site.legal.siege }}<br>
+        E-mail : <a href="mailto:{{ site.email }}">{{ site.email }}</a><br>
+        Téléphone : <a href="tel:{{ site.phoneHref }}">{{ site.phoneDisplay }}</a>
+      </p>
+
+      <h2>Directeur de publication</h2>
+      <p>[À COMPLÉTER — nom du responsable de la publication]</p>
+
+      <h2>Hébergement</h2>
+      <p>[À COMPLÉTER — nom, adresse et contact de l'hébergeur du site]</p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>L'ensemble des contenus présents sur ce site (textes, images, logos, identité visuelle) est la propriété de Micro Office ou de ses clients, sauf mention contraire. Toute reproduction sans autorisation préalable est interdite.</p>
+
+      <h2>Responsabilité</h2>
+      <p>Micro Office s'efforce d'assurer l'exactitude des informations diffusées sur ce site, sans garantir qu'elles soient exemptes d'erreurs. Micro Office ne saurait être tenu responsable d'un usage inapproprié de ces informations.</p>
+
+      <h2>Contact</h2>
+      <p>Pour toute question relative à ces mentions légales, contactez-nous via notre <a href="/contact/">page contact</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>

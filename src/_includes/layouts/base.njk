@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} | Micro Office</title>
+  <meta name="description" content="{{ description }}">
+  <link rel="canonical" href="{{ site.baseUrl }}{{ page.url }}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Micro Office">
+  <meta property="og:title" content="{{ title }} | Micro Office">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:image" content="{{ ogImage or (site.baseUrl + '/images/og/micro-office-og.jpg') }}">
+  <meta property="og:url" content="{{ site.baseUrl }}{{ page.url }}">
+  <meta property="og:locale" content="fr_ML">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/output.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Micro Office",
+    "description": "Agence créative et digitale au Mali depuis 2014 : branding, signalétique, visualisation 3D, packaging, sites web, applications et automatisation.",
+    "url": "{{ site.baseUrl }}",
+    "email": "{{ site.email }}",
+    "areaServed": "Mali",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bamako",
+      "addressCountry": "ML"
+    },
+    "sameAs": []
+  }
+  </script>
+</head>
+<body class="flex min-h-screen flex-col bg-offwhite font-body text-ink">
+  <a href="#contenu" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-red focus:px-4 focus:py-2 focus:text-white">Aller au contenu</a>
+
+  {% include "partials/header.njk" %}
+
+  <main id="contenu" class="flex-1">
+    {{ content | safe }}
+  </main>
+
+  {% include "partials/footer.njk" %}
+  {% include "partials/cart-drawer.njk" %}
+  {% include "partials/whatsapp-button.njk" %}
+
+  <script>
+    window.MO_SHOP = {
+      devises: {{ shop.devises | json | safe }},
+      paysVersDevise: {{ shop.paysVersDevise | json | safe }},
+      deviseParDefaut: {{ shop.deviseParDefaut | json | safe }},
+      deviseInternationale: {{ shop.deviseInternationale | json | safe }},
+      livraison: {{ shop.livraison | json | safe }},
+      paiement: {{ shop.paiement | json | safe }}
+    };
+    window.MO_WHATSAPP = {{ site.whatsappNumber | json | safe }};
+  </script>
+  <script src="/js/main.js" defer></script>
+</body>
+</html>

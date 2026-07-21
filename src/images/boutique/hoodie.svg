@@ -1,0 +1,10 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hoodie Premium">
+  <rect width="400" height="400" fill="#f4f4f1"/>
+  <g fill="#ffffff" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M150 118 C150 150 250 150 250 118 C250 118 300 132 316 160 L296 210 L272 198 L272 300 C272 306 267 310 261 310 L139 310 C133 310 128 306 128 300 L128 198 L104 210 L84 160 C100 132 150 118 150 118 Z"/>
+    <path d="M150 118 C160 150 175 168 200 168 C225 168 240 150 250 118" fill="#f4f4f1"/>
+  </g>
+  <path d="M196 168 L196 250 M204 168 L204 250" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+  <path d="M160 250 h80 v20 a10 10 0 0 1 -10 10 h-60 a10 10 0 0 1 -10 -10 Z" fill="#f01b2d"/>
+  <text x="200" y="352" text-anchor="middle" font-family="Geist, Arial, sans-serif" font-size="24" font-weight="700" fill="#1a1a1a">Hoodie Premium</text>
+</svg>

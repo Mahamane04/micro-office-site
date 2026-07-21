@@ -1,0 +1,30 @@
+---
+layout: layouts/base.njk
+title: "Commandes — Administration"
+description: "Espace de gestion des commandes."
+eleventyExcludeFromCollections: true
+---
+
+<section class="section-pad" data-admin>
+  <div class="container-content">
+    <p class="eyebrow">Administration</p>
+    <h1 class="font-heading text-3xl font-bold md:text-4xl">Commandes</h1>
+
+    {# Login #}
+    <form class="mt-8 max-w-sm space-y-3" data-admin-login>
+      <label for="a-pass" class="block font-heading text-sm font-semibold">Mot de passe</label>
+      <input id="a-pass" type="password" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+      <button type="submit" class="btn-primary">Se connecter</button>
+      <p class="hidden text-sm text-red" data-admin-error></p>
+    </form>
+
+    {# Panel #}
+    <div class="mt-8 hidden" data-admin-panel>
+      <div class="mb-4 flex items-center justify-between">
+        <p class="tag-mono text-ink/50"><span data-admin-count>0</span> commande(s)</p>
+        <button type="button" class="btn-secondary btn-sm" data-admin-refresh>Rafraîchir</button>
+      </div>
+      <div class="space-y-4" data-admin-list></div>
+    </div>
+  </div>
+</section>

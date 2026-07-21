@@ -1,0 +1,42 @@
+<article class="product-card group" data-slug="{{ p.slug }}" data-category="{{ p.categorie }}" data-name="{{ p.nom }}" data-search="{{ (p.nom ~ ' ' ~ p.marque ~ ' ' ~ p.categorie) | lower }}" data-price="{{ p.prixPromo if p.prixPromo else p.prix }}" data-featured="{{ '1' if p.misEnAvant else '0' }}" data-index="{{ loop.index if loop else 0 }}">
+  <div class="relative">
+    <a href="/boutique/{{ p.slug }}/" class="block" aria-label="{{ p.nom }}">
+      <div class="product-media">
+        <img src="{{ p.couverture }}" alt="{{ p.nom }}" loading="lazy">
+      </div>
+    </a>
+    {% if p.statut == "rupture" %}
+    <span class="product-badge product-badge-out">Rupture</span>
+    {% elif p.nouveaute %}
+    <span class="product-badge product-badge-new">Nouveau</span>
+    {% endif %}
+    <span class="product-badge product-badge-out hidden" data-stock-out>Rupture</span>
+    <button type="button" class="product-fav" data-fav="{{ p.slug }}" aria-label="Ajouter « {{ p.nom }} » aux favoris" aria-pressed="false">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+    </button>
+  </div>
+
+  <div class="mt-4 flex items-end justify-between gap-3 px-1 pb-1">
+    <div class="min-w-0">
+      <a href="/boutique/{{ p.slug }}/" class="block">
+        <h3 class="truncate font-heading text-base font-semibold text-white group-hover:text-red">{{ p.nom }}</h3>
+      </a>
+      <p class="truncate text-sm text-white/50">{{ p.marque }}</p>
+      <p class="mt-3 flex items-baseline gap-2 font-heading text-2xl font-bold text-white">
+        <span data-price-xof="{{ p.prixPromo if p.prixPromo else p.prix }}">{{ p.prixPromo if p.prixPromo else p.prix }} FCFA</span>
+        {% if p.prixPromo %}<span class="text-base font-medium text-white/40 line-through" data-price-xof="{{ p.prix }}">{{ p.prix }} FCFA</span>{% endif %}
+      </p>
+      <p class="mt-1 hidden font-mono text-[11px] uppercase tracking-wider text-red" data-stock-hint></p>
+    </div>
+    <button type="button" class="product-add"
+      data-add="{{ p.slug }}"
+      data-nom="{{ p.nom }}"
+      data-prix="{{ p.prixPromo if p.prixPromo else p.prix }}"
+      data-image="{{ p.couverture }}"
+      data-needs-variant="{{ '1' if (p.tailles and p.tailles.length) else '0' }}"
+      {% if p.statut == "rupture" %}disabled{% endif %}
+      aria-label="Ajouter « {{ p.nom }} » au panier">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v13a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </button>
+  </div>
+</article>

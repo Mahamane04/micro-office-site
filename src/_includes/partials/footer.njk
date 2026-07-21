@@ -1,0 +1,54 @@
+<footer class="px-4 pb-4 md:px-6">
+  <div class="container-content relative overflow-hidden rounded-5xl bg-ink text-offwhite">
+    <div class="pointer-events-none absolute inset-0 bg-blueprint-dark [mask-image:linear-gradient(to_top,black,transparent_70%)]" aria-hidden="true"></div>
+    <div class="panel-grid relative py-16">
+      <div class="aligned-grid grid grid-cols-1 gap-y-12 md:grid-cols-4">
+        <div class="md:col-span-1">
+          <a href="/" class="flex items-center gap-2" aria-label="Micro Office — Accueil">
+            <span class="h-6 w-5 text-white" aria-hidden="true">{% include "partials/svg-mark.njk" %}</span>
+            <span class="font-heading text-lg font-bold"><span class="text-red">micro</span><span class="text-white">Office</span></span>
+          </a>
+          <p class="mt-4 text-sm text-offwhite/60">{{ site.tagline }}</p>
+          <p class="mt-6 tag-mono text-offwhite/40">Agence créative et digitale depuis {{ site.since }}</p>
+        </div>
+
+        <div>
+          <h2 class="tag-mono text-offwhite/40">Navigation</h2>
+          <ul class="mt-4 space-y-3 text-sm">
+            {% for item in site.nav %}
+            <li><a href="{{ item.url }}" class="text-offwhite/80 hover:text-red">{{ item.label }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="tag-mono text-offwhite/40">Solutions</h2>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li><a href="/solutions/branding-signaletique-3d/" class="text-offwhite/80 hover:text-red">Branding &amp; signalétique</a></li>
+            <li><a href="/solutions/creation-digitale-print/" class="text-offwhite/80 hover:text-red">Création digitale &amp; print</a></li>
+            <li><a href="/solutions/sites-web-applications-gestion/" class="text-offwhite/80 hover:text-red">Sites, applications &amp; gestion</a></li>
+            <li><a href="/solutions/automatisation-ia/" class="text-offwhite/80 hover:text-red">Automatisation &amp; IA</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="tag-mono text-offwhite/40">Contact</h2>
+          <ul class="mt-4 space-y-3 text-sm text-offwhite/80">
+            <li><a href="tel:{{ site.phoneHref }}" class="hover:text-red">{{ site.phoneDisplay }}</a></li>
+            <li><a href="https://wa.me/{{ site.whatsappNumber }}" class="hover:text-red">WhatsApp</a></li>
+            <li><a href="mailto:{{ site.email }}" class="hover:text-red">{{ site.email }}</a></li>
+            <li>{{ site.addressLine }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-16 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-8 text-xs text-offwhite/40 md:flex-row md:items-center">
+        <p>&copy; {{ "now" | year }} Micro Office — Tous droits réservés.</p>
+        <div class="flex gap-6">
+          <a href="/mentions-legales/" class="hover:text-offwhite">Mentions légales</a>
+          <a href="/politique-de-confidentialite/" class="hover:text-offwhite">Politique de confidentialité</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

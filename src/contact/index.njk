@@ -1,0 +1,40 @@
+---
+layout: layouts/base.njk
+title: "Contact — Micro Office, agence créative et digitale au Mali"
+description: "Contactez Micro Office par téléphone, WhatsApp ou e-mail pour présenter votre projet de branding, signalétique, site web ou automatisation."
+---
+
+<section class="relative overflow-hidden section-pad">
+  {% set mPosition = "right-[-4rem] top-[-4rem] text-ink" %}{% include "partials/motif-arc.njk" %}
+  <div class="container-content relative grid grid-cols-1 gap-16 lg:grid-cols-12">
+    <div class="lg:col-span-6">
+      <p class="eyebrow">Contact</p>
+      <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Parlons de votre projet.</h1>
+      <p class="mt-6 max-w-md text-lg leading-relaxed text-ink/70">Le moyen le plus simple d'obtenir une réponse rapide est de nous présenter votre projet. Vous pouvez aussi nous joindre directement.</p>
+      <a href="/presenter-mon-projet/" class="btn-primary mt-8">Présenter mon projet</a>
+    </div>
+
+    <div class="lg:col-span-6">
+      <ul class="space-y-8">
+        <li class="border-t border-ink/10 pt-6">
+          <p class="tag-mono text-red">Téléphone</p>
+          <a href="tel:{{ site.phoneHref }}" class="mt-2 block font-heading text-xl font-semibold hover:text-red">{{ site.phoneDisplay }}</a>
+        </li>
+        <li class="border-t border-ink/10 pt-6">
+          <p class="tag-mono text-red">WhatsApp</p>
+          <a href="https://wa.me/{{ site.whatsappNumber }}" target="_blank" rel="noopener" class="mt-2 block font-heading text-xl font-semibold hover:text-red">Écrire sur WhatsApp</a>
+        </li>
+        <li class="border-t border-ink/10 pt-6">
+          <p class="tag-mono text-red">E-mail</p>
+          <a href="mailto:{{ site.email }}" class="mt-2 block font-heading text-xl font-semibold hover:text-red">{{ site.email }}</a>
+        </li>
+        <li class="border-t border-ink/10 pt-6">
+          <p class="tag-mono text-red">Zone d'intervention</p>
+          <p class="mt-2 font-heading text-xl font-semibold">{{ site.addressLine }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% include "partials/cta-band.njk" %}

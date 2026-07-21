@@ -1,0 +1,40 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: portfolio.projets
+  size: 1
+  alias: projet
+permalink: "/realisations/{{ projet.slug }}/"
+eleventyComputed:
+  title: "{{ projet.titre }} — Réalisation Micro Office"
+  description: "{{ projet.accroche }}"
+---
+
+<section class="relative overflow-hidden section-pad pb-10">
+  {% set mPosition = "right-[-4rem] top-[-4rem] text-ink" %}{% include "partials/motif-arc.njk" %}
+  <div class="container-content relative">
+    <div><a href="/realisations/" class="tag-mono inline-flex items-center gap-2 text-ink/50 hover:text-red">← Toutes les réalisations</a></div>
+    <p class="eyebrow mt-8">{{ projet.categorie }}</p>
+    <h1 class="max-w-3xl font-heading text-4xl font-bold leading-tight md:text-5xl">{{ projet.titre }}</h1>
+    <div class="mt-6 flex flex-wrap gap-x-10 gap-y-2">
+      <p class="tag-mono text-ink/50">Client — <span class="text-ink">{{ projet.client }}</span></p>
+      <p class="tag-mono text-ink/50">Catégorie — <span class="text-ink">{{ projet.categorie }}</span></p>
+    </div>
+    <p class="mt-8 max-w-2xl text-lg leading-relaxed text-ink/70">{{ projet.description }}</p>
+  </div>
+</section>
+
+<section class="section-pad pt-4">
+  <div class="container-content">
+    <div class="grid grid-cols-1 gap-3 {% if projet.images.length > 1 %}sm:grid-cols-2{% endif %}">
+      {% for img in projet.images %}
+      {% set fImgSrc = img.src %}{% set fImgAlt = img.alt %}{% set fRatio = "aspect-[4/3]" %}{% set fDark = false %}{% set fLabel = false %}
+      {% include "partials/framed-image.njk" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% set ctaTitle = "Un projet similaire en tête ?" %}
+{% set ctaText = "Décrivez votre besoin : nous vous montrons à quoi votre projet peut ressembler avant de le réaliser." %}
+{% include "partials/cta-band.njk" %}

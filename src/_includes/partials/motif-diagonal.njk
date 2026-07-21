@@ -1,0 +1,6 @@
+{# Decorative diagonal lines, echoes the M of the logo. Usage: {% set mPosition = "left-0 bottom-0" %}{% include "partials/motif-diagonal.njk" %} #}
+<svg class="pointer-events-none absolute {{ mPosition | default('left-0 bottom-0') }} h-40 w-40 opacity-[0.08]" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+  <line x1="0" y1="100" x2="100" y2="0" stroke="currentColor" stroke-width="1"/>
+  <line x1="20" y1="100" x2="100" y2="20" stroke="currentColor" stroke-width="1"/>
+  <line x1="40" y1="100" x2="100" y2="40" stroke="currentColor" stroke-width="1"/>
+</svg>

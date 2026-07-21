@@ -1,0 +1,82 @@
+---
+layout: layouts/base.njk
+title: "Réalisations : branding, signalétique, 3D et digital au Mali"
+description: "Découvrez les réalisations de Micro Office : COOFIX & EMS, BAH Automobile, FEBAK, Djina's Collection et d'autres projets de branding, signalétique et visualisation 3D au Mali."
+---
+
+<section class="relative overflow-hidden section-pad pb-10">
+  <div class="pointer-events-none absolute inset-0 bg-blueprint-light [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" aria-hidden="true"></div>
+  {% set mPosition = "right-[-4rem] top-[-4rem] text-ink" %}{% include "partials/motif-arc.njk" %}
+  <div class="container-content relative">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Réalisations</p>
+      <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Des idées devenues réalité.</h1>
+      <p class="mt-6 text-lg leading-relaxed text-ink/70">Découvrez comment nous avons accompagné nos clients depuis leur besoin initial jusqu'à la réalisation finale.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad pt-6">
+  <div class="container-content">
+
+    {# Filter + sort controls #}
+    <div class="flex flex-col gap-6 border-t border-ink/10 pt-8 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrer par catégorie">
+        <button type="button" data-filter="all" class="filter-btn is-active border border-ink px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors">Tous</button>
+        {% for cat in portfolio.projets | uniqueCategories %}
+        <button type="button" data-filter="{{ cat }}" class="filter-btn border border-ink/20 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70 transition-colors">{{ cat }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="flex shrink-0 items-center gap-3">
+        <span class="font-mono text-[11px] uppercase tracking-[0.15em] text-ink/50">Trier</span>
+        <div class="relative" data-sort-dd>
+          <button type="button" data-sort-trigger aria-haspopup="listbox" aria-expanded="false"
+            class="flex items-center gap-2.5 rounded-full border border-ink/20 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink transition-colors hover:border-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red">
+            <span data-sort-label>Par défaut</span>
+            <svg class="sort-chevron h-3.5 w-3.5 text-ink/50 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          {% set sortOpts = [
+            { v: "default", l: "Par défaut" },
+            { v: "az", l: "A → Z" },
+            { v: "client", l: "Par client" }
+          ] %}
+          <ul role="listbox" data-sort-menu>
+            {% for o in sortOpts %}
+            <li role="option" data-sort-option data-value="{{ o.v }}" data-sort-label="{{ o.l }}"{% if loop.first %} data-current{% endif %}
+              class="flex cursor-pointer items-center justify-between gap-8 rounded-xl px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/65 transition-colors hover:bg-ink/[0.04] hover:text-ink">
+              <span>{{ o.l }}</span>
+              <svg class="sort-check h-3.5 w-3.5 text-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <select id="portfolio-sort" class="sr-only" tabindex="-1" aria-hidden="true">
+          <option value="default">Par défaut</option>
+          <option value="az">A → Z</option>
+          <option value="client">Par client</option>
+        </select>
+      </div>
+    </div>
+
+    {# Cards grid #}
+    <div id="portfolio-grid" class="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+      {% for p in portfolio.projets %}
+      <article class="portfolio-card" data-category="{{ p.categorie }}" data-title="{{ p.titre }}" data-client="{{ p.client }}" data-index="{{ loop.index }}">
+        <a href="/realisations/{{ p.slug }}/" class="group block">
+          {% set fImgSrc = p.couverture %}{% set fImgAlt = p.titre %}{% set fRatio = "aspect-[4/3]" %}{% set fDark = false %}{% set fLabel = "Voir le projet →" %}
+          {% include "partials/framed-image.njk" %}
+          <p class="tag-mono mt-5 text-red">{{ p.categorie }}</p>
+          <h2 class="mt-2 font-heading text-lg font-bold group-hover:text-red">{{ p.titre }}</h2>
+          <p class="tag-mono mt-1 text-ink/40">Client — {{ p.client }}</p>
+          <p class="mt-2 text-sm text-ink/60">{{ p.accroche }}</p>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+
+    <p id="portfolio-empty" class="mt-12 hidden border-l-2 border-red pl-6 text-ink/60">Aucun projet dans cette catégorie pour le moment.</p>
+  </div>
+</section>
+
+{% include "partials/cta-band.njk" %}

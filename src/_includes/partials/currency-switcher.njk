@@ -1,0 +1,15 @@
+<div class="relative" data-currency-dd>
+  <button type="button" data-currency-trigger class="mo-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Changer de devise">
+    <svg class="h-3.5 w-3.5 text-ink/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg>
+    <span data-currency-label>{{ shop.deviseParDefaut }}</span>
+    <svg class="mo-chev text-ink/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+  <ul role="listbox" data-currency-menu>
+    {% for d in shop.devises %}
+    <li role="option" data-currency-option="{{ d.code }}" class="mo-opt">
+      <span>{{ d.code }} · {{ d.nom }}</span>
+      <svg class="mo-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

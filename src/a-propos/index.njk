@@ -1,0 +1,55 @@
+---
+layout: layouts/base.njk
+title: "À propos — Agence créative et digitale au Mali depuis 2014"
+description: "Micro Office accompagne entreprises, institutions, marques et entrepreneurs depuis 2014 : branding, signalétique, visualisation 3D, digital et automatisation."
+---
+
+<section class="relative overflow-hidden section-pad pb-12">
+  {% set mPosition = "right-[-4rem] top-[-4rem] text-ink" %}{% include "partials/motif-arc.njk" %}
+  <div class="container-content relative">
+    <div class="max-w-2xl">
+      <p class="eyebrow">À propos</p>
+      <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Depuis 2014, nous donnons forme aux idées.</h1>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad pt-4">
+  <div class="container-content grid grid-cols-1 gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-7">
+      <div class="space-y-6 text-lg leading-relaxed text-ink/70">
+        <p>Créée en 2014, Micro Office accompagne les entreprises, les institutions, les marques et les entrepreneurs dans la construction de leur image et la réalisation de leurs projets.</p>
+        <p>Au fil des années, notre savoir-faire s'est développé autour du branding, de la signalétique, de la visualisation 3D, de la création graphique, des sites internet, des applications, des solutions de gestion et de l'automatisation.</p>
+        <p class="font-heading text-xl font-semibold text-ink">Nous ne voulons pas seulement vous montrer ce que nous pouvons créer. Nous voulons vous aider à voir ce que votre projet peut devenir.</p>
+      </div>
+    </div>
+    <div class="lg:col-span-5">
+      {% set fImgSrc = "/images/portfolio/hero-final.jpg" %}{% set fImgAlt = "Un projet Micro Office réalisé" %}{% set fRatio = "aspect-[4/5]" %}
+      {% include "partials/framed-image.njk" %}
+    </div>
+  </div>
+</section>
+
+<section class="section-pad border-t border-ink/10">
+  <div class="container-content">
+    <h2 class="font-heading text-2xl font-bold md:text-3xl">Nos valeurs</h2>
+    <div class="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
+      {% set values = [
+        { t: "Écoute", d: "Comprendre votre besoin avant de proposer une solution." },
+        { t: "Créativité", d: "Des idées justes, pas seulement des idées originales." },
+        { t: "Clarté", d: "Des projets compréhensibles à chaque étape." },
+        { t: "Anticipation", d: "Visualiser avant de produire, pour éviter les erreurs." },
+        { t: "Qualité", d: "Un niveau d'exigence constant, du concept à la finition." },
+        { t: "Accompagnement", d: "Une présence à vos côtés, de l'idée à la réalisation." }
+      ] %}
+      {% for v in values %}
+      <div class="border-t-2 border-red pt-4">
+        <h3 class="font-heading text-lg font-bold">{{ v.t }}</h3>
+        <p class="mt-2 text-sm text-ink/60">{{ v.d }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "partials/cta-band.njk" %}

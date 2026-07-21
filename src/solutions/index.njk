@@ -1,0 +1,48 @@
+---
+layout: layouts/base.njk
+title: "Nos solutions : branding, digital, sites web, automatisation"
+description: "Branding et signalétique, création digitale et print, sites web et applications, automatisation et IA : découvrez les solutions de Micro Office au Mali."
+---
+
+<section class="relative overflow-hidden section-pad pb-12">
+  {% set mPosition = "right-[-4rem] top-[-4rem] text-ink" %}{% include "partials/motif-arc.njk" %}
+  <div class="container-content relative">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Solutions</p>
+      <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Tout commence par votre besoin.</h1>
+      <p class="mt-6 text-lg leading-relaxed text-ink/70">Vous n'avez pas besoin de connaître le terme technique correspondant à votre projet. Expliquez-nous simplement ce que vous souhaitez créer, améliorer ou organiser — nous identifions ensemble la solution la plus adaptée.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad pt-4">
+  <div class="container-content grid grid-cols-1 gap-8 md:grid-cols-2">
+    {% set solutions = [
+      { n: "01", title: "Branding, signalétique & visualisation 3D", text: "Construisez une identité forte et visualisez son intégration dans vos espaces avant la fabrication ou l'installation.", url: "/solutions/branding-signaletique-3d/", img: "/images/portfolio/solution-branding.jpg", cta: "Visualiser mon projet" },
+      { n: "02", title: "Création digitale & print", text: "Communiquez avec des supports professionnels et cohérents, du téléphone de votre client jusqu'à vos supports imprimés.", url: "/solutions/creation-digitale-print/", img: "/images/portfolio/solution-digital.jpg", cta: "Créer mes supports" },
+      { n: "03", title: "Sites web, applications & solutions de gestion", text: "Présentez votre entreprise, facilitez l'accès à vos services et centralisez les informations importantes de votre activité.", url: "/solutions/sites-web-applications-gestion/", img: "/images/portfolio/solution-web.jpg", cta: "Créer ma solution digitale" },
+      { n: "04", title: "Automatisation & intelligence artificielle", text: "Réduisez les tâches répétitives et répondez plus rapidement à vos clients.", url: "/solutions/automatisation-ia/", img: "", cta: "Automatiser mon activité" }
+    ] %}
+    {% for s in solutions %}
+    <a href="{{ s.url }}" class="group block border-t border-ink/10 pt-8">
+      {% if s.img %}
+        {% set fDark = false %}{% set fImgSrc = s.img %}{% set fImgAlt = s.title %}{% set fRatio = "aspect-[4/3]" %}
+        {% include "partials/framed-image.njk" %}
+      {% else %}
+        <div class="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-ink">
+          {% set mPosition = "right-[-2rem] bottom-[-2rem] text-white" %}{% include "partials/motif-diagonal.njk" %}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="h-16 w-16 text-red" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="8" y="14" width="48" height="34" rx="1"/><path d="M8 22h48"/><circle cx="32" cy="35" r="7"/><path d="M32 28v14M25 35h14"/>
+          </svg>
+        </div>
+      {% endif %}
+      <p class="mt-6 tag-mono text-red">{{ s.n }}</p>
+      <h2 class="mt-2 font-heading text-2xl font-bold group-hover:text-red">{{ s.title }}</h2>
+      <p class="mt-3 max-w-md text-ink/70">{{ s.text }}</p>
+      <span class="mt-4 inline-block font-heading text-sm font-semibold text-ink underline decoration-red decoration-2 underline-offset-4">{{ s.cta }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% include "partials/cta-band.njk" %}

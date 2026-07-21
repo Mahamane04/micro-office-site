@@ -1,0 +1,49 @@
+---
+layout: layouts/base.njk
+title: "Création digitale et print : réseaux sociaux, print, packaging au Mali"
+description: "Affiches, réseaux sociaux, vidéos courtes, catalogues, cartes de visite, flyers, packaging : la création digitale et print de Micro Office au Mali."
+---
+
+<section class="relative overflow-hidden section-pad pb-12">
+  {% set mPosition = "right-[-4rem] top-[-4rem] text-ink" %}{% include "partials/motif-arc.njk" %}
+  <div class="container-content relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
+    <div class="lg:col-span-6">
+      <p class="eyebrow"><a href="/solutions/" class="hover:underline">Solutions</a> — 02</p>
+      <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Création digitale &amp; print</h1>
+      <p class="mt-6 text-lg leading-relaxed text-ink/70">Communiquez avec des supports professionnels et cohérents, du téléphone de votre client jusqu'à vos supports imprimés.</p>
+      <a href="/presenter-mon-projet/" class="btn-primary mt-8">Créer mes supports</a>
+    </div>
+    <div class="lg:col-span-6">
+      {% set fImgSrc = "/images/portfolio/solution-digital.jpg" %}{% set fImgAlt = "Supports imprimés et stand de marque réalisés par Micro Office" %}{% set fRatio = "aspect-[4/3]" %}
+      {% include "partials/framed-image.njk" %}
+    </div>
+  </div>
+</section>
+
+<section class="section-pad border-t border-ink/10">
+  <div class="container-content">
+    <h2 class="font-heading text-2xl font-bold md:text-3xl">Nos prestations</h2>
+    <div class="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
+      {% set items = [
+        { t: "Affiches", d: "Des visuels percutants pour vos campagnes et événements." },
+        { t: "Réseaux sociaux", d: "Un contenu cohérent avec votre identité, prêt à publier." },
+        { t: "Vidéos courtes", d: "Des formats courts adaptés aux usages mobiles." },
+        { t: "Catalogues", d: "Une présentation claire de vos produits ou services." },
+        { t: "Cartes de visite", d: "Une première impression professionnelle et soignée." },
+        { t: "Flyers", d: "Des supports imprimés efficaces pour votre communication terrain." },
+        { t: "Packaging", d: "Un emballage qui valorise votre produit sur le point de vente." },
+        { t: "Objets personnalisés", d: "Des supports à votre image pour vos équipes et événements." }
+      ] %}
+      {% for it in items %}
+      <div class="border-t border-ink/10 pt-5">
+        <h3 class="font-heading text-base font-semibold">{{ it.t }}</h3>
+        <p class="mt-2 text-sm text-ink/60">{{ it.d }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% set ctaTitle = "Besoin de supports cohérents et professionnels ?" %}
+{% set ctaText = "Décrivez votre besoin de communication digitale ou imprimée : nous vous proposons les supports adaptés à votre activité." %}
+{% include "partials/cta-band.njk" %}

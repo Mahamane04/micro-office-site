@@ -1,0 +1,171 @@
+# Configuration Decap CMS — administration du portfolio Micro Office
+#
+# MODE LOCAL (actuel) : lancez `npm run admin` puis ouvrez http://localhost:8080/admin/
+# Les modifications sont écrites directement dans les fichiers du projet.
+#
+# AU DÉPLOIEMENT : remplacez `local_backend` par un backend Git selon l'hébergeur choisi.
+#   - Netlify : backend git-gateway + Netlify Identity
+#   - GitHub Pages / Vercel : backend github (repo: votre-compte/votre-repo)
+# Documentation : https://decapcms.org/docs/backends-overview/
+
+local_backend: true
+
+backend:
+  name: git-gateway
+  branch: main
+
+locale: fr
+
+media_folder: "src/images/portfolio"
+public_folder: "/images/portfolio"
+
+site_url: https://www.microofficeml.com
+display_url: https://www.microofficeml.com
+logo_url: /images/brand/logo-on-dark.svg
+
+collections:
+  - name: portfolio
+    label: "Portfolio"
+    files:
+      - name: projets
+        label: "Projets (réalisations)"
+        file: "src/_data/portfolio.json"
+        fields:
+          - name: projets
+            label: "Projets"
+            label_singular: "Projet"
+            widget: list
+            summary: "{{fields.titre}} — {{fields.categorie}}"
+            fields:
+              - { name: titre, label: "Titre", widget: string, hint: "Nom du projet affiché sur les cartes et la page détail." }
+              - { name: slug, label: "Slug (URL)", widget: string, pattern: ["^[a-z0-9-]+$", "Uniquement minuscules, chiffres et tirets"], hint: "Adresse de la page : /realisations/votre-slug/. Ne pas changer après publication." }
+              - { name: client, label: "Client", widget: string }
+              - name: categorie
+                label: "Catégorie"
+                widget: select
+                options:
+                  - "Branding"
+                  - "Signalétique intérieure"
+                  - "Signalétique extérieure"
+                  - "Packaging & visualisation 3D"
+                  - "Site ou application"
+                  - "Branding événementiel"
+                  - "Automatisation & gestion"
+              - { name: accroche, label: "Accroche", widget: string, hint: "Une phrase courte affichée sur la carte." }
+              - { name: description, label: "Description", widget: text, hint: "Texte complet affiché sur la page détail du projet." }
+              - { name: couverture, label: "Image de couverture", widget: image, hint: "Image principale affichée sur la carte." }
+              - name: images
+                label: "Galerie d'images"
+                label_singular: "Image"
+                widget: list
+                fields:
+                  - { name: src, label: "Image", widget: image }
+                  - { name: alt, label: "Description (texte alternatif)", widget: string, hint: "Décrivez l'image en une phrase — important pour le référencement et l'accessibilité." }
+              - { name: misEnAvant, label: "Mis en avant sur l'accueil", widget: boolean, default: false, hint: "Les projets mis en avant apparaissent sur la page d'accueil (5 maximum affichés)." }
+
+  - name: boutique
+    label: "Boutique"
+    files:
+      - name: produits
+        label: "Produits"
+        file: "src/_data/produits.json"
+        fields:
+          - name: produits
+            label: "Produits"
+            label_singular: "Produit"
+            widget: list
+            summary: "{{fields.nom}} — {{fields.prix}} FCFA"
+            fields:
+              - { name: nom, label: "Nom", widget: string }
+              - { name: slug, label: "Slug (URL)", widget: string, pattern: ["^[a-z0-9-]+$", "Uniquement minuscules, chiffres et tirets"], hint: "Adresse de la fiche : /boutique/votre-slug/. Ne pas changer après publication." }
+              - { name: marque, label: "Marque", widget: string }
+              - name: categorie
+                label: "Catégorie"
+                widget: select
+                options: ["Chaussures", "Vêtements", "Accessoires"]
+              - { name: prix, label: "Prix (FCFA)", widget: number, value_type: int, min: 0, hint: "Prix en francs CFA. La conversion vers les autres devises est automatique." }
+              - { name: prixPromo, label: "Prix promo (FCFA)", widget: number, value_type: int, min: 0, required: false, hint: "Laisser vide s'il n'y a pas de promotion." }
+              - { name: accroche, label: "Accroche", widget: string, hint: "Phrase courte affichée sur la carte." }
+              - { name: description, label: "Description", widget: text }
+              - { name: couverture, label: "Image de couverture", widget: image }
+              - name: images
+                label: "Galerie d'images"
+                label_singular: "Image"
+                widget: list
+                required: false
+                fields:
+                  - { name: src, label: "Image", widget: image }
+                  - { name: alt, label: "Description (texte alternatif)", widget: string }
+              - name: tailles
+                label: "Tailles"
+                label_singular: "Taille"
+                widget: list
+                required: false
+                summary: "{{fields.valeur}}"
+                fields:
+                  - { name: valeur, label: "Taille", widget: string, hint: "Ex : 42, M, XL…" }
+                  - { name: disponible, label: "Disponible", widget: boolean, default: true }
+              - name: couleurs
+                label: "Couleurs"
+                label_singular: "Couleur"
+                widget: list
+                required: false
+                summary: "{{fields.nom}}"
+                fields:
+                  - { name: nom, label: "Nom", widget: string }
+                  - { name: hex, label: "Couleur", widget: color, hint: "Code couleur affiché sur la fiche." }
+                  - { name: disponible, label: "Disponible", widget: boolean, default: true }
+              - name: statut
+                label: "Statut du stock"
+                widget: select
+                default: "en stock"
+                options: ["en stock", "rupture", "sur commande"]
+              - { name: nouveaute, label: "Nouveauté (badge)", widget: boolean, default: false }
+              - { name: misEnAvant, label: "Mis en avant", widget: boolean, default: false, hint: "Affiché en premier dans la boutique." }
+      - name: parametres
+        label: "Paramètres de la boutique"
+        file: "src/_data/shop.json"
+        fields:
+          - { name: deviseParDefaut, label: "Devise par défaut (si détection impossible)", widget: string, default: "XOF" }
+          - { name: deviseInternationale, label: "Devise pour pays non listés", widget: string, default: "USD" }
+          - name: devises
+            label: "Devises & taux de change"
+            label_singular: "Devise"
+            widget: list
+            summary: "{{fields.code}} — 1 FCFA = {{fields.taux}}"
+            fields:
+              - { name: code, label: "Code (ISO)", widget: string, hint: "Ex : USD, EUR, XOF" }
+              - { name: nom, label: "Nom", widget: string }
+              - { name: symbole, label: "Symbole", widget: string }
+              - { name: taux, label: "Taux (1 FCFA = ? devise)", widget: number, value_type: float, hint: "Ex : pour l'euro, 0.001524 (1 € ≈ 656 FCFA)." }
+              - { name: decimales, label: "Décimales", widget: number, value_type: int, default: 2 }
+              - name: position
+                label: "Position du symbole"
+                widget: select
+                options: ["before", "after"]
+                default: "after"
+          - name: paysVersDevise
+            label: "Correspondance pays → devise"
+            label_singular: "Correspondance"
+            widget: list
+            summary: "{{fields.pays}} → {{fields.devise}}"
+            fields:
+              - { name: pays, label: "Code pays (ISO 2)", widget: string, hint: "Ex : ML, FR, US" }
+              - { name: devise, label: "Devise", widget: string, hint: "Code de la devise, ex : XOF, EUR" }
+          - name: livraison
+            label: "Zones de livraison"
+            label_singular: "Zone"
+            widget: list
+            summary: "{{fields.nom}}"
+            fields:
+              - { name: nom, label: "Zone", widget: string }
+              - { name: frais, label: "Frais (FCFA)", widget: number, value_type: int, required: false, hint: "Laisser vide pour « sur devis »." }
+              - { name: delai, label: "Délai", widget: string, required: false }
+          - name: paiement
+            label: "Paiement"
+            widget: object
+            fields:
+              - { name: livraison, label: "Paiement à la livraison", widget: boolean, default: true }
+              - { name: orangeMoney, label: "Numéro Orange Money", widget: string, required: false }
+              - { name: moovMoney, label: "Numéro Moov Money", widget: string, required: false }
+              - { name: instructions, label: "Instructions de paiement", widget: text, required: false }

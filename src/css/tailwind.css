@@ -1,0 +1,342 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Shared inner grid: compact on mobile, 60–100px on larger screens. */
+    --grid-gutter: 1.5rem;
+    --grid-gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    :root {
+      --grid-gutter: clamp(3.75rem, 5vw, 6.25rem);
+      --grid-gap: clamp(2rem, 3vw, 4rem);
+    }
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-offwhite text-ink font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading text-ink;
+  }
+}
+
+@layer components {
+  /* Pill buttons — Augment-style rounded CTAs */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-red px-7 py-3.5 font-heading text-sm font-semibold text-white shadow-btn transition-all duration-250 hover:bg-red-dark hover:shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/20 bg-transparent px-7 py-3.5 font-heading text-sm font-semibold text-ink transition-colors duration-250 hover:border-ink hover:bg-ink hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink;
+  }
+  .btn-secondary-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-7 py-3.5 font-heading text-sm font-semibold text-white transition-colors duration-250 hover:bg-white hover:text-ink;
+  }
+  .btn-sm {
+    @apply px-5 py-2.5 text-[13px];
+  }
+
+  /* Small pill label */
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-ink/15 bg-white/60 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70;
+  }
+  .pill-light {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.15em] text-offwhite/70;
+  }
+
+  .eyebrow {
+    @apply mb-5 inline-flex items-center gap-2 rounded-full border border-red/25 bg-red/5 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-red before:block before:h-1.5 before:w-1.5 before:rounded-full before:bg-red before:content-[''];
+  }
+  .tag-mono {
+    @apply font-mono text-[10px] uppercase tracking-[0.2em];
+  }
+
+  /* Cards */
+  .card {
+    @apply rounded-3xl border border-ink/10 bg-white shadow-soft;
+  }
+  .card-dark {
+    @apply rounded-3xl border border-white/10 bg-anthracite;
+  }
+
+  .filter-btn {
+    @apply rounded-full transition-colors;
+  }
+  .filter-btn.is-active {
+    @apply bg-ink text-white;
+  }
+  /* Custom sort dropdown */
+  [data-sort-menu] {
+    @apply invisible absolute right-0 z-30 mt-2 min-w-[12rem] origin-top-right scale-95 rounded-2xl border border-ink/10 bg-white p-1.5 opacity-0 shadow-[0_16px_44px_-14px_rgba(0,0,0,0.3)] transition-all duration-150;
+  }
+  [data-sort-dd].is-open [data-sort-menu] {
+    @apply visible scale-100 opacity-100;
+  }
+  [data-sort-dd].is-open .sort-chevron {
+    @apply rotate-180;
+  }
+  .sort-check {
+    @apply opacity-0 transition-opacity;
+  }
+  [data-current] .sort-check {
+    @apply opacity-100;
+  }
+  [data-current] {
+    @apply bg-ink/[0.04] text-ink;
+  }
+
+  .section-pad {
+    @apply px-4 py-20 md:px-6 md:py-28;
+  }
+  .container-content {
+    @apply mx-auto w-full max-w-[1720px];
+  }
+  .section-pad > .container-content,
+  .panel-grid {
+    box-sizing: border-box;
+    padding-inline: var(--grid-gutter);
+  }
+  .aligned-grid {
+    column-gap: var(--grid-gap);
+  }
+  .bg-blueprint-light {
+    @apply bg-blueprint text-ink/[0.05];
+  }
+  .bg-blueprint-dark {
+    @apply bg-blueprint text-white/[0.06];
+  }
+
+  /* ===== Hero expanding gallery (Augment-style speakers) ===== */
+  .hero-gallery {
+    display: flex;
+    gap: 10px;
+    height: clamp(380px, 40vw, 500px);
+    min-width: 0;
+    isolation: isolate;
+  }
+  .hero-card {
+    position: relative;
+    flex: 0 0 16%;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.75rem;
+    background: #181818;
+    cursor: pointer;
+    outline: none;
+    transition:
+      flex-basis 700ms cubic-bezier(.2, .82, .2, 1),
+      filter 420ms ease,
+      transform 420ms cubic-bezier(.2, .82, .2, 1);
+    will-change: flex-basis, transform;
+  }
+  .hero-card.is-active {
+    flex-basis: 52%;
+  }
+  .hero-gallery:has(.hero-card:hover) .hero-card:not(:hover) {
+    filter: brightness(.62) saturate(.78);
+  }
+  .hero-card:hover,
+  .hero-card:focus-visible {
+    transform: translateY(-2px);
+  }
+  .hero-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.04);
+    transition: transform 1100ms cubic-bezier(.2, .82, .2, 1);
+    will-change: transform;
+  }
+  .hero-card.is-active img {
+    transform: scale(1);
+  }
+  .hero-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,.02) 35%, rgba(0,0,0,.2) 57%, rgba(0,0,0,.92) 100%);
+    pointer-events: none;
+  }
+  .hero-card-badge {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    z-index: 3;
+    border-radius: 999px;
+    background: rgba(14, 14, 14, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 5px 12px;
+    @apply font-mono text-[10px] uppercase tracking-[0.1em] text-white;
+  }
+  .hero-card-content {
+    position: absolute;
+    z-index: 2;
+    left: clamp(16px, 1.6vw, 26px);
+    right: clamp(16px, 1.6vw, 26px);
+    bottom: clamp(20px, 2.4vw, 30px);
+    transform: translateY(14px);
+    opacity: .72;
+    transition:
+      transform 600ms cubic-bezier(.2, .82, .2, 1),
+      opacity 420ms ease;
+  }
+  .hero-card.is-active .hero-card-content {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .hero-card-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .hero-card-mark {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .hero-card-sep {
+    height: 1px;
+    width: 100%;
+    margin-bottom: 14px;
+    background: theme('colors.red.DEFAULT');
+    transform-origin: left;
+    transform: scaleX(.4);
+    transition: transform 700ms cubic-bezier(.2, .82, .2, 1);
+  }
+  .hero-card.is-active .hero-card-sep {
+    transform: scaleX(1);
+  }
+  .hero-card-role {
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hero-card-name {
+    @apply font-heading font-bold text-white;
+    font-size: clamp(20px, 1.9vw, 30px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  @media (max-width: 1023px) {
+    .hero-gallery {
+      height: 360px;
+    }
+    .hero-card {
+      flex-basis: 19%;
+    }
+    .hero-card.is-active {
+      flex-basis: 46%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-card,
+    .hero-card img,
+    .hero-card-content,
+    .hero-card-sep {
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ===== Boutique — carte produit ===== */
+  .product-card {
+    @apply flex flex-col rounded-3xl border border-white/10 bg-ink p-3 text-offwhite transition-all duration-250 hover:border-white/25;
+  }
+  .product-media {
+    @apply relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-white;
+  }
+  .product-media img {
+    @apply h-full w-full object-contain p-2 transition-transform duration-500;
+  }
+  .product-card:hover .product-media img {
+    @apply scale-105;
+  }
+  .product-fav {
+    @apply absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition-colors hover:bg-white;
+  }
+  .product-fav[data-active] {
+    @apply bg-red text-white hover:bg-red;
+  }
+  .product-badge {
+    @apply absolute left-3 top-3 z-10 rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-wider;
+  }
+  .product-badge-new {
+    @apply bg-red text-white;
+  }
+  .product-badge-out {
+    @apply bg-white/90 text-ink;
+  }
+  .product-add {
+    @apply inline-flex h-12 w-12 flex-none items-center justify-center rounded-full bg-white text-ink transition-all duration-200 hover:bg-red hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-ink;
+  }
+
+  /* ===== Boutique — dropdowns génériques (devise + tri produits) ===== */
+  [data-currency-menu],
+  [data-shop-sort-menu] {
+    @apply invisible absolute right-0 z-30 mt-2 min-w-[13rem] origin-top-right scale-95 rounded-2xl border border-ink/10 bg-white p-1.5 opacity-0 shadow-[0_16px_44px_-14px_rgba(0,0,0,0.3)] transition-all duration-150;
+  }
+  [data-currency-dd].is-open [data-currency-menu],
+  [data-shop-sort-dd].is-open [data-shop-sort-menu] {
+    @apply visible scale-100 opacity-100;
+  }
+  [data-currency-dd].is-open .mo-chev,
+  [data-shop-sort-dd].is-open .mo-chev {
+    @apply rotate-180;
+  }
+  .mo-trigger {
+    @apply inline-flex items-center gap-2 rounded-full border border-ink/20 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink transition-colors hover:border-ink;
+  }
+  .mo-chev {
+    @apply h-3.5 w-3.5 transition-transform duration-200;
+  }
+  .mo-opt {
+    @apply flex cursor-pointer items-center justify-between gap-6 rounded-xl px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/65 transition-colors hover:bg-ink/[0.04] hover:text-ink;
+  }
+  .mo-opt[data-current] {
+    @apply bg-ink/[0.04] text-ink;
+  }
+  .mo-check {
+    @apply h-3.5 w-3.5 text-red opacity-0 transition-opacity;
+  }
+  .mo-opt[data-current] .mo-check {
+    @apply opacity-100;
+  }
+
+  /* ===== Panier — tiroir ===== */
+  .cart-drawer {
+    @apply invisible fixed inset-0 z-[60] opacity-0 transition-opacity duration-300;
+  }
+  .cart-drawer.is-open {
+    @apply visible opacity-100;
+  }
+  .cart-panel {
+    @apply absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full flex-col bg-offwhite shadow-2xl transition-transform duration-300;
+  }
+  .cart-drawer.is-open .cart-panel {
+    @apply translate-x-0;
+  }
+  [data-size][data-selected] {
+    @apply border-ink bg-ink text-white;
+  }
+}

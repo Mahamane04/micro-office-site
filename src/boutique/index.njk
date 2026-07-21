@@ -1,0 +1,79 @@
+---
+layout: layouts/base.njk
+title: "Boutique — Micro Office"
+description: "Découvrez et commandez les articles de la boutique Micro Office. Paiement à la livraison ou par mobile money, livraison au Mali et à l'international."
+---
+
+<section class="relative overflow-hidden section-pad pb-10">
+  <div class="pointer-events-none absolute inset-0 bg-blueprint-light [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" aria-hidden="true"></div>
+  {% set mPosition = "right-[-4rem] top-[-4rem] text-ink" %}{% include "partials/motif-arc.njk" %}
+  <div class="container-content relative">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Boutique</p>
+        <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Nos articles, livrés chez vous.</h1>
+        <p class="mt-6 text-lg leading-relaxed text-ink/70">Parcourez la sélection, ajoutez au panier et commandez en quelques secondes. <span class="text-ink">Paiement à la livraison</span> ou par mobile money — sans paiement en ligne.</p>
+      </div>
+      <div class="shrink-0">
+        {% include "partials/currency-switcher.njk" %}
+        <p class="mt-2 tag-mono text-ink/40">Devise adaptée à votre pays</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad pt-6">
+  <div class="container-content">
+
+    {# Search #}
+    <div class="relative mb-6">
+      <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" data-shop-search placeholder="Rechercher un produit, une marque…" aria-label="Rechercher un produit" class="w-full rounded-full border border-ink/15 bg-white py-3.5 pl-12 pr-4 text-ink shadow-[0_1px_2px_rgba(0,0,0,0.04)] focus:border-red focus:outline-none">
+    </div>
+
+    {# Filters + sort #}
+    <div class="flex flex-col gap-6 border-t border-ink/10 pt-8 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrer par catégorie">
+        <button type="button" data-shop-filter="all" class="filter-btn is-active border border-ink px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors">Tous</button>
+        {% for cat in produits.produits | uniqueCategories %}
+        <button type="button" data-shop-filter="{{ cat }}" class="filter-btn border border-ink/20 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/70 transition-colors">{{ cat }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="flex shrink-0 items-center gap-3">
+        <span class="font-mono text-[11px] uppercase tracking-[0.15em] text-ink/50">Trier</span>
+        <div class="relative" data-shop-sort-dd>
+          <button type="button" data-shop-sort-trigger class="mo-trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span data-shop-sort-label>Populaires</span>
+            <svg class="mo-chev text-ink/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          {% set sortOpts = [
+            { v: "featured", l: "Populaires" },
+            { v: "price-asc", l: "Prix croissant" },
+            { v: "price-desc", l: "Prix décroissant" },
+            { v: "az", l: "A → Z" }
+          ] %}
+          <ul role="listbox" data-shop-sort-menu>
+            {% for o in sortOpts %}
+            <li role="option" data-shop-sort-option="{{ o.v }}" data-shop-sort-label-text="{{ o.l }}" class="mo-opt"{% if loop.first %} data-current{% endif %}>
+              <span>{{ o.l }}</span>
+              <svg class="mo-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {# Product grid #}
+    <div id="boutique-grid" class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {% for p in produits.produits %}
+      {% include "partials/product-card.njk" %}
+      {% endfor %}
+    </div>
+
+    <p id="boutique-empty" class="mt-12 hidden border-l-2 border-red pl-6 text-ink/60">Aucun article dans cette catégorie pour le moment.</p>
+  </div>
+</section>
+
+{% include "partials/cta-band.njk" %}

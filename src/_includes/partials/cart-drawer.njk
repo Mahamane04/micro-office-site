@@ -1,0 +1,29 @@
+<div class="cart-drawer" data-cart-drawer aria-hidden="true">
+  <div class="absolute inset-0 bg-ink/50 backdrop-blur-sm" data-cart-close></div>
+  <aside class="cart-panel" role="dialog" aria-label="Votre panier" aria-modal="true">
+    <div class="flex items-center justify-between border-b border-ink/10 px-6 py-5">
+      <h2 class="font-heading text-xl font-bold">Votre panier</h2>
+      <button type="button" class="flex h-10 w-10 items-center justify-center rounded-full border border-ink/15 text-ink hover:bg-ink hover:text-white" data-cart-close aria-label="Fermer le panier">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-6 py-4" data-cart-items></div>
+
+    <div class="hidden px-6 py-16 text-center" data-cart-empty>
+      <p class="font-heading text-lg font-semibold">Votre panier est vide.</p>
+      <p class="mt-2 text-sm text-ink/60">Parcourez la boutique et ajoutez vos articles.</p>
+      <a href="/boutique/" class="btn-primary mt-6">Voir la boutique</a>
+    </div>
+
+    <div class="border-t border-ink/10 px-6 py-5" data-cart-footer>
+      <div class="flex items-center justify-between">
+        <span class="font-mono text-[11px] uppercase tracking-[0.15em] text-ink/50">Sous-total</span>
+        <span class="font-heading text-xl font-bold" data-price-xof="0" data-cart-subtotal>0 FCFA</span>
+      </div>
+      <p class="mt-1 text-xs text-ink/50">Frais de livraison calculés à la commande.</p>
+      <a href="/commander/" class="btn-primary mt-4 w-full" data-cart-checkout>Passer la commande</a>
+      <button type="button" class="mt-2 w-full text-center font-mono text-[11px] uppercase tracking-[0.15em] text-ink/50 hover:text-red" data-cart-clear>Vider le panier</button>
+    </div>
+  </aside>
+</div>

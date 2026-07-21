@@ -1,0 +1,14 @@
+{# Usage: optional vars ctaTitle, ctaText before include #}
+<section class="px-4 pb-8 md:px-6">
+  <div class="container-content relative overflow-hidden rounded-5xl bg-red text-white">
+    <div class="pointer-events-none absolute inset-0 bg-blueprint-dark opacity-60" aria-hidden="true"></div>
+    <div class="panel-grid relative flex flex-col items-center py-20 text-center md:py-24">
+      <h2 class="max-w-2xl font-heading text-3xl font-bold leading-tight text-white md:text-5xl">{{ ctaTitle | default("Votre idée mérite une direction claire.") }}</h2>
+      <p class="mt-6 max-w-xl text-base leading-relaxed text-white/85">{{ ctaText | default("Présentez-nous votre activité, votre besoin et le résultat que vous souhaitez obtenir. Notre équipe vous aidera à identifier la solution la plus adaptée.") }}</p>
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <a href="/presenter-mon-projet/" class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 font-heading text-sm font-semibold text-ink shadow-soft transition-colors duration-250 hover:bg-ink hover:text-white">Présenter mon projet</a>
+        <a href="https://wa.me/{{ site.whatsappNumber }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-7 py-3.5 font-heading text-sm font-semibold text-white transition-colors duration-250 hover:bg-white/10">Écrire sur WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,127 @@
+---
+layout: layouts/base.njk
+title: "Commander — Boutique Micro Office"
+description: "Finalisez votre commande : paiement à la livraison ou par mobile money, livraison au Mali et à l'international."
+---
+
+<section class="section-pad pb-10">
+  <div class="container-content">
+    <div><a href="/boutique/" class="tag-mono inline-flex items-center gap-2 text-ink/50 hover:text-red">← Continuer mes achats</a></div>
+    <p class="eyebrow mt-8">Commande</p>
+    <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Finaliser ma commande.</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink/70">Aucun paiement en ligne : réglez <span class="text-ink">à la livraison</span> ou par <span class="text-ink">mobile money</span>. Envoyez votre commande via WhatsApp ou par formulaire.</p>
+  </div>
+</section>
+
+{# Empty state #}
+<section class="section-pad pt-0 hidden" data-checkout-empty>
+  <div class="container-content">
+    <div class="rounded-3xl border border-ink/10 bg-white p-10 text-center">
+      <p class="font-heading text-xl font-semibold">Votre panier est vide.</p>
+      <a href="/boutique/" class="btn-primary mt-6">Voir la boutique</a>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad pt-0" data-checkout>
+  <div class="container-content grid grid-cols-1 gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-14">
+
+    {# Form #}
+    <form id="order-form" action="{{ site.formspreeEndpoint }}" method="POST" class="order-2 space-y-10 lg:order-1">
+      <input type="hidden" name="_subject" value="Nouvelle commande boutique — Micro Office">
+      <input type="hidden" name="Récapitulatif" data-order-summary-field>
+      <input type="hidden" name="Référence" data-order-ref-field>
+
+      <fieldset class="space-y-6">
+        <legend class="font-heading text-lg font-bold">Vos coordonnées</legend>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div>
+            <label for="o-nom" class="mb-2 block font-heading text-sm font-semibold">Nom complet *</label>
+            <input id="o-nom" name="Nom" type="text" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+          </div>
+          <div>
+            <label for="o-tel" class="mb-2 block font-heading text-sm font-semibold">Téléphone *</label>
+            <input id="o-tel" name="Téléphone" type="tel" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+          </div>
+          <div>
+            <label for="o-wa" class="mb-2 block font-heading text-sm font-semibold">WhatsApp</label>
+            <input id="o-wa" name="WhatsApp" type="tel" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" placeholder="Si différent du téléphone">
+          </div>
+          <div>
+            <label for="o-email" class="mb-2 block font-heading text-sm font-semibold">E-mail</label>
+            <input id="o-email" name="E-mail" type="email" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="space-y-4">
+        <legend class="font-heading text-lg font-bold">Livraison</legend>
+        <div class="space-y-2">
+          {% for zone in shop.livraison %}
+          <label class="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-ink/15 bg-white px-4 py-3 has-[:checked]:border-red">
+            <span class="flex items-center gap-3">
+              <input type="radio" name="Livraison" value="{{ zone.nom }}" class="h-4 w-4 accent-red" data-delivery data-frais="{{ zone.frais if zone.frais !== null else '' }}" {% if loop.first %}checked{% endif %}>
+              <span>
+                <span class="font-heading text-sm font-semibold">{{ zone.nom }}</span>
+                {% if zone.delai %}<span class="block tag-mono text-ink/40">{{ zone.delai }}</span>{% endif %}
+              </span>
+            </span>
+            <span class="font-heading text-sm font-semibold">{% if zone.frais !== null %}<span data-price-xof="{{ zone.frais }}">{{ zone.frais }} FCFA</span>{% else %}Sur devis{% endif %}</span>
+          </label>
+          {% endfor %}
+        </div>
+        <div>
+          <label for="o-adresse" class="mb-2 block font-heading text-sm font-semibold">Adresse / point de repère *</label>
+          <textarea id="o-adresse" name="Adresse" rows="2" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" placeholder="Quartier, rue, point de repère…"></textarea>
+        </div>
+        <div>
+          <label for="o-note" class="mb-2 block font-heading text-sm font-semibold">Note (facultatif)</label>
+          <textarea id="o-note" name="Note" rows="2" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none"></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset class="space-y-4">
+        <legend class="font-heading text-lg font-bold">Mode de paiement</legend>
+        <div class="space-y-2">
+          {% if shop.paiement.livraison %}
+          <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/15 bg-white px-4 py-3 has-[:checked]:border-red">
+            <input type="radio" name="Paiement" value="À la livraison" class="mt-1 h-4 w-4 accent-red" checked>
+            <span><span class="font-heading text-sm font-semibold">À la livraison</span><span class="block text-sm text-ink/60">Payez en espèces à la réception de votre commande.</span></span>
+          </label>
+          {% endif %}
+          <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/15 bg-white px-4 py-3 has-[:checked]:border-red">
+            <input type="radio" name="Paiement" value="Orange Money" class="mt-1 h-4 w-4 accent-red">
+            <span><span class="font-heading text-sm font-semibold">Orange Money</span><span class="block text-sm text-ink/60">Numéro : {{ shop.paiement.orangeMoney }}. Envoyez le montant puis validez.</span></span>
+          </label>
+          <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/15 bg-white px-4 py-3 has-[:checked]:border-red">
+            <input type="radio" name="Paiement" value="Moov Money" class="mt-1 h-4 w-4 accent-red">
+            <span><span class="font-heading text-sm font-semibold">Moov Money</span><span class="block text-sm text-ink/60">Numéro : {{ shop.paiement.moovMoney }}. Envoyez le montant puis validez.</span></span>
+          </label>
+        </div>
+        {% if shop.paiement.instructions %}<p class="text-sm text-ink/50">{{ shop.paiement.instructions }}</p>{% endif %}
+      </fieldset>
+
+      <div class="space-y-3">
+        <button type="button" class="btn-primary w-full" data-order-whatsapp-checkout>
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.6-.6-2.7-1.2-4.5-4-4.6-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.5-.3.3c-.1.1-.3.3-.1.5.1.3.7 1.1 1.4 1.8 1 .8 1.7 1.1 2 1.2.2.1.4.1.5-.1l.6-.7c.2-.2.3-.2.6-.1l1.9.9c.3.1.4.2.5.3 0 .2 0 .7-.2 1.3Z"/></svg>
+          Commander sur WhatsApp
+        </button>
+        <button type="submit" class="btn-secondary w-full">Envoyer la commande par e-mail</button>
+        <p class="text-center text-xs text-ink/50">En validant, vous acceptez d'être recontacté pour confirmer la commande.</p>
+      </div>
+    </form>
+
+    {# Order summary #}
+    <aside class="order-1 lg:order-2">
+      <div class="sticky top-28 rounded-3xl border border-ink/10 bg-white p-6">
+        <h2 class="font-heading text-lg font-bold">Votre commande</h2>
+        <div class="mt-4 space-y-3" data-checkout-items></div>
+        <div class="mt-4 space-y-2 border-t border-ink/10 pt-4 text-sm">
+          <div class="flex items-center justify-between text-ink/70"><span>Sous-total</span><span data-checkout-subtotal>—</span></div>
+          <div class="flex items-center justify-between text-ink/70"><span>Livraison</span><span data-checkout-delivery>—</span></div>
+          <div class="flex items-center justify-between font-heading text-lg font-bold text-ink"><span>Total</span><span data-checkout-total>—</span></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

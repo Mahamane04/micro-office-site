@@ -1,0 +1,57 @@
+---
+layout: layouts/base.njk
+title: "Suivre ma commande — Micro Office"
+description: "Suivez l'avancement de votre commande Micro Office avec votre référence et votre numéro de téléphone."
+---
+
+<section class="section-pad pb-10">
+  <div class="container-content">
+    <div class="mx-auto max-w-xl">
+      <p class="eyebrow">Suivi de commande</p>
+      <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Où en est ma commande&nbsp;?</h1>
+      <p class="mt-6 text-lg leading-relaxed text-ink/70">Saisissez votre <span class="text-ink">référence</span> (ex. MO‑XXXX) et le <span class="text-ink">numéro de téléphone</span> utilisé lors de la commande.</p>
+
+      <form id="track-form" class="mt-8 space-y-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="t-ref" class="mb-2 block font-heading text-sm font-semibold">Référence *</label>
+            <input id="t-ref" name="reference" type="text" required placeholder="MO-XXXX" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 uppercase text-ink focus:border-red focus:outline-none">
+          </div>
+          <div>
+            <label for="t-tel" class="mb-2 block font-heading text-sm font-semibold">Téléphone *</label>
+            <input id="t-tel" name="tel" type="tel" required placeholder="+223 …" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+          </div>
+        </div>
+        <button type="submit" class="btn-primary w-full sm:w-auto" data-track-submit>Suivre ma commande</button>
+      </form>
+
+      <p class="mt-4 hidden rounded-2xl border border-red/30 bg-red/5 px-4 py-3 text-sm text-red" data-track-error></p>
+
+      {# Result #}
+      <div class="mt-10 hidden" data-track-result>
+        <div class="rounded-3xl border border-ink/10 bg-white p-6 shadow-soft">
+          <div class="flex flex-wrap items-baseline justify-between gap-2 border-b border-ink/10 pb-4">
+            <span class="font-heading text-lg font-bold" data-track-ref></span>
+            <span class="tag-mono text-ink/50" data-track-meta></span>
+          </div>
+
+          <ol class="mt-6 space-y-5" data-track-steps>
+            {% set steps = ["reçue", "confirmée", "préparation", "expédiée", "livrée"] %}
+            {% set labels = ["Reçue", "Confirmée", "En préparation", "Expédiée", "Livrée"] %}
+            {% for s in steps %}
+            <li class="flex items-center gap-4" data-step="{{ s }}">
+              <span class="track-dot flex h-9 w-9 flex-none items-center justify-center rounded-full border-2 border-ink/15 text-ink/30">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+              </span>
+              <span class="font-heading text-sm font-semibold text-ink/50">{{ labels[loop.index0] }}</span>
+            </li>
+            {% endfor %}
+          </ol>
+
+          <div class="mt-6 hidden rounded-2xl bg-red/5 px-4 py-3 text-sm text-red" data-track-cancelled>Cette commande a été annulée. Contactez-nous pour plus d'informations.</div>
+        </div>
+        <p class="mt-4 text-sm text-ink/50">Une question&nbsp;? <a href="https://wa.me/{{ site.whatsappNumber }}" target="_blank" rel="noopener" class="underline hover:text-red">Écrivez-nous sur WhatsApp</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>

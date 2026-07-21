@@ -1,0 +1,126 @@
+{
+  "projets": [
+    {
+      "titre": "COOFIX & EMS — Espace intérieur",
+      "slug": "coofix-ems-interieur",
+      "client": "COOFIX & EMS",
+      "categorie": "Signalétique intérieure",
+      "accroche": "L'aménagement intérieur visualisé en 3D avant réalisation.",
+      "description": "L'aménagement intérieur a été entièrement visualisé en 3D avant sa réalisation, pour valider les proportions, les matières et l'éclairage. Le résultat construit est fidèle au rendu présenté au client.",
+      "couverture": "/images/portfolio/hero-final.jpg",
+      "images": [
+        { "src": "/images/portfolio/hero-3d.jpg", "alt": "Rendu 3D de l'espace intérieur COOFIX & EMS" },
+        { "src": "/images/portfolio/hero-final.jpg", "alt": "Espace intérieur COOFIX & EMS réalisé" }
+      ],
+      "misEnAvant": true
+    },
+    {
+      "titre": "COOFIX & EMS — Façade",
+      "slug": "coofix-ems-facade",
+      "client": "COOFIX & EMS",
+      "categorie": "Signalétique extérieure",
+      "accroche": "Une façade en chantier transformée en vitrine de marque complète.",
+      "description": "Une façade en chantier transformée en vitrine de marque complète : enseignes lumineuses, habillage et vitrines. Le magasin est identifiable depuis la rue, de jour comme de nuit.",
+      "couverture": "/images/portfolio/diff-2b.jpg",
+      "images": [
+        { "src": "/images/portfolio/diff-2a.jpg", "alt": "Façade COOFIX & EMS avant habillage" },
+        { "src": "/images/portfolio/diff-2b.jpg", "alt": "Façade COOFIX & EMS terminée" },
+        { "src": "/images/portfolio/coofix-ems-nuit.jpg", "alt": "Lettres lumineuses COOFIX & EMS en fabrication, de nuit" }
+      ],
+      "misEnAvant": false
+    },
+    {
+      "titre": "Djina's Collection",
+      "slug": "djinas-collection",
+      "client": "Djina's Collection",
+      "categorie": "Branding",
+      "accroche": "Une identité de marque affirmée, du logo à son application.",
+      "description": "Une identité de marque affirmée, appliquée en lettres dorées en relief dans l'espace de vente. Le logo devient un élément de décor à part entière.",
+      "couverture": "/images/portfolio/solution-branding.jpg",
+      "images": [
+        { "src": "/images/portfolio/solution-branding.jpg", "alt": "Logo Djina's Collection en lettres dorées en relief" }
+      ],
+      "misEnAvant": true
+    },
+    {
+      "titre": "BAH Automobile",
+      "slug": "bah-automobile",
+      "client": "BAH Automobile",
+      "categorie": "Signalétique extérieure",
+      "accroche": "Une façade complète pensée comme une vitrine de marque.",
+      "description": "Une façade complète pensée comme une vitrine de marque : enseigne principale, totem publicitaire, habillage des vitrines et PLV partenaires.",
+      "couverture": "/images/portfolio/realisation-signaletique-exterieure.jpg",
+      "images": [
+        { "src": "/images/portfolio/realisation-signaletique-exterieure.jpg", "alt": "Façade BAH Automobile avec enseigne et totem" }
+      ],
+      "misEnAvant": true
+    },
+    {
+      "titre": "FEBAK — Thé Andalousi",
+      "slug": "febak-the-andalousi",
+      "client": "FEBAK",
+      "categorie": "Packaging & visualisation 3D",
+      "accroche": "Du rendu 3D du stand jusqu'à sa fabrication et son installation.",
+      "description": "Le stand Thé Andalousi a d'abord été modélisé en 3D pour validation, puis fabriqué et installé en foire. Le client a vu son stand avant qu'il n'existe.",
+      "couverture": "/images/portfolio/diff-3b.jpg",
+      "images": [
+        { "src": "/images/portfolio/diff-3a.jpg", "alt": "Rendu 3D du stand FEBAK Thé Andalousi" },
+        { "src": "/images/portfolio/diff-3b.jpg", "alt": "Stand FEBAK Thé Andalousi fabriqué et installé" }
+      ],
+      "misEnAvant": true
+    },
+    {
+      "titre": "NBB — Planet",
+      "slug": "nbb-planet",
+      "client": "NBB",
+      "categorie": "Packaging & visualisation 3D",
+      "accroche": "Un stand de marque conçu en 3D puis déployé sur le terrain.",
+      "description": "Un stand de marque conçu en 3D, validé par le client, puis fabriqué et déployé sur le terrain pour les activations Planet.",
+      "couverture": "/images/portfolio/planet-reel.jpg",
+      "images": [
+        { "src": "/images/portfolio/lancement-1.jpg", "alt": "Rendu 3D du stand Planet NBB" },
+        { "src": "/images/portfolio/planet-reel.jpg", "alt": "Stand Planet NBB fabriqué" }
+      ],
+      "misEnAvant": false
+    },
+    {
+      "titre": "Reaktor",
+      "slug": "reaktor",
+      "client": "NBB",
+      "categorie": "Branding événementiel",
+      "accroche": "Une communication produit forte sur stand événementiel.",
+      "description": "Une communication produit forte, déployée sur un stand événementiel avec un visuel avant/après qui met le produit en scène.",
+      "couverture": "/images/portfolio/lancement-2.jpg",
+      "images": [
+        { "src": "/images/portfolio/lancement-2.jpg", "alt": "Stand événementiel Reaktor" }
+      ],
+      "misEnAvant": false
+    },
+    {
+      "titre": "SSE — Sonikara Solar Electro",
+      "slug": "sse-sonikara",
+      "client": "SSE",
+      "categorie": "Signalétique intérieure",
+      "accroche": "Une enseigne intérieure rétroéclairée pour un showroom technique.",
+      "description": "Une enseigne intérieure rétroéclairée pour un showroom technique, pensée pour affirmer la marque dès l'entrée du magasin.",
+      "couverture": "/images/portfolio/sse-signage.jpg",
+      "images": [
+        { "src": "/images/portfolio/sse-signage.jpg", "alt": "Enseigne intérieure rétroéclairée SSE Sonikara Solar Electro" }
+      ],
+      "misEnAvant": true
+    },
+    {
+      "titre": "Supports digitaux Micro Office",
+      "slug": "supports-digitaux-micro-office",
+      "client": "Micro Office",
+      "categorie": "Site ou application",
+      "accroche": "Des interfaces pensées pour présenter et vendre.",
+      "description": "Des interfaces pensées pour présenter une activité et convertir les visiteurs en demandes de devis, cohérentes avec l'identité imprimée.",
+      "couverture": "/images/portfolio/realisation-site-app.jpg",
+      "images": [
+        { "src": "/images/portfolio/realisation-site-app.jpg", "alt": "Maquette de site web et supports Micro Office" }
+      ],
+      "misEnAvant": true
+    }
+  ]
+}

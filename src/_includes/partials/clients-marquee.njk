@@ -1,0 +1,16 @@
+{# Set marqueeDark = true before include for use on dark backgrounds. #}
+{% macro tile(c) %}
+<div class="flex h-24 w-40 shrink-0 items-center justify-center rounded-2xl bg-white p-5">
+  <img src="/images/clients/{{ c.file }}" alt="{{ c.name }}" loading="lazy" class="max-h-full max-w-full object-contain">
+</div>
+{% endmacro %}
+
+<div class="relative overflow-hidden">
+  <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r {{ 'from-ink' if marqueeDark else 'from-offwhite' }} to-transparent md:w-28"></div>
+  <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l {{ 'from-ink' if marqueeDark else 'from-offwhite' }} to-transparent md:w-28"></div>
+
+  <div class="flex w-max animate-marquee gap-4 hover:[animation-play-state:paused] motion-reduce:animate-none">
+    {% for c in site.trustedClients %}{{ tile(c) }}{% endfor %}
+    {% for c in site.trustedClients %}{{ tile(c) }}{% endfor %}
+  </div>
+</div>

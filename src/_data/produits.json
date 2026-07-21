@@ -1,0 +1,159 @@
+{
+  "produits": [
+    {
+      "slug": "air-force-1-low",
+      "nom": "Air Force 1 Low",
+      "marque": "Nike",
+      "categorie": "Chaussures",
+      "prix": 59000,
+      "prixPromo": null,
+      "accroche": "L'iconique silhouette blanche, intemporelle et polyvalente.",
+      "description": "La Air Force 1 Low en cuir blanc : une valeur sûre qui se porte avec tout. Confort au quotidien, semelle amortie et finitions soignées.",
+      "couverture": "/images/boutique/air-force-1.svg",
+      "images": [
+        { "src": "/images/boutique/air-force-1.svg", "alt": "Air Force 1 Low blanche, vue de profil" }
+      ],
+      "tailles": [
+        { "valeur": "40", "disponible": true },
+        { "valeur": "41", "disponible": true },
+        { "valeur": "42", "disponible": true },
+        { "valeur": "43", "disponible": true },
+        { "valeur": "44", "disponible": false },
+        { "valeur": "45", "disponible": true }
+      ],
+      "couleurs": [
+        { "nom": "Blanc", "hex": "#f5f5f5", "disponible": true },
+        { "nom": "Noir", "hex": "#111111", "disponible": true }
+      ],
+      "statut": "en stock",
+      "nouveaute": false,
+      "misEnAvant": true
+    },
+    {
+      "slug": "sneakers-urban-runner",
+      "nom": "Urban Runner",
+      "marque": "Adidas",
+      "categorie": "Chaussures",
+      "prix": 65000,
+      "prixPromo": 52000,
+      "accroche": "Une running lifestyle, légère et amortie pour la ville.",
+      "description": "L'Urban Runner combine mesh respirant et semelle Boost pour un confort toute la journée. Un style sport épuré qui s'adapte à toutes les tenues.",
+      "couverture": "/images/boutique/urban-runner.svg",
+      "images": [
+        { "src": "/images/boutique/urban-runner.svg", "alt": "Sneakers Urban Runner, vue de profil" }
+      ],
+      "tailles": [
+        { "valeur": "40", "disponible": true },
+        { "valeur": "41", "disponible": true },
+        { "valeur": "42", "disponible": true },
+        { "valeur": "43", "disponible": true },
+        { "valeur": "44", "disponible": true }
+      ],
+      "couleurs": [
+        { "nom": "Gris", "hex": "#9ca3af", "disponible": true },
+        { "nom": "Noir", "hex": "#111111", "disponible": true }
+      ],
+      "statut": "en stock",
+      "nouveaute": true,
+      "misEnAvant": true
+    },
+    {
+      "slug": "hoodie-premium",
+      "nom": "Hoodie Premium",
+      "marque": "Micro Wear",
+      "categorie": "Vêtements",
+      "prix": 25000,
+      "prixPromo": null,
+      "accroche": "Molleton épais, coupe oversize, chaleur et confort.",
+      "description": "Un hoodie en molleton gratté 400 g/m², coupe oversize moderne, poche kangourou et capuche doublée. Le basique premium de la garde-robe.",
+      "couverture": "/images/boutique/hoodie.svg",
+      "images": [
+        { "src": "/images/boutique/hoodie.svg", "alt": "Hoodie Premium, vue de face" }
+      ],
+      "tailles": [
+        { "valeur": "S", "disponible": true },
+        { "valeur": "M", "disponible": true },
+        { "valeur": "L", "disponible": true },
+        { "valeur": "XL", "disponible": true }
+      ],
+      "couleurs": [
+        { "nom": "Noir", "hex": "#111111", "disponible": true },
+        { "nom": "Beige", "hex": "#d6ccb8", "disponible": true },
+        { "nom": "Rouge", "hex": "#f01b2d", "disponible": true }
+      ],
+      "statut": "en stock",
+      "nouveaute": true,
+      "misEnAvant": true
+    },
+    {
+      "slug": "tshirt-oversize",
+      "nom": "T-shirt Oversize",
+      "marque": "Micro Wear",
+      "categorie": "Vêtements",
+      "prix": 15000,
+      "prixPromo": null,
+      "accroche": "Coton lourd 240 g, coupe droite et tombé impeccable.",
+      "description": "Un t-shirt en coton peigné 240 g/m², col renforcé et coupe oversize. Se porte seul ou en superposition.",
+      "couverture": "/images/boutique/tshirt.svg",
+      "images": [
+        { "src": "/images/boutique/tshirt.svg", "alt": "T-shirt Oversize, vue de face" }
+      ],
+      "tailles": [
+        { "valeur": "S", "disponible": true },
+        { "valeur": "M", "disponible": true },
+        { "valeur": "L", "disponible": true },
+        { "valeur": "XL", "disponible": true }
+      ],
+      "couleurs": [
+        { "nom": "Blanc", "hex": "#f5f5f5", "disponible": true },
+        { "nom": "Noir", "hex": "#111111", "disponible": true }
+      ],
+      "statut": "en stock",
+      "nouveaute": false,
+      "misEnAvant": false
+    },
+    {
+      "slug": "casquette-brodee",
+      "nom": "Casquette Brodée",
+      "marque": "Micro Wear",
+      "categorie": "Accessoires",
+      "prix": 8000,
+      "prixPromo": null,
+      "accroche": "Casquette 6 panneaux, logo brodé, réglage snapback.",
+      "description": "Casquette classique 6 panneaux en coton, visière préformée et logo brodé. Fermeture snapback réglable, taille unique.",
+      "couverture": "/images/boutique/casquette.svg",
+      "images": [
+        { "src": "/images/boutique/casquette.svg", "alt": "Casquette brodée, vue de trois-quarts" }
+      ],
+      "tailles": [],
+      "couleurs": [
+        { "nom": "Noir", "hex": "#111111", "disponible": true },
+        { "nom": "Rouge", "hex": "#f01b2d", "disponible": true }
+      ],
+      "statut": "en stock",
+      "nouveaute": false,
+      "misEnAvant": false
+    },
+    {
+      "slug": "sac-a-dos-tech",
+      "nom": "Sac à dos Tech",
+      "marque": "Urban",
+      "categorie": "Accessoires",
+      "prix": 30000,
+      "prixPromo": null,
+      "accroche": "Compartiment ordinateur, résistant à l'eau, ergonomique.",
+      "description": "Sac à dos urbain avec compartiment matelassé pour ordinateur 15\", tissu déperlant, port USB et bretelles ergonomiques. Idéal travail et voyage.",
+      "couverture": "/images/boutique/sac-a-dos.svg",
+      "images": [
+        { "src": "/images/boutique/sac-a-dos.svg", "alt": "Sac à dos Tech, vue de face" }
+      ],
+      "tailles": [],
+      "couleurs": [
+        { "nom": "Noir", "hex": "#111111", "disponible": true }
+      ],
+      "statut": "rupture",
+      "nouveaute": false,
+      "misEnAvant": false
+    }
+  ]
+}

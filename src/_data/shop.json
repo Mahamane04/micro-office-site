@@ -1,0 +1,55 @@
+{
+  "deviseBase": "XOF",
+  "deviseParDefaut": "XOF",
+  "deviseInternationale": "USD",
+  "devises": [
+    { "code": "XOF", "nom": "Franc CFA (Ouest)", "symbole": "FCFA", "taux": 1, "decimales": 0, "position": "after" },
+    { "code": "XAF", "nom": "Franc CFA (Centre)", "symbole": "FCFA", "taux": 1, "decimales": 0, "position": "after" },
+    { "code": "EUR", "nom": "Euro", "symbole": "€", "taux": 0.001524, "decimales": 2, "position": "after" },
+    { "code": "USD", "nom": "Dollar US", "symbole": "$", "taux": 0.00164, "decimales": 2, "position": "before" },
+    { "code": "GBP", "nom": "Livre sterling", "symbole": "£", "taux": 0.00129, "decimales": 2, "position": "before" },
+    { "code": "CAD", "nom": "Dollar canadien", "symbole": "C$", "taux": 0.00225, "decimales": 2, "position": "before" },
+    { "code": "MAD", "nom": "Dirham marocain", "symbole": "DH", "taux": 0.0163, "decimales": 2, "position": "after" }
+  ],
+  "paysVersDevise": [
+    { "pays": "ML", "devise": "XOF" },
+    { "pays": "SN", "devise": "XOF" },
+    { "pays": "CI", "devise": "XOF" },
+    { "pays": "BF", "devise": "XOF" },
+    { "pays": "NE", "devise": "XOF" },
+    { "pays": "TG", "devise": "XOF" },
+    { "pays": "BJ", "devise": "XOF" },
+    { "pays": "GW", "devise": "XOF" },
+    { "pays": "CM", "devise": "XAF" },
+    { "pays": "GA", "devise": "XAF" },
+    { "pays": "CG", "devise": "XAF" },
+    { "pays": "TD", "devise": "XAF" },
+    { "pays": "CF", "devise": "XAF" },
+    { "pays": "GQ", "devise": "XAF" },
+    { "pays": "FR", "devise": "EUR" },
+    { "pays": "DE", "devise": "EUR" },
+    { "pays": "ES", "devise": "EUR" },
+    { "pays": "IT", "devise": "EUR" },
+    { "pays": "BE", "devise": "EUR" },
+    { "pays": "NL", "devise": "EUR" },
+    { "pays": "PT", "devise": "EUR" },
+    { "pays": "LU", "devise": "EUR" },
+    { "pays": "IE", "devise": "EUR" },
+    { "pays": "US", "devise": "USD" },
+    { "pays": "GB", "devise": "GBP" },
+    { "pays": "CA", "devise": "CAD" },
+    { "pays": "MA", "devise": "MAD" }
+  ],
+  "livraison": [
+    { "nom": "Bamako", "frais": 2000, "delai": "24–48 h" },
+    { "nom": "Autres régions du Mali", "frais": 5000, "delai": "2–5 jours" },
+    { "nom": "International", "frais": null, "delai": "sur devis" }
+  ],
+  "paiement": {
+    "livraison": true,
+    "orangeMoney": "[À COMPLÉTER — n° Orange Money]",
+    "moovMoney": "[À COMPLÉTER — n° Moov Money]",
+    "instructions": "Réglez à la livraison en espèces, ou par mobile money avant expédition. Après validation de votre commande, nous vous envoyons les instructions de paiement par WhatsApp."
+  },
+  "commandeMin": 0
+}

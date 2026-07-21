@@ -1,0 +1,24 @@
+# Configuration de déploiement Netlify — Micro Office
+
+[build]
+  command = "npm run build"
+  publish = "_site"
+  functions = "netlify/functions"
+
+# Serveur de dev local : sert le site Eleventy + les fonctions serverless.
+# Lancer avec : npx netlify dev
+[dev]
+  command = "npm run dev"
+  targetPort = 8080
+  framework = "#custom"
+  publish = "_site"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Empêche l'indexation de l'espace d'administration des commandes.
+[[headers]]
+  for = "/admin-commandes/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
