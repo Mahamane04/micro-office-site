@@ -10,7 +10,7 @@ export const site = {
   phoneHref: 'tel:+22389460000',
   whatsappNumber: '22389460000',
   addressLine: 'Bamako, Mali',
-  formspreeEndpoint: 'https://formspree.io/f/VOTRE_ID_FORMSPREE',
+  formspreeEndpoint: 'https://formspree.io/f/maqrdezn',
   nav: [
     { label: 'Accueil', url: '/' },
     { label: 'Solutions', url: '/solutions/' },
