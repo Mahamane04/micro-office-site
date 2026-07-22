@@ -9,6 +9,10 @@ const { page, prestations } = await loadSolutionPage('branding-signaletique-3d')
 const accueil = await loadAccueil();
 // Same Airtable image as the /solutions/ listing card ('solution-branding'), so both stay identical
 const heroImage = accueil.solutions['solution-branding']?.image || '/images/portfolio/solution-branding.jpg';
+// "Notre différence" before/after — same 'diff-2' (façade) pair as the homepage, from Airtable
+const diff = accueil.diffs.find((d) => d.cle === 'diff-2');
+const diffAvant = diff?.a || '/images/portfolio/diff-2a.jpg';
+const diffApres = diff?.b || '/images/portfolio/diff-2b.jpg';
 ---
 
 <Base
@@ -51,8 +55,8 @@ const heroImage = accueil.solutions['solution-branding']?.image || '/images/port
       <h2 class="max-w-xl font-heading text-2xl font-bold leading-tight text-white md:text-3xl">Voyez le résultat avant de produire.</h2>
       <p class="mt-5 max-w-xl text-offwhite/70">Grâce à la visualisation 3D, examinez les proportions, les couleurs, les matières et l'intégration de votre projet avant sa fabrication ou son installation.</p>
       <div class="mt-10 grid grid-cols-2 gap-2 sm:max-w-xl">
-        <FramedImage src="/images/portfolio/diff-2a.jpg" alt="Façade avant intervention" ratio="aspect-square" />
-        <FramedImage src="/images/portfolio/diff-2b.jpg" alt="Façade brandée et terminée" ratio="aspect-square" />
+        <FramedImage src={diffAvant} alt="Façade avant intervention" ratio="aspect-square" />
+        <FramedImage src={diffApres} alt="Façade brandée et terminée" ratio="aspect-square" />
       </div>
     </div>
   </section>

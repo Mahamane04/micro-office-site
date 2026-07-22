@@ -137,7 +137,7 @@ export interface AccueilContent {
   hero: { titre: string; image: string; badge: string; sousTitre: string }[];
   clients: { name: string; url: string }[];
   solutions: Record<string, { image: string; titre: string }>; // cle → { image, titre }
-  diffs: { titre: string; a: string; b: string }[];
+  diffs: { cle: string; titre: string; a: string; b: string }[];
   lancement: { image: string; image2: string } | null;
   temoignages: { titre: string; image: string }[];
 }
@@ -152,7 +152,7 @@ function groupAccueil(items: AccueilItem[]): AccueilContent {
     solutions: Object.fromEntries(
       active.filter((i) => i.zone === 'Solutions').map((i) => [i.cle, { image: i.image, titre: i.titre }])
     ),
-    diffs: active.filter((i) => i.zone === 'Différence' && i.image).map((i) => ({ titre: i.titre, a: i.image, b: i.image2 })),
+    diffs: active.filter((i) => i.zone === 'Différence' && i.image).map((i) => ({ cle: i.cle, titre: i.titre, a: i.image, b: i.image2 })),
     lancement: (() => {
       const l = active.find((i) => i.zone === 'Lancement' && i.image);
       return l ? { image: l.image, image2: l.image2 } : null;
