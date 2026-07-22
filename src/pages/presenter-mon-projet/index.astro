@@ -155,10 +155,67 @@ const contactOptions = ['Téléphone', 'WhatsApp', 'E-mail'];
   const success = document.getElementById('project-form-success');
   const whatsappLink = document.getElementById('whatsapp-continue') as HTMLAnchorElement | null;
 
+  // Upload attached files to Cloudinary (unsigned preset) so their URLs can
+  // be written to Airtable — the Airtable API itself can't accept raw
+  // multipart file uploads, only URLs.
+  async function uploadFilesToCloudinary(fileInput: HTMLInputElement | null): Promise<string[]> {
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) return [];
+    const uploads = Array.from(fileInput.files).map(async (file) => {
+      const body = new FormData();
+      body.append('file', file);
+      body.append('upload_preset', 'demandes_projet');
+      try {
+        const res = await fetch('https://api.cloudinary.com/v1_1/yvskaorq/auto/upload', {
+          method: 'POST',
+          body,
+        });
+        if (!res.ok) return null;
+        const json = await res.json();
+        return json.secure_url as string;
+      } catch {
+        return null;
+      }
+    });
+    const results = await Promise.all(uploads);
+    return results.filter((url): url is string => Boolean(url));
+  }
+
+  // Best-effort write to Airtable (via the submit-demande function) so every
+  // request is also centralized in the same base as the rest of the site.
+  // Runs independently of Formspree — never blocks or fails the user-facing flow.
+  function submitToAirtable(data: FormData, fichiers: string[]) {
+    const payload = {
+      typeBesoin: data.get('Type de besoin'),
+      description: data.get('Description du projet'),
+      objectif: data.get('Objectif recherché'),
+      ville: data.get("Ville ou zone d'intervention"),
+      delai: data.get('Délai souhaité'),
+      budget: data.get('Budget indicatif'),
+      fichiers,
+      nom: data.get('Nom'),
+      entreprise: data.get('Entreprise'),
+      telephone: data.get('Téléphone'),
+      whatsapp: data.get('WhatsApp'),
+      email: data.get('E-mail'),
+      contactPrefere: data.get('Moyen de contact préféré'),
+    };
+
+    fetch('/.netlify/functions/submit-demande', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch((err) => console.warn('Airtable sync failed (non-blocking):', err));
+  }
+
   if (form && success) {
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const data = new FormData(form);
+      const fileInput = form.querySelector('#fichiers') as HTMLInputElement | null;
+
+      uploadFilesToCloudinary(fileInput).then((fichiers) => {
+        submitToAirtable(data, fichiers);
+      });
 
       fetch(form.action, {
         method: 'POST',
