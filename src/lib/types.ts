@@ -116,6 +116,26 @@ export interface AccueilItem {
   actif: boolean;
 }
 
+// Solutions detail page content — mapped from Airtable "SolutionsPages" table
+export interface SolutionPage {
+  cle: string; // matches the URL slug, e.g. "branding-signaletique-3d"
+  titreH1: string;
+  intro: string;
+  texteBouton: string;
+  ctaTitre: string;
+  ctaTexte: string;
+  ordre: number;
+}
+
+// One service item on a Solutions detail page — from "SolutionsPrestations",
+// linked to SolutionPage by "Cle Page"
+export interface Prestation {
+  clePage: string;
+  titre: string;
+  description: string;
+  ordre: number;
+}
+
 export interface AirtableRecord<T> {
   id: string;
   fields: T;

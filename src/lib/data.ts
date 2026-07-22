@@ -1,6 +1,6 @@
 // Data loaders — fetch and cache portfolio data from Airtable
 
-import type { Projet, ProjetImage, AccueilItem } from './types';
+import type { Projet, ProjetImage, AccueilItem, SolutionPage, Prestation } from './types';
 import { getAirtableClient } from './airtable/client';
 import { cachedFetch, invalidateCache } from './cache';
 
@@ -184,6 +184,112 @@ export function invalidateProjetsCache(): void {
 
 export function invalidateAccueilCache(): void {
   invalidateCache('accueil:');
+}
+
+// ---- Solutions detail pages (SolutionsPages + SolutionsPrestations) --------
+
+// Mock fallback mirrors the content originally hardcoded in each page,
+// so the site renders identically if Airtable is ever unreachable.
+const mockSolutionPages: Record<string, SolutionPage> = {
+  'branding-signaletique-3d': {
+    cle: 'branding-signaletique-3d',
+    titreH1: 'Branding, signalétique & visualisation 3D',
+    intro: "Construisez une identité forte et visualisez son intégration dans vos espaces avant la fabrication ou l'installation.",
+    texteBouton: 'Visualiser mon projet',
+    ctaTitre: 'Prêt à donner forme à votre identité ?',
+    ctaTexte: 'Décrivez votre projet de branding, de signalétique ou de visualisation 3D : nous revenons vers vous avec une proposition claire.',
+    ordre: 1,
+  },
+  'creation-digitale-print': {
+    cle: 'creation-digitale-print',
+    titreH1: 'Création digitale & print',
+    intro: "Communiquez avec des supports professionnels et cohérents, du téléphone de votre client jusqu'à vos supports imprimés.",
+    texteBouton: 'Créer mes supports',
+    ctaTitre: 'Besoin de supports cohérents et professionnels ?',
+    ctaTexte: 'Décrivez votre besoin de communication digitale ou imprimée : nous vous proposons les supports adaptés à votre activité.',
+    ordre: 2,
+  },
+  'sites-web-applications-gestion': {
+    cle: 'sites-web-applications-gestion',
+    titreH1: 'Sites web, applications & solutions de gestion',
+    intro: "Présentez votre entreprise, facilitez l'accès à vos services et centralisez les informations importantes de votre activité.",
+    texteBouton: 'Créer ma solution digitale',
+    ctaTitre: 'Un site, une application ou un outil de gestion en tête ?',
+    ctaTexte: 'Décrivez votre activité et vos besoins : nous vous proposons la solution digitale la plus adaptée.',
+    ordre: 3,
+  },
+  'automatisation-ia': {
+    cle: 'automatisation-ia',
+    titreH1: 'Automatisation & intelligence artificielle',
+    intro: 'Réduisez les tâches répétitives et répondez plus rapidement à vos clients.',
+    texteBouton: 'Automatiser mon activité',
+    ctaTitre: 'Envie de gagner du temps au quotidien ?',
+    ctaTexte: 'Décrivez vos échanges clients les plus répétitifs : nous identifions ce qui peut être automatisé en priorité.',
+    ordre: 4,
+  },
+};
+
+const mockPrestations: Record<string, Prestation[]> = {
+  'branding-signaletique-3d': [
+    { clePage: 'branding-signaletique-3d', titre: 'Création de logo', description: 'Une marque simple, mémorable et déclinable sur tous vos supports.', ordre: 1 },
+    { clePage: 'branding-signaletique-3d', titre: 'Identité visuelle', description: "Couleurs, typographies, règles d'usage pour une image cohérente.", ordre: 2 },
+    { clePage: 'branding-signaletique-3d', titre: 'Enseignes', description: 'Enseignes lumineuses ou non, pensées pour votre façade.', ordre: 3 },
+    { clePage: 'branding-signaletique-3d', titre: 'Habillage de façades', description: 'Une devanture qui affirme votre marque dans la rue.', ordre: 4 },
+    { clePage: 'branding-signaletique-3d', titre: 'Branding de bureaux & boutiques', description: 'Une identité déclinée dans vos espaces intérieurs.', ordre: 5 },
+    { clePage: 'branding-signaletique-3d', titre: 'Stands', description: "Des stands d'exposition qui représentent votre marque sur le terrain.", ordre: 6 },
+    { clePage: 'branding-signaletique-3d', titre: 'Visualisation 3D intérieure et extérieure', description: 'Un rendu réaliste de votre projet avant toute fabrication.', ordre: 7 },
+  ],
+  'creation-digitale-print': [
+    { clePage: 'creation-digitale-print', titre: 'Affiches', description: 'Des visuels percutants pour vos campagnes et événements.', ordre: 1 },
+    { clePage: 'creation-digitale-print', titre: 'Réseaux sociaux', description: 'Un contenu cohérent avec votre identité, prêt à publier.', ordre: 2 },
+    { clePage: 'creation-digitale-print', titre: 'Vidéos courtes', description: 'Des formats courts adaptés aux usages mobiles.', ordre: 3 },
+    { clePage: 'creation-digitale-print', titre: 'Catalogues', description: 'Une présentation claire de vos produits ou services.', ordre: 4 },
+    { clePage: 'creation-digitale-print', titre: 'Cartes de visite', description: 'Une première impression professionnelle et soignée.', ordre: 5 },
+    { clePage: 'creation-digitale-print', titre: 'Flyers', description: 'Des supports imprimés efficaces pour votre communication terrain.', ordre: 6 },
+    { clePage: 'creation-digitale-print', titre: 'Packaging', description: 'Un emballage qui valorise votre produit sur le point de vente.', ordre: 7 },
+    { clePage: 'creation-digitale-print', titre: 'Objets personnalisés', description: 'Des supports à votre image pour vos équipes et événements.', ordre: 8 },
+  ],
+  'sites-web-applications-gestion': [
+    { clePage: 'sites-web-applications-gestion', titre: 'Sites de présentation', description: 'Un site clair pour présenter votre activité et générer des contacts.', ordre: 1 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Sites e-commerce', description: 'Une boutique en ligne pour vendre vos produits.', ordre: 2 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Applications', description: 'Une application mobile adaptée à vos usages métier.', ordre: 3 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Portails clients', description: 'Un espace dédié pour vos clients ou partenaires.', ordre: 4 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Gestion des clients', description: 'Un suivi centralisé de votre relation client.', ordre: 5 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Commandes', description: 'Un processus de commande simple et fiable.', ordre: 6 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Paiements', description: 'Des solutions de paiement adaptées à votre marché.', ordre: 7 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Stocks', description: 'Un suivi précis de vos stocks et de vos produits.', ordre: 8 },
+    { clePage: 'sites-web-applications-gestion', titre: 'Tableaux de bord', description: 'Une vision claire de votre activité, en temps réel.', ordre: 9 },
+  ],
+  'automatisation-ia': [
+    { clePage: 'automatisation-ia', titre: 'Chatbot WhatsApp', description: 'Un premier contact automatisé, disponible à tout moment.', ordre: 1 },
+    { clePage: 'automatisation-ia', titre: 'Assistant commercial', description: 'Un accompagnement automatisé de vos prospects.', ordre: 2 },
+    { clePage: 'automatisation-ia', titre: 'Qualification des prospects', description: 'Identifiez rapidement les demandes prioritaires.', ordre: 3 },
+    { clePage: 'automatisation-ia', titre: 'Préparation des devis', description: 'Des devis préparés plus rapidement à partir des demandes reçues.', ordre: 4 },
+    { clePage: 'automatisation-ia', titre: 'Relances automatiques', description: 'Ne perdez plus une opportunité faute de suivi.', ordre: 5 },
+    { clePage: 'automatisation-ia', titre: 'Notifications', description: 'Restez informé des étapes clés de chaque demande.', ordre: 6 },
+    { clePage: 'automatisation-ia', titre: 'Suivi des demandes', description: "Une vue claire sur l'ensemble de vos échanges clients.", ordre: 7 },
+  ],
+};
+
+/** Load a Solutions detail page's hero/CTA copy + its service items (cached, mock fallback). */
+export async function loadSolutionPage(slug: string): Promise<{ page: SolutionPage | null; prestations: Prestation[] }> {
+  try {
+    const client = getAirtableClient();
+    if (!client) {
+      return { page: mockSolutionPages[slug] || null, prestations: mockPrestations[slug] || [] };
+    }
+    return await cachedFetch(`solution-page:${slug}`, async () => {
+      const [page, prestations] = await Promise.all([client.getSolutionPage(slug), client.getPrestations(slug)]);
+      return { page, prestations };
+    }, 300);
+  } catch (error) {
+    console.warn(`Airtable error loading solution page ${slug}, using mock data:`, error);
+    return { page: mockSolutionPages[slug] || null, prestations: mockPrestations[slug] || [] };
+  }
+}
+
+export function invalidateSolutionsCache(): void {
+  invalidateCache('solution-page:');
 }
 
 export function invalidateProduitsCache(): void {

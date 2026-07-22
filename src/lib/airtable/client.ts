@@ -1,6 +1,6 @@
 // Airtable API client for Micro Office — Portfolio (Projets + Images)
 
-import type { Projet, ProjetImage, AccueilItem, AirtableRecord, AirtableResponse } from '../types';
+import type { Projet, ProjetImage, AccueilItem, SolutionPage, Prestation, AirtableRecord, AirtableResponse } from '../types';
 
 const AIRTABLE_API_URL = 'https://api.airtable.com/v0';
 
@@ -10,6 +10,8 @@ interface AirtableClientConfig {
   projetsTableName?: string;
   imagesTableName?: string;
   accueilTableName?: string;
+  solutionsPagesTableName?: string;
+  solutionsPrestationsTableName?: string;
 }
 
 // ---- Field mapping helpers -------------------------------------------------
@@ -88,6 +90,8 @@ export class AirtableClient {
   private projetsTableName: string;
   private imagesTableName: string;
   private accueilTableName: string;
+  private solutionsPagesTableName: string;
+  private solutionsPrestationsTableName: string;
 
   constructor(config: AirtableClientConfig) {
     this.token = config.token;
@@ -95,6 +99,8 @@ export class AirtableClient {
     this.projetsTableName = config.projetsTableName || 'Projets';
     this.imagesTableName = config.imagesTableName || 'Images';
     this.accueilTableName = config.accueilTableName || 'Accueil';
+    this.solutionsPagesTableName = config.solutionsPagesTableName || 'SolutionsPages';
+    this.solutionsPrestationsTableName = config.solutionsPrestationsTableName || 'SolutionsPrestations';
   }
 
   private async request<T = Record<string, any>>(
@@ -188,6 +194,43 @@ export class AirtableClient {
       }))
       .sort((a, b) => a.ordre - b.ordre);
   }
+
+  // Fetch a Solutions detail page's content (hero + CTA copy) by slug.
+  async getSolutionPage(cle: string): Promise<SolutionPage | null> {
+    const records = await this.request(this.solutionsPagesTableName, {
+      filterByFormula: `{Cle} = "${cle.replace(/"/g, '\\"')}"`,
+      maxRecords: 1,
+    });
+    if (!records.length) return null;
+    const f = records[0].fields as Record<string, any>;
+    return {
+      cle: pick(f, 'Cle', 'cle') || '',
+      titreH1: pick(f, 'Titre H1', 'titreH1') || '',
+      intro: pick(f, 'Intro', 'intro') || '',
+      texteBouton: pick(f, 'Texte bouton hero', 'texteBouton') || '',
+      ctaTitre: pick(f, 'CTA titre', 'ctaTitre') || '',
+      ctaTexte: pick(f, 'CTA texte', 'ctaTexte') || '',
+      ordre: Number(pick(f, 'Ordre', 'ordre')) || 0,
+    };
+  }
+
+  // Fetch the service items ("prestations") for a given Solutions page.
+  async getPrestations(clePage: string): Promise<Prestation[]> {
+    const records = await this.request(this.solutionsPrestationsTableName, {
+      filterByFormula: `{Cle Page} = "${clePage.replace(/"/g, '\\"')}"`,
+    });
+    return records
+      .map((r) => {
+        const f = r.fields as Record<string, any>;
+        return {
+          clePage: pick(f, 'Cle Page', 'clePage') || '',
+          titre: pick(f, 'Titre', 'titre') || '',
+          description: pick(f, 'Description', 'description') || '',
+          ordre: Number(pick(f, 'Ordre', 'ordre')) || 0,
+        };
+      })
+      .sort((a, b) => a.ordre - b.ordre);
+  }
 }
 
 // ---- Singleton -------------------------------------------------------------
@@ -211,6 +254,8 @@ export function getAirtableClient(): AirtableClient | null {
       projetsTableName: env('AIRTABLE_TABLE_PORTFOLIO') || 'Projets',
       imagesTableName: env('AIRTABLE_TABLE_IMAGES') || 'Images',
       accueilTableName: env('AIRTABLE_TABLE_ACCUEIL') || 'Accueil',
+      solutionsPagesTableName: env('AIRTABLE_TABLE_SOLUTIONS_PAGES') || 'SolutionsPages',
+      solutionsPrestationsTableName: env('AIRTABLE_TABLE_SOLUTIONS_PRESTATIONS') || 'SolutionsPrestations',
     });
   }
   return client;

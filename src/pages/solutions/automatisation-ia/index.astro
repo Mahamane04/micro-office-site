@@ -3,16 +3,9 @@ import Base from '@layouts/Base.astro';
 import MotifArc from '@components/MotifArc.astro';
 import MotifDiagonal from '@components/MotifDiagonal.astro';
 import CtaBand from '@components/CtaBand.astro';
+import { loadSolutionPage } from '@lib/data';
 
-const items = [
-  { t: 'Chatbot WhatsApp', d: 'Un premier contact automatisé, disponible à tout moment.' },
-  { t: 'Assistant commercial', d: 'Un accompagnement automatisé de vos prospects.' },
-  { t: 'Qualification des prospects', d: 'Identifiez rapidement les demandes prioritaires.' },
-  { t: 'Préparation des devis', d: 'Des devis préparés plus rapidement à partir des demandes reçues.' },
-  { t: 'Relances automatiques', d: 'Ne perdez plus une opportunité faute de suivi.' },
-  { t: 'Notifications', d: 'Restez informé des étapes clés de chaque demande.' },
-  { t: 'Suivi des demandes', d: 'Une vue claire sur l\'ensemble de vos échanges clients.' },
-];
+const { page, prestations } = await loadSolutionPage('automatisation-ia');
 ---
 
 <Base
@@ -24,9 +17,9 @@ const items = [
     <div class="container-content relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
       <div class="lg:col-span-6">
         <p class="eyebrow"><a href="/solutions/" class="hover:underline">Solutions</a> — 04</p>
-        <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Automatisation &amp; intelligence artificielle</h1>
-        <p class="mt-6 text-lg leading-relaxed text-ink/70">Réduisez les tâches répétitives et répondez plus rapidement à vos clients.</p>
-        <a href="/presenter-mon-projet/" class="btn-primary mt-8">Automatiser mon activité</a>
+        <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">{page?.titreH1}</h1>
+        <p class="mt-6 text-lg leading-relaxed text-ink/70">{page?.intro}</p>
+        <a href="/presenter-mon-projet/" class="btn-primary mt-8">{page?.texteBouton}</a>
       </div>
       <div class="lg:col-span-6">
         <div class="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-ink">
@@ -45,18 +38,15 @@ const items = [
     <div class="container-content">
       <h2 class="font-heading text-2xl font-bold md:text-3xl">Nos prestations</h2>
       <div class="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
-        {items.map((it) => (
+        {prestations.map((it) => (
           <div class="border-t border-ink/10 pt-5">
-            <h3 class="font-heading text-base font-semibold">{it.t}</h3>
-            <p class="mt-2 text-sm text-ink/60">{it.d}</p>
+            <h3 class="font-heading text-base font-semibold">{it.titre}</h3>
+            <p class="mt-2 text-sm text-ink/60">{it.description}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <CtaBand
-    title="Envie de gagner du temps au quotidien ?"
-    text="Décrivez vos échanges clients les plus répétitifs : nous identifions ce qui peut être automatisé en priorité."
-  />
+  <CtaBand title={page?.ctaTitre} text={page?.ctaTexte} />
 </Base>
