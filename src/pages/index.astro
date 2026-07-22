@@ -26,7 +26,7 @@ const heroCards = accueil.hero.length
   ? accueil.hero.map((h) => ({
       img: heroImg(h.image),
       alt: h.titre,
-      badge: h.badge || 'Réalisation',
+      badge: h.badge, // empty = no pill shown (see conditional in markup)
       mark: 'M',
       brand: 'Micro Office',
       role: h.sousTitre, // may be empty — Sous-titre is optional in Airtable, don't repeat titre
@@ -35,7 +35,7 @@ const heroCards = accueil.hero.length
   : (marked.length ? marked : projets).slice(0, 4).map((p) => ({
       img: heroImg(p.couverture),
       alt: p.titre,
-      badge: p.familles[0] || 'Réalisation',
+      badge: p.familles[0] || '', // empty = no pill shown
       mark: 'M',
       brand: p.client || 'Micro Office',
       role: `${p.nombreImages} visuel${p.nombreImages > 1 ? 's' : ''}`,
@@ -115,7 +115,7 @@ const faqs = [
             {heroCards.map((c, i) => (
               <article class:list={['hero-card', i === 0 && 'is-active']} tabindex="0">
                 <img src={c.img} alt={c.alt} loading={i === 0 ? 'eager' : 'lazy'} />
-                <span class="hero-card-badge">{c.badge}</span>
+                {c.badge && <span class="hero-card-badge">{c.badge}</span>}
                 <div class="hero-card-content">
                   <div class="hero-card-brand"><span class="hero-card-mark">{c.mark}</span>{c.brand}</div>
                   <div class="hero-card-sep"></div>
