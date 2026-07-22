@@ -1,0 +1,189 @@
+---
+import Base from '@layouts/Base.astro';
+import MotifArc from '@components/MotifArc.astro';
+import { site } from '@lib/site';
+
+const besoins = [
+  "Branding, signalétique & visualisation 3D",
+  'Création digitale & print',
+  'Site web, application ou solution de gestion',
+  'Automatisation & intelligence artificielle',
+  'Lancement de produit / packaging',
+  'Je ne sais pas encore',
+];
+const delais = ['Le plus tôt possible', 'Dans le mois', 'Dans les 3 mois', 'Pas de délai précis'];
+const budgets = [
+  'Moins de 250 000 FCFA',
+  '250 000 – 1 000 000 FCFA',
+  '1 000 000 – 5 000 000 FCFA',
+  'Plus de 5 000 000 FCFA',
+  'À définir ensemble',
+];
+const contactOptions = ['Téléphone', 'WhatsApp', 'E-mail'];
+---
+
+<Base
+  title="Présenter mon projet — Demande de devis Micro Office"
+  description="Présentez votre projet de branding, signalétique, site web ou automatisation à Micro Office et recevez une réponse adaptée à votre besoin."
+>
+  <section class="relative overflow-hidden section-pad pb-12">
+    <MotifArc position="right-[-4rem] top-[-4rem] text-ink" />
+    <div class="container-content relative">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Présenter mon projet</p>
+        <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">Parlez-nous de votre projet.</h1>
+        <p class="mt-6 text-lg leading-relaxed text-ink/70">Remplissez ce formulaire aussi précisément que possible. Notre équipe étudiera votre demande et vous recontactera par le moyen que vous aurez choisi.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad pt-4">
+    <div class="container-content">
+      <div class="mx-auto max-w-3xl">
+        <form id="project-form" class="space-y-10" action={site.formspreeEndpoint} method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_subject" value="Nouvelle demande de projet — Micro Office" />
+
+          <fieldset class="space-y-6">
+            <legend class="font-heading text-lg font-bold">Votre projet</legend>
+
+            <div>
+              <label for="besoin" class="mb-2 block font-heading text-sm font-semibold">Type de besoin *</label>
+              <select id="besoin" name="Type de besoin" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+                <option value="">Sélectionnez une option</option>
+                {besoins.map((b) => <option>{b}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label for="description" class="mb-2 block font-heading text-sm font-semibold">Description du projet *</label>
+              <textarea id="description" name="Description du projet" required rows="5" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" placeholder="Décrivez votre activité et ce que vous souhaitez créer, améliorer ou organiser."></textarea>
+            </div>
+
+            <div>
+              <label for="objectif" class="mb-2 block font-heading text-sm font-semibold">Objectif recherché</label>
+              <textarea id="objectif" name="Objectif recherché" rows="3" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" placeholder="Ce que vous souhaitez obtenir grâce à ce projet."></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label for="ville" class="mb-2 block font-heading text-sm font-semibold">Ville ou zone d'intervention</label>
+                <input id="ville" name="Ville ou zone d'intervention" type="text" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" placeholder="Bamako, Sikasso..." />
+              </div>
+              <div>
+                <label for="delai" class="mb-2 block font-heading text-sm font-semibold">Délai souhaité</label>
+                <select id="delai" name="Délai souhaité" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+                  <option value="">Sélectionnez une option</option>
+                  {delais.map((d) => <option>{d}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="budget" class="mb-2 block font-heading text-sm font-semibold">Budget indicatif</label>
+              <select id="budget" name="Budget indicatif" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none">
+                <option value="">Sélectionnez une option</option>
+                {budgets.map((b) => <option>{b}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label for="fichiers" class="mb-2 block font-heading text-sm font-semibold">Logo, photo, plan, croquis ou document</label>
+              <input id="fichiers" name="Fichiers joints" type="file" multiple class="w-full rounded-2xl border border-dashed border-ink/20 bg-white px-4 py-3 text-sm text-ink/70 file:mr-4 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-2 file:font-heading file:text-xs file:font-semibold file:text-white" />
+            </div>
+          </fieldset>
+
+          <fieldset class="space-y-6 border-t border-ink/10 pt-10">
+            <legend class="font-heading text-lg font-bold">Vos coordonnées</legend>
+
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label for="nom" class="mb-2 block font-heading text-sm font-semibold">Nom *</label>
+                <input id="nom" name="Nom" type="text" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" />
+              </div>
+              <div>
+                <label for="entreprise" class="mb-2 block font-heading text-sm font-semibold">Entreprise</label>
+                <input id="entreprise" name="Entreprise" type="text" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" />
+              </div>
+              <div>
+                <label for="telephone" class="mb-2 block font-heading text-sm font-semibold">Téléphone *</label>
+                <input id="telephone" name="Téléphone" type="tel" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" />
+              </div>
+              <div>
+                <label for="whatsapp" class="mb-2 block font-heading text-sm font-semibold">WhatsApp</label>
+                <input id="whatsapp" name="WhatsApp" type="tel" class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" placeholder="Si différent du téléphone" />
+              </div>
+              <div class="sm:col-span-2">
+                <label for="email" class="mb-2 block font-heading text-sm font-semibold">E-mail *</label>
+                <input id="email" name="E-mail" type="email" required class="w-full rounded-2xl border border-ink/20 bg-white px-4 py-3 text-ink focus:border-red focus:outline-none" />
+              </div>
+            </div>
+
+            <div>
+              <span class="mb-3 block font-heading text-sm font-semibold">Moyen de contact préféré *</span>
+              <div class="flex flex-wrap gap-6">
+                {contactOptions.map((opt) => (
+                  <label class="flex items-center gap-2 text-sm">
+                    <input type="radio" name="Moyen de contact préféré" value={opt} required class="h-4 w-4 accent-red" />
+                    {opt}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="btn-primary w-full sm:w-auto">Envoyer ma demande</button>
+        </form>
+
+        <div id="project-form-success" class="hidden">
+          <div class="rounded-3xl border border-ink/10 bg-white p-8 shadow-soft">
+            <h2 class="font-heading text-2xl font-bold">Merci !</h2>
+            <p class="mt-4 max-w-lg text-ink/70">Votre demande a bien été transmise. Notre équipe examinera votre projet et vous contactera par le moyen sélectionné.</p>
+            <a id="whatsapp-continue" href={`https://wa.me/${site.whatsappNumber}`} target="_blank" rel="noopener" class="btn-secondary mt-6">Continuer sur WhatsApp</a>
+          </div>
+        </div>
+
+        <p class="mt-8 text-sm text-ink/50">
+          Vous préférez un échange direct&nbsp;? <a href={site.phoneHref} class="underline hover:text-red">Appelez-nous</a> ou <a href={`https://wa.me/${site.whatsappNumber}`} target="_blank" rel="noopener" class="underline hover:text-red">écrivez-nous sur WhatsApp</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.getElementById('project-form') as HTMLFormElement | null;
+  const success = document.getElementById('project-form-success');
+  const whatsappLink = document.getElementById('whatsapp-continue') as HTMLAnchorElement | null;
+
+  if (form && success) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' },
+      })
+        .then(() => {
+          if (whatsappLink) {
+            const besoin = (data.get('Type de besoin') as string) || '';
+            const nom = (data.get('Nom') as string) || '';
+            const message =
+              'Bonjour Micro Office, je viens de vous transmettre une demande de projet' +
+              (besoin ? ` (${besoin})` : '') +
+              (nom ? ` au nom de ${nom}` : '') +
+              '.';
+            const base = whatsappLink.href.split('?')[0];
+            whatsappLink.href = base + '?text=' + encodeURIComponent(message);
+          }
+          form.classList.add('hidden');
+          success.classList.remove('hidden');
+          success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(() => {
+          form.submit();
+        });
+    });
+  }
+</script>
