@@ -2,10 +2,15 @@
 import Base from '@layouts/Base.astro';
 import MotifArc from '@components/MotifArc.astro';
 import MotifDiagonal from '@components/MotifDiagonal.astro';
+import FramedImage from '@components/FramedImage.astro';
 import CtaBand from '@components/CtaBand.astro';
-import { loadSolutionPage } from '@lib/data';
+import { loadSolutionPage, loadAccueil } from '@lib/data';
 
 const { page, prestations } = await loadSolutionPage('automatisation-ia');
+const accueil = await loadAccueil();
+// Same source as the /solutions/ listing card ('solution-automatisation') — shows the
+// icon placeholder until the client adds an image, then both switch together.
+const heroImage = accueil.solutions['solution-automatisation']?.image || '';
 ---
 
 <Base
@@ -22,14 +27,18 @@ const { page, prestations } = await loadSolutionPage('automatisation-ia');
         <a href="/presenter-mon-projet/" class="btn-primary mt-8">{page?.texteBouton}</a>
       </div>
       <div class="lg:col-span-6">
-        <div class="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-ink">
-          <MotifDiagonal position="left-[-2rem] bottom-[-2rem] text-white" />
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="h-20 w-20 text-red" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M18 44c0-9 6-16 14-16s14 7 14 16" stroke-linecap="round"/>
-            <circle cx="32" cy="20" r="7"/>
-            <path d="M14 50h36" stroke-linecap="round"/>
-          </svg>
-        </div>
+        {heroImage ? (
+          <FramedImage src={heroImage} alt={page?.titreH1 || 'Automatisation & intelligence artificielle'} ratio="aspect-[4/3]" />
+        ) : (
+          <div class="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-ink">
+            <MotifDiagonal position="left-[-2rem] bottom-[-2rem] text-white" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="h-20 w-20 text-red" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M18 44c0-9 6-16 14-16s14 7 14 16" stroke-linecap="round"/>
+              <circle cx="32" cy="20" r="7"/>
+              <path d="M14 50h36" stroke-linecap="round"/>
+            </svg>
+          </div>
+        )}
       </div>
     </div>
   </section>

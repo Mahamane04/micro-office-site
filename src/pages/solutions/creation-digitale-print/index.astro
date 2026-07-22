@@ -3,9 +3,11 @@ import Base from '@layouts/Base.astro';
 import MotifArc from '@components/MotifArc.astro';
 import FramedImage from '@components/FramedImage.astro';
 import CtaBand from '@components/CtaBand.astro';
-import { loadSolutionPage } from '@lib/data';
+import { loadSolutionPage, loadAccueil } from '@lib/data';
 
 const { page, prestations } = await loadSolutionPage('creation-digitale-print');
+const accueil = await loadAccueil();
+const heroImage = accueil.solutions['solution-digital']?.image || '/images/portfolio/solution-digital.jpg';
 ---
 
 <Base
@@ -22,7 +24,7 @@ const { page, prestations } = await loadSolutionPage('creation-digitale-print');
         <a href="/presenter-mon-projet/" class="btn-primary mt-8">{page?.texteBouton}</a>
       </div>
       <div class="lg:col-span-6">
-        <FramedImage src="/images/portfolio/solution-digital.jpg" alt="Supports imprimés et stand de marque réalisés par Micro Office" ratio="aspect-[4/3]" />
+        <FramedImage src={heroImage} alt={page?.titreH1 || 'Création digitale & print'} ratio="aspect-[4/3]" />
       </div>
     </div>
   </section>
