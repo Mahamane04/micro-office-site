@@ -101,6 +101,13 @@ Un même élément visuel/texte affiché à plusieurs endroits doit lire **la m�
 3. Console sans erreur. Screenshot si changement visuel.
 4. Commit seulement si demandé.
 
+## Déploiement (en ligne)
+- **Dépôt GitHub** : `git@github.com:Mahamane04/micro-office-site.git` (branche `main`, push = auto-deploy)
+- **Netlify** : site `famous-malasada-d32eb7` → https://famous-malasada-d32eb7.netlify.app (Site ID `a270187a-e7e5-4598-82b2-8e33c0e45577`, compte `mahamane04`, plan gratuit)
+- **Variables d'environnement Netlify** (compte gratuit → forcément **scope "site"**, pas "account/shared" ; passer par `POST /api/v1/accounts/{account}/env?site_id={id}` sans le champ `scopes` sinon 403) : `AIRTABLE_API_TOKEN`, `AIRTABLE_BASE_ID`, `CLOUDINARY_CLOUD_NAME`, `NETLIFY_ISR_SECRET`
+- Vérifié en direct après déploiement : accueil (Airtable), réalisations + lightbox + endpoint galerie, boutique — tout fonctionne en prod, 0 erreur console.
+- **Reste à faire** : webhook Airtable → `netlify/functions/revalidate.ts` (revalidation instantanée au lieu d'attendre le cache 5-10 min) ; domaine personnalisé (optionnel) ; analytics.
+
 ## Schéma Airtable exact (base `appEXrTyylWFmW3U7`)
 > Source de vérité des noms de champs. Le client `src/lib/airtable/client.ts` tolère les
 > variantes d'accents mais s'aligner sur ces noms exacts. Régénérer via l'API meta si le
