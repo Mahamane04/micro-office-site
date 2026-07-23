@@ -2,7 +2,7 @@
 
 import type { Projet, ProjetImage, AccueilItem, SolutionPage, Prestation } from './types';
 import { getAirtableClient } from './airtable/client';
-import { cachedFetch, invalidateCache } from './cache';
+import { cachedFetch } from './cache';
 
 // ---- Mock data (used when Airtable is not configured) ----------------------
 // Mirrors the real Airtable schema so templates render identically offline.
@@ -175,17 +175,6 @@ export async function loadAccueil(): Promise<AccueilContent> {
   }
 }
 
-// ---- Cache invalidation (called by webhooks) -------------------------------
-export function invalidateProjetsCache(): void {
-  invalidateCache('projet:');
-  invalidateCache('projets:');
-  invalidateCache('images:');
-}
-
-export function invalidateAccueilCache(): void {
-  invalidateCache('accueil:');
-}
-
 // ---- Solutions detail pages (SolutionsPages + SolutionsPrestations) --------
 
 // Mock fallback mirrors the content originally hardcoded in each page,
@@ -288,15 +277,3 @@ export async function loadSolutionPage(slug: string): Promise<{ page: SolutionPa
   }
 }
 
-export function invalidateSolutionsCache(): void {
-  invalidateCache('solution-page:');
-}
-
-export function invalidateProduitsCache(): void {
-  invalidateCache('produit:');
-  invalidateCache('produits:');
-}
-
-export function invalidateConfigCache(): void {
-  invalidateCache('config:');
-}

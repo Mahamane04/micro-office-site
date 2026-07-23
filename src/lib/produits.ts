@@ -3,7 +3,7 @@
 
 import type { Produit } from './types';
 import { getAirtableClient } from './airtable/client';
-import { cachedFetch, invalidateCache } from './cache';
+import { cachedFetch } from './cache';
 
 // Mock fallback: renders if Airtable is unreachable or not configured.
 const mockProduits: Produit[] = [
@@ -51,8 +51,4 @@ export async function loadAllProduits(): Promise<Produit[]> {
 export async function loadProduitBySlug(slug: string): Promise<Produit | null> {
   const produits = await loadAllProduits();
   return produits.find((p) => p.slug === slug) || null;
-}
-
-export function invalidateProduitsBoutiqueCache(): void {
-  invalidateCache('produits:');
 }

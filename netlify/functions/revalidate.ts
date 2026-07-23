@@ -1,105 +1,80 @@
-// Netlify function to handle ISR revalidation
-// Triggered by Airtable webhooks or scheduled tasks
+// Netlify function: instant cache purge triggered by an Airtable Automation
+// (or any authenticated caller). Any edit takes effect immediately instead
+// of waiting for the s-maxage/stale-while-revalidate window in netlify.toml.
+//
+// Why this purges via the Netlify API instead of clearing an in-memory
+// cache: on Netlify each function invocation can run in a different,
+// isolated process. A JS Map cleared inside THIS function's memory has no
+// effect on the separate process serving actual page requests — the old
+// version of this file did that and silently did nothing. Purging
+// Netlify's CDN via its API is the mechanism that actually works across
+// serverless instances.
 
 import type { Context } from '@netlify/functions';
-import { invalidateProduitsCache, invalidateProjetsCache, invalidateConfigCache } from '../../src/lib/data';
 
-const WEBHOOK_SECRET = process.env.NETLIFY_ISR_SECRET || 'dev-secret';
+const WEBHOOK_SECRET = process.env.NETLIFY_ISR_SECRET;
+const PURGE_TOKEN = process.env.NETLIFY_PURGE_TOKEN;
+const SITE_ID = process.env.NETLIFY_SITE_ID;
 
-interface WebhookPayload {
-  table?: string;
-  action?: string;
-  record?: {
-    id: string;
-    slug?: string;
-    nom?: string;
-  };
-  timestamp?: string;
-}
-
-export default async (req: Request, context: Context) => {
-  // Only allow POST requests
+export default async (req: Request, _context: Context) => {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
 
+  const providedSecret = req.headers.get('x-webhook-secret');
+  if (!WEBHOOK_SECRET || providedSecret !== WEBHOOK_SECRET) {
+    console.warn('revalidate: invalid or missing webhook secret');
+    return new Response('Unauthorized', { status: 401 });
+  }
+
+  if (!PURGE_TOKEN || !SITE_ID) {
+    console.error('revalidate: NETLIFY_PURGE_TOKEN or NETLIFY_SITE_ID not configured');
+    return new Response(JSON.stringify({ ok: false, error: 'Server not configured' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Payload is informational only (which table/record triggered this) —
+  // logged for visibility, but the purge itself is whole-site (simplest
+  // correct option on the free plan, which has no per-path cache tags set up).
+  let payload: Record<string, unknown> = {};
   try {
-    // Verify webhook secret
-    const providedSecret = req.headers.get('x-webhook-secret');
-    if (providedSecret !== WEBHOOK_SECRET) {
-      console.warn('Invalid webhook secret');
-      return new Response('Unauthorized', { status: 401 });
-    }
+    payload = await req.json();
+  } catch {
+    // No/invalid body is fine — still purge.
+  }
 
-    // Parse payload
-    let payload: WebhookPayload;
-    try {
-      const body = await req.text();
-      payload = JSON.parse(body);
-    } catch (error) {
-      console.error('Failed to parse webhook payload:', error);
-      return new Response('Invalid JSON', { status: 400 });
-    }
-
-    console.log('Webhook received:', {
-      table: payload.table,
-      action: payload.action,
-      slug: payload.record?.slug,
+  try {
+    const res = await fetch('https://api.netlify.com/api/v1/purge', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${PURGE_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ site_id: SITE_ID }),
     });
 
-    const revalidatedPaths: string[] = [];
-
-    // Handle table-specific revalidation
-    if (payload.table === 'Produits') {
-      invalidateProduitsCache();
-      revalidatedPaths.push('/boutique/');
-      if (payload.record?.slug) {
-        revalidatedPaths.push(`/boutique/${payload.record.slug}/`);
-      }
-    } else if (payload.table === 'Projets') {
-      invalidateProjetsCache();
-      revalidatedPaths.push('/realisations/');
-      if (payload.record?.slug) {
-        revalidatedPaths.push(`/realisations/${payload.record.slug}/`);
-      }
-    } else if (payload.table === 'Configuration') {
-      invalidateConfigCache();
-      revalidatedPaths.push('/');
-    } else if (payload.table === 'TTL' || payload.action === 'periodic') {
-      // Periodic TTL revalidation
-      invalidateProduitsCache();
-      invalidateProjetsCache();
-      invalidateConfigCache();
-      revalidatedPaths.push('/boutique/', '/realisations/', '/');
+    if (!res.ok) {
+      const error = await res.text().catch(() => '');
+      console.error('revalidate: Netlify purge failed', res.status, error);
+      return new Response(JSON.stringify({ ok: false, error: 'Purge failed' }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    console.log('Cache invalidated for paths:', revalidatedPaths);
+    console.log('revalidate: purge triggered', { table: payload.table, timestamp: new Date().toISOString() });
 
-    // Return success response
     return new Response(
-      JSON.stringify({
-        ok: true,
-        message: 'Revalidation triggered',
-        revalidatedPaths,
-        timestamp: new Date().toISOString(),
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
+      JSON.stringify({ ok: true, message: 'Site cache purge triggered', timestamp: new Date().toISOString() }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Revalidation error:', error);
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        error: String(error),
-        timestamp: new Date().toISOString(),
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    console.error('revalidate: unexpected error', error);
+    return new Response(JSON.stringify({ ok: false, error: String(error) }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 };
