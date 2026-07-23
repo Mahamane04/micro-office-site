@@ -6,12 +6,42 @@ interface Props {
   ratio?: string;
   label?: string | false;
   radius?: string;
+  /** Optional responsive sources (e.g. Cloudinary variants) */
+  srcset?: string;
+  sizes?: string;
+  /** Explicit intrinsic dimensions to avoid layout shift */
+  width?: number;
+  height?: number;
+  /** Above-the-fold image: load eagerly with high priority */
+  eager?: boolean;
 }
-const { src, alt, ratio = 'aspect-[4/5]', label = false, radius = 'rounded-3xl' } = Astro.props;
+const {
+  src,
+  alt,
+  ratio = 'aspect-[4/5]',
+  label = false,
+  radius = 'rounded-3xl',
+  srcset,
+  sizes,
+  width,
+  height,
+  eager = false,
+} = Astro.props;
 ---
 <div class={`group relative ${ratio} overflow-hidden ${radius} bg-anthracite/5`}>
-  <img src={src} alt={alt} loading="lazy" class="h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.05]">
+  <img
+    src={src}
+    srcset={srcset}
+    sizes={sizes}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+    decoding="async"
+    class="h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.05] motion-reduce:transition-none"
+  >
   {label && (
-    <span class="pointer-events-none absolute bottom-4 left-4 translate-y-2 rounded-full bg-white/90 px-4 py-1.5 font-heading text-xs font-semibold text-ink opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">{label}</span>
+    <span class="pointer-events-none absolute bottom-4 left-4 translate-y-2 rounded-full bg-white/90 px-4 py-1.5 font-heading text-xs font-semibold text-ink opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none">{label}</span>
   )}
 </div>

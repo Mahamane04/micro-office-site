@@ -1,0 +1,335 @@
+---
+// Fullscreen portfolio lightbox — vanilla, no dependency.
+// Include ONCE per page. Any element carrying data-lightbox-open + data-slug
+// (+ optional data-titre / data-categorie) opens the gallery of that project.
+// Images are fetched on demand from /api/galerie/[slug].json and cached.
+---
+
+<div
+  id="lightbox"
+  class="lightbox fixed inset-0 z-[100] hidden bg-ink/95 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Galerie du projet"
+  data-lb-backdrop
+>
+  <!-- Header: title / category / counter -->
+  <div class="lb-safe-top absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-4 p-4 sm:p-6">
+    <div class="min-w-0">
+      <p class="tag-mono text-red" data-lb-categorie></p>
+      <h2 class="mt-1 truncate font-heading text-base font-bold text-white sm:text-lg" data-lb-titre></h2>
+    </div>
+    <div class="flex shrink-0 items-center gap-3">
+      <span class="font-mono text-[11px] uppercase tracking-[0.15em] text-white/60" data-lb-counter aria-live="polite"></span>
+      <button
+        type="button"
+        class="lb-btn"
+        data-lb-close-btn
+        aria-label="Fermer la galerie"
+      >
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stage -->
+  <div class="absolute inset-0 flex items-center justify-center" data-lb-stage data-lb-backdrop>
+    <div class="lb-media relative flex max-h-full max-w-full items-center justify-center" data-lb-media>
+      <!-- Image injected here by the script -->
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="pointer-events-none absolute hidden" data-lb-spinner aria-hidden="true">
+      <span class="lb-spinner"></span>
+    </div>
+
+    <!-- Error / empty message -->
+    <p class="hidden max-w-sm px-6 text-center text-sm text-white/80" data-lb-message role="status"></p>
+  </div>
+
+  <!-- Prev / Next -->
+  <button type="button" class="lb-btn lb-nav absolute left-3 top-1/2 z-10 -translate-y-1/2 sm:left-5" data-lb-prev aria-label="Image précédente">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button type="button" class="lb-btn lb-nav absolute right-3 top-1/2 z-10 -translate-y-1/2 sm:right-5" data-lb-next aria-label="Image suivante">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+
+  <!-- Dots -->
+  <div class="lb-safe-bottom absolute inset-x-0 bottom-0 z-10 flex justify-center p-4 sm:p-5" data-lb-backdrop>
+    <div class="flex max-w-[85vw] flex-wrap justify-center gap-2" data-lb-dots role="tablist" aria-label="Aller à une image"></div>
+  </div>
+</div>
+
+<style>
+  .lightbox { touch-action: pan-y pinch-zoom; }
+  .lb-safe-top { padding-top: max(1rem, env(safe-area-inset-top)); }
+  .lb-safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+
+  .lb-btn {
+    display: flex; align-items: center; justify-content: center;
+    height: 2.75rem; width: 2.75rem; border-radius: 9999px;
+    color: #fff; background: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.2s;
+  }
+  .lb-btn:hover { background: rgba(255, 255, 255, 0.22); }
+  .lb-btn:focus-visible { outline: 2px solid #ed1c24; outline-offset: 2px; }
+
+  .lb-media :global(img) {
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 8.5rem);
+    width: auto; height: auto;
+    object-fit: contain;
+    user-select: none; -webkit-user-drag: none;
+  }
+  @media (min-width: 640px) {
+    .lb-media :global(img) { max-width: calc(100vw - 9rem); }
+  }
+
+  .lb-dot {
+    height: 0.5rem; width: 0.5rem; border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  .lb-dot:hover { background: rgba(255, 255, 255, 0.6); }
+  .lb-dot[aria-selected='true'] { background: #ed1c24; transform: scale(1.25); }
+  .lb-dot:focus-visible { outline: 2px solid #ed1c24; outline-offset: 2px; }
+
+  .lb-spinner {
+    display: block; height: 2.5rem; width: 2.5rem; border-radius: 9999px;
+    border: 3px solid rgba(255, 255, 255, 0.2); border-top-color: #ed1c24;
+    animation: lb-spin 0.8s linear infinite;
+  }
+  @keyframes lb-spin { to { transform: rotate(360deg); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lb-btn, .lb-dot { transition: none; }
+    .lb-spinner { animation-duration: 1.6s; }
+  }
+</style>
+
+<script>
+  interface LbImage { src: string; alt: string }
+  interface LbGallery { titre: string; categorie: string; images: LbImage[] }
+
+  const lb = document.getElementById('lightbox');
+  if (lb) {
+    const elTitre = lb.querySelector('[data-lb-titre]') as HTMLElement;
+    const elCat = lb.querySelector('[data-lb-categorie]') as HTMLElement;
+    const elCounter = lb.querySelector('[data-lb-counter]') as HTMLElement;
+    const elMedia = lb.querySelector('[data-lb-media]') as HTMLElement;
+    const elSpinner = lb.querySelector('[data-lb-spinner]') as HTMLElement;
+    const elMessage = lb.querySelector('[data-lb-message]') as HTMLElement;
+    const elDots = lb.querySelector('[data-lb-dots]') as HTMLElement;
+    const btnClose = lb.querySelector('[data-lb-close-btn]') as HTMLButtonElement;
+    const btnPrev = lb.querySelector('[data-lb-prev]') as HTMLButtonElement;
+    const btnNext = lb.querySelector('[data-lb-next]') as HTMLButtonElement;
+    const stage = lb.querySelector('[data-lb-stage]') as HTMLElement;
+
+    const cache = new Map<string, LbGallery>();
+    let images: LbImage[] = [];
+    let index = 0;
+    let renderToken = 0; // guards against rapid prev/next races
+    let trigger: HTMLElement | null = null; // element to restore focus to
+    let scrollY = 0;
+    const preloaded = new Set<string>();
+
+    const isOpen = () => !lb.classList.contains('hidden');
+
+    // ---- Scroll lock (position restored exactly on close) ----
+    function lockScroll() {
+      scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflow = 'hidden';
+    }
+    function unlockScroll() {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, scrollY);
+    }
+
+    // ---- Rendering ----
+    function setMessage(msg: string) {
+      elMessage.textContent = msg;
+      elMessage.classList.remove('hidden');
+      elSpinner.classList.add('hidden');
+      elMedia.innerHTML = '';
+    }
+
+    function preload(i: number) {
+      if (!images.length) return;
+      const img = images[((i % images.length) + images.length) % images.length]; // circular
+      if (!img || preloaded.has(img.src)) return;
+      preloaded.add(img.src);
+      new Image().src = img.src;
+    }
+
+    function renderDots() {
+      elDots.innerHTML = '';
+      if (images.length < 2) return;
+      images.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'lb-dot';
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `Image ${i + 1} sur ${images.length}`);
+        dot.setAttribute('aria-selected', String(i === index));
+        dot.addEventListener('click', () => show(i));
+        elDots.appendChild(dot);
+      });
+    }
+
+    function updateChrome() {
+      const pad = (n: number) => String(n).padStart(2, '0');
+      elCounter.textContent = images.length ? `${pad(index + 1)} / ${pad(images.length)}` : '';
+      const showNav = images.length > 1;
+      btnPrev.classList.toggle('hidden', !showNav);
+      btnNext.classList.toggle('hidden', !showNav);
+      elDots.querySelectorAll('.lb-dot').forEach((d, i) => d.setAttribute('aria-selected', String(i === index)));
+    }
+
+    function show(i: number) {
+      if (!images.length) return;
+      index = ((i % images.length) + images.length) % images.length; // circular
+      const token = ++renderToken;
+      const { src, alt } = images[index];
+
+      elMessage.classList.add('hidden');
+      elSpinner.classList.remove('hidden');
+      updateChrome();
+
+      const img = document.createElement('img');
+      img.decoding = 'async';
+      img.alt = alt;
+      img.addEventListener('load', () => {
+        if (token !== renderToken) return; // a newer image superseded this one
+        elMedia.innerHTML = '';
+        elMedia.appendChild(img);
+        elSpinner.classList.add('hidden');
+        preload(index + 1);
+        preload(index - 1);
+      });
+      img.addEventListener('error', () => {
+        if (token !== renderToken) return;
+        setMessage("Impossible de charger cette image. Vérifiez votre connexion puis réessayez.");
+        updateChrome();
+      });
+      img.src = src;
+    }
+
+    const next = () => show(index + 1);
+    const prev = () => show(index - 1);
+
+    // ---- Open / close ----
+    async function open(card: HTMLElement) {
+      trigger = card;
+      const slug = card.dataset.slug || '';
+      elTitre.textContent = card.dataset.titre || '';
+      elCat.textContent = card.dataset.categorie || '';
+      elCounter.textContent = '';
+      elMedia.innerHTML = '';
+      elDots.innerHTML = '';
+      elMessage.classList.add('hidden');
+      elSpinner.classList.remove('hidden');
+      btnPrev.classList.add('hidden');
+      btnNext.classList.add('hidden');
+
+      lockScroll();
+      lb.classList.remove('hidden');
+      btnClose.focus();
+
+      let gallery = cache.get(slug);
+      if (!gallery) {
+        try {
+          const res = await fetch(`/api/galerie/${encodeURIComponent(slug)}.json`);
+          if (!res.ok) throw new Error(String(res.status));
+          gallery = (await res.json()) as LbGallery;
+          cache.set(slug, gallery);
+        } catch {
+          if (isOpen()) setMessage('Impossible de charger la galerie. Vérifiez votre connexion puis réessayez.');
+          return;
+        }
+      }
+      if (!isOpen()) return; // closed while fetching
+
+      elTitre.textContent = gallery.titre || elTitre.textContent;
+      if (gallery.categorie) elCat.textContent = gallery.categorie;
+      images = gallery.images;
+      index = 0;
+
+      if (!images.length) {
+        setMessage('Ce projet ne contient pas encore de visuels.');
+        return;
+      }
+      renderDots();
+      show(0);
+    }
+
+    function close() {
+      lb.classList.add('hidden');
+      renderToken++; // cancel in-flight renders
+      elMedia.innerHTML = '';
+      images = [];
+      unlockScroll();
+      trigger?.focus({ preventScroll: true }); // restore focus without scrolling the page
+      trigger = null;
+    }
+
+    // ---- Wiring ----
+    document.addEventListener('click', (e) => {
+      const card = (e.target as HTMLElement).closest<HTMLElement>('[data-lightbox-open]');
+      if (card) {
+        e.preventDefault();
+        open(card);
+      }
+    });
+
+    btnClose.addEventListener('click', close);
+    btnPrev.addEventListener('click', prev);
+    btnNext.addEventListener('click', next);
+
+    // Backdrop click closes — but not clicks on the image or controls
+    lb.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.hasAttribute('data-lb-backdrop')) close();
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+      if (!isOpen()) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+      else if (e.key === 'Tab') {
+        // Focus trap
+        const focusables = Array.from(
+          lb.querySelectorAll<HTMLElement>('button:not(.hidden), [href]')
+        ).filter((el) => el.offsetParent !== null);
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    // Touch swipe (horizontal) on the stage
+    let touchX = 0;
+    let touchY = 0;
+    stage.addEventListener('pointerdown', (e) => { touchX = e.clientX; touchY = e.clientY; });
+    stage.addEventListener('pointerup', (e) => {
+      const dx = e.clientX - touchX;
+      const dy = e.clientY - touchY;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) next();
+        else prev();
+      }
+    });
+  }
+</script>

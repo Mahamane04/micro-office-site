@@ -61,6 +61,14 @@ Un même élément visuel/texte affiché à plusieurs endroits doit lire **la m�
 - Les boutons « Ajouter au panier » ont été retirés (pas de panier) — remplacés par « Voir le produit ».
 - **Supabase entièrement supprimé** (paquet + 6 fonctions serverless mortes) — ne pas réintroduire, la boutique est 100% Airtable.
 
+## Galerie portfolio (lightbox plein écran)
+- `/realisations/` : cliquer une **couverture** ouvre la galerie du projet en plein écran (sans changer de page) ; cliquer le **titre** mène à la page détail (conservée).
+- `src/components/Lightbox.astro` — composant autonome, vanilla (aucune lib), design tokens du site. Inclure **une fois** par page ; tout élément avec `data-lightbox-open` + `data-slug` l'ouvre.
+- Images à la demande : `src/pages/api/galerie/[slug].json.ts` (jamais les ~400 images au démarrage ; cache client par slug + préchargement des seules voisines ; 1 seule `<img>` dans le DOM).
+- Cloudinary : `containUrl(url, 1600)` (c_limit, sans recadrage) pour la lightbox ; `smartCrop` + `srcset` 480/768/1024 pour les miniatures de grille (width/height explicites, 1re carte eager).
+- Comportements : flèches clavier, balayage tactile, Échap/fond/bouton pour fermer (l'image ne ferme pas), boucle circulaire, compteur `01 / 47`, points d'accès direct, scroll bloqué puis restauré à l'identique, focus restauré (`preventScroll`), safe-areas iOS, `prefers-reduced-motion`, états chargement/erreur/vide, garde anti-course (`renderToken`).
+- `FramedImage.astro` étendu (srcset/sizes/width/height/eager, optionnels — usages existants inchangés).
+
 ## SEO technique (en place)
 - `public/favicon.svg` — logo de marque (M rouge / O blanc sur fond ink).
 - `public/images/og/micro-office-og.jpg` (1200×630) — carte de partage, référencée par `Base.astro`.

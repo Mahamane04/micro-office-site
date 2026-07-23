@@ -140,6 +140,21 @@ export function smartCrop(url: string, width: number, height: number): string {
 }
 
 /**
+ * Insert a "fit inside" transformation into a full Cloudinary delivery URL:
+ * c_limit never crops and never upscales — the whole image stays visible,
+ * which is what the fullscreen lightbox needs (object-fit: contain).
+ * Non-Cloudinary URLs are returned untouched.
+ */
+export function containUrl(url: string, width: number): string {
+  if (!url || !isCloudinaryUrl(url)) return url;
+  const marker = '/image/upload/';
+  const idx = url.indexOf(marker);
+  if (idx === -1) return url;
+  const transform = `c_limit,w_${width},q_auto,f_auto`;
+  return url.slice(0, idx + marker.length) + transform + '/' + url.slice(idx + marker.length);
+}
+
+/**
  * Check if URL is already a Cloudinary URL
  */
 export function isCloudinaryUrl(url: string): boolean {

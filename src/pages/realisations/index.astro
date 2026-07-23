@@ -2,12 +2,22 @@
 import Base from '@layouts/Base.astro';
 import MotifArc from '@components/MotifArc.astro';
 import FramedImage from '@components/FramedImage.astro';
+import Lightbox from '@components/Lightbox.astro';
 import CtaBand from '@components/CtaBand.astro';
 import { loadAllProjets } from '@lib/data';
+import { smartCrop, isCloudinaryUrl } from '@lib/cloudinary';
 
 const projets = await loadAllProjets();
 // Filter by clean families (from Airtable "Famille"), fallback to raw categories
 const familles = [...new Set(projets.flatMap((p) => (p.familles.length ? p.familles : p.categories)))].sort();
+
+// One lightweight thumbnail per project: Cloudinary smart-crop variants at 4:3.
+// Grid columns cap around ~420px wide, so 480/768/1024 covers 1x/2x densities.
+const coverSrcset = (url: string) =>
+  isCloudinaryUrl(url)
+    ? [480, 768, 1024].map((w) => `${smartCrop(url, w, Math.round((w * 3) / 4))} ${w}w`).join(', ')
+    : undefined;
+const coverSizes = '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw';
 ---
 
 <Base
@@ -50,18 +60,38 @@ const familles = [...new Set(projets.flatMap((p) => (p.familles.length ? p.famil
 
       {/* Cards grid */}
       <div id="portfolio-grid" class="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-        {projets.map((p) => (
+        {projets.map((p, i) => (
           <article class="portfolio-card" data-categories={(p.familles.length ? p.familles : p.categories).join('|')} data-title={p.titre}>
+            <button
+              type="button"
+              class="group block w-full rounded-3xl text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
+              data-lightbox-open
+              data-slug={p.slug}
+              data-titre={p.titre}
+              data-categorie={p.familles[0] || p.categories[0] || ''}
+              aria-label={`Ouvrir la galerie du projet ${p.titre}`}
+            >
+              <FramedImage
+                src={isCloudinaryUrl(p.couverture) ? smartCrop(p.couverture, 768, 576) : p.couverture}
+                srcset={coverSrcset(p.couverture)}
+                sizes={coverSizes}
+                width={768}
+                height={576}
+                alt={`Couverture du projet ${p.titre}`}
+                ratio="aspect-[4/3]"
+                label="Voir la galerie →"
+                eager={i === 0}
+              />
+            </button>
+            {(p.familles[0] || p.categories[0]) && <p class="tag-mono mt-5 text-red">{p.familles[0] || p.categories[0]}</p>}
             <a href={`/realisations/${p.slug}/`} class="group block">
-              <FramedImage src={p.couverture} alt={p.titre} ratio="aspect-[4/3]" label="Voir le projet →" />
-              {(p.familles[0] || p.categories[0]) && <p class="tag-mono mt-5 text-red">{p.familles[0] || p.categories[0]}</p>}
               <h2 class="mt-2 font-heading text-lg font-bold group-hover:text-red">{p.titre}</h2>
-              {p.client && <p class="tag-mono mt-1 text-ink/40">Client — {p.client}</p>}
-              {p.accroche && <p class="mt-2 text-sm text-ink/60">{p.accroche}</p>}
-              {!p.accroche && p.nombreImages > 0 && (
-                <p class="mt-2 text-sm text-ink/60">{p.nombreImages} image{p.nombreImages > 1 ? 's' : ''}</p>
-              )}
             </a>
+            {p.client && <p class="tag-mono mt-1 text-ink/40">Client — {p.client}</p>}
+            {p.accroche && <p class="mt-2 text-sm text-ink/60">{p.accroche}</p>}
+            {!p.accroche && p.nombreImages > 0 && (
+              <p class="mt-2 text-sm text-ink/60">{p.nombreImages} image{p.nombreImages > 1 ? 's' : ''}</p>
+            )}
           </article>
         ))}
       </div>
@@ -71,6 +101,7 @@ const familles = [...new Set(projets.flatMap((p) => (p.familles.length ? p.famil
   </section>
 
   <CtaBand />
+  <Lightbox />
 </Base>
 
 <script>
