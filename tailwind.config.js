@@ -14,7 +14,7 @@ module.exports = {
         grey: "#737373",
       },
       fontFamily: {
-        heading: ["Clash Display", "ui-sans-serif", "sans-serif"],
+        heading: ["Satoshi", "ui-sans-serif", "sans-serif"],
         body: ["Geist", "ui-sans-serif", "sans-serif"],
         mono: ["Geist Mono", "ui-monospace", "monospace"],
       },

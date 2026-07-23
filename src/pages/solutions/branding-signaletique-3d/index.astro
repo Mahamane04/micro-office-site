@@ -2,6 +2,7 @@
 import Base from '@layouts/Base.astro';
 import MotifArc from '@components/MotifArc.astro';
 import FramedImage from '@components/FramedImage.astro';
+import PrestationIcon from '@components/PrestationIcon.astro';
 import CtaBand from '@components/CtaBand.astro';
 import { loadSolutionPage, loadAccueil } from '@lib/data';
 
@@ -21,14 +22,24 @@ const diffApres = diff?.b || '/images/portfolio/diff-2b.jpg';
   title="Signalétique intérieure et extérieure, visualisation 3D de projet au Mali"
   description="Création de logo, signalétique intérieure et extérieure, habillage de façades, création de packaging et modélisation 3D de produit par Micro Office, agence de branding à Bamako."
 >
+  <!-- Hero -->
   <section class="relative overflow-hidden section-pad pb-12">
+    <div class="pointer-events-none absolute inset-0 bg-blueprint-light [mask-image:linear-gradient(to_bottom,black,transparent_75%)]" aria-hidden="true"></div>
     <MotifArc position="right-[-4rem] top-[-4rem] text-ink" />
     <div class="container-content relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
       <div class="lg:col-span-6">
-        <p class="eyebrow"><a href="/solutions/" class="hover:underline">Solutions</a> — 01</p>
-        <h1 class="font-heading text-4xl font-bold leading-tight md:text-5xl">{page?.titreH1}</h1>
-        <p class="mt-6 text-lg leading-relaxed text-ink/70">{page?.intro}</p>
-        <a href="/presenter-mon-projet/" class="btn-primary mt-8">{page?.texteBouton}</a>
+        <p class="eyebrow"><a href="/solutions/" class="hover:underline">Solutions</a> <span class="text-red">— 01</span></p>
+        <h1 class="mt-3 font-heading text-4xl font-bold leading-[1.05] md:text-5xl">{page?.titreH1}</h1>
+        <p class="mt-6 max-w-lg text-lg leading-relaxed text-ink/70">{page?.intro}</p>
+        <ul class="mt-8 flex flex-wrap gap-2">
+          {prestations.slice(0, 4).map((it) => (
+            <li class="rounded-full border border-ink/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink/55">{it.titre}</li>
+          ))}
+        </ul>
+        <div class="mt-9 flex flex-wrap items-center gap-4">
+          <a href="/presenter-mon-projet/" class="btn-primary">{page?.texteBouton}</a>
+          <a href="/realisations/" class="font-heading text-sm font-semibold text-ink underline decoration-red decoration-2 underline-offset-4 hover:text-red">Voir nos réalisations →</a>
+        </div>
       </div>
       <div class="lg:col-span-6">
         <FramedImage src={heroImage} alt={page?.titreH1 || 'Branding, signalétique & visualisation 3D'} ratio="aspect-[4/3]" />
@@ -36,29 +47,44 @@ const diffApres = diff?.b || '/images/portfolio/diff-2b.jpg';
     </div>
   </section>
 
+  <!-- Prestations -->
   <section class="section-pad border-t border-ink/10">
     <div class="container-content">
-      <h2 class="font-heading text-2xl font-bold md:text-3xl">Nos prestations</h2>
-      <div class="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
+      <div class="max-w-2xl">
+        <p class="eyebrow">Ce que nous créons</p>
+        <h2 class="mt-3 font-heading text-3xl font-bold md:text-4xl">Nos prestations</h2>
+        <p class="mt-4 text-ink/60">Une identité forte, déclinée du logo jusqu'à vos espaces — visualisée avant d'être produite.</p>
+      </div>
+      <div class="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {prestations.map((it) => (
-          <div class="border-t border-ink/10 pt-5">
-            <h3 class="font-heading text-base font-semibold">{it.titre}</h3>
-            <p class="mt-2 text-sm text-ink/60">{it.description}</p>
-          </div>
+          <article class="group relative rounded-3xl border border-ink/10 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-red/40 hover:shadow-soft">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-ink text-white transition-colors duration-300 group-hover:bg-red">
+              <PrestationIcon label={it.titre} class="h-6 w-6" />
+            </div>
+            <h3 class="mt-5 font-heading text-lg font-bold group-hover:text-red">{it.titre}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink/60">{it.description}</p>
+          </article>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- Notre différence -->
   <section class="relative overflow-hidden bg-ink text-offwhite section-pad">
     <MotifArc position="right-0 bottom-0 text-white" />
     <div class="container-content relative">
       <p class="eyebrow">Notre différence</p>
-      <h2 class="max-w-xl font-heading text-2xl font-bold leading-tight text-white md:text-3xl">Voyez le résultat avant de produire.</h2>
+      <h2 class="mt-3 max-w-xl font-heading text-3xl font-bold leading-tight text-white md:text-4xl">Voyez le résultat avant de produire.</h2>
       <p class="mt-5 max-w-xl text-offwhite/70">Grâce à la visualisation 3D, examinez les proportions, les couleurs, les matières et l'intégration de votre projet avant sa fabrication ou son installation.</p>
-      <div class="mt-10 grid grid-cols-2 gap-2 sm:max-w-xl">
-        <FramedImage src={diffAvant} alt="Façade avant intervention" ratio="aspect-square" />
-        <FramedImage src={diffApres} alt="Façade brandée et terminée" ratio="aspect-square" />
+      <div class="mt-10 grid grid-cols-2 gap-3 sm:max-w-xl">
+        <figure>
+          <FramedImage src={diffAvant} alt="Façade avant intervention" ratio="aspect-square" />
+          <figcaption class="mt-2 font-mono text-[11px] uppercase tracking-wider text-offwhite/50">Avant</figcaption>
+        </figure>
+        <figure>
+          <FramedImage src={diffApres} alt="Façade brandée et terminée" ratio="aspect-square" />
+          <figcaption class="mt-2 font-mono text-[11px] uppercase tracking-wider text-red">Après</figcaption>
+        </figure>
       </div>
     </div>
   </section>

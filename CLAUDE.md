@@ -64,6 +64,15 @@ Un même élément visuel/texte affiché à plusieurs endroits doit lire **la m�
 - Les boutons « Ajouter au panier » ont été retirés (pas de panier) — remplacés par « Voir le produit ».
 - **Supabase entièrement supprimé** (paquet + 6 fonctions serverless mortes) — ne pas réintroduire, la boutique est 100% Airtable.
 
+## Typographie
+- Titres (`font-heading`) : **Satoshi** (Fontshare) — sans-serif géométrique, propre. A remplacé Clash Display (jugée trop "brutale") puis Bricolage Grotesque (trop "display"). Le client veut une sans-serif nette.
+- Corps (`font-body`) : **Geist** (Google Fonts). Mono (`font-mono`) : **Geist Mono**.
+- Changement de police = éditer `tailwind.config.js` (fontFamily.heading) ET la balise `<link>` correspondante dans `src/layouts/Base.astro`.
+
+## Pages Solutions détail — design
+- Structure des 4 pages (`src/pages/solutions/*/index.astro`) : hero enrichi (pastille numérotée, titre, intro, pastilles mots-clés des 4 premières prestations, CTA + lien « Voir nos réalisations ») + section prestations en **cartes à icônes** + CtaBand. Branding a en plus la section « Notre différence » (avant/après diff-2).
+- `src/components/PrestationIcon.astro` : associe automatiquement une icône (ligne, style Feather) à chaque prestation par **mots-clés** de son titre (aucun champ à remplir dans Airtable). Ajouter un mot-clé dans `MATCHERS` si une nouvelle prestation tombe sur l'icône par défaut (`spark`).
+
 ## Galerie portfolio (lightbox plein écran)
 - `/realisations/` : cliquer une **couverture** ouvre la galerie du projet en plein écran (sans changer de page) ; cliquer le **titre** mène à la page détail (conservée).
 - `src/components/Lightbox.astro` — composant autonome, vanilla (aucune lib), design tokens du site. Inclure **une fois** par page ; tout élément avec `data-lightbox-open` + `data-slug` l'ouvre.
