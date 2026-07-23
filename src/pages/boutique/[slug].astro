@@ -1,6 +1,7 @@
 ---
 import Base from '@layouts/Base.astro';
 import OptimizedImage from '@components/OptimizedImage.astro';
+import { site } from '@lib/site';
 import { loadAllProduits, loadProduitBySlug } from '@lib/produits';
 import { buildCloudinaryUrl } from '@lib/cloudinary';
 import { others } from '@lib/filters';
@@ -51,6 +52,7 @@ const ogImage = product.couverture;
         data-prix={product.prixPromo || product.prix}
         data-image={product.couverture}
         data-statut={product.statut}
+        data-whatsapp={site.whatsappNumber}
       >
         <!-- Gallery -->
         <div>
@@ -193,19 +195,11 @@ const ogImage = product.couverture;
                 +
               </button>
             </div>
-            <button
-              type="button"
-              class="btn-primary flex-1 sm:flex-none"
-              data-add-detail
-              disabled={product.statut === 'rupture'}
-            >
-              Ajouter au panier
-            </button>
           </div>
 
           <button
             type="button"
-            class="btn-secondary mt-3 w-full sm:w-auto"
+            class="btn-primary mt-3 w-full sm:w-auto"
             data-order-whatsapp
             disabled={product.statut === 'rupture'}
           >
@@ -310,17 +304,9 @@ const ogImage = product.couverture;
                     )}
                   </div>
 
-                  <button
-                    type="button"
-                    class="btn-primary w-full mt-4"
-                    data-add={p.slug}
-                    data-nom={p.nom}
-                    data-prix={p.prixPromo || p.prix}
-                    data-image={p.couverture}
-                    disabled={p.statut === 'rupture'}
-                  >
-                    Ajouter au panier
-                  </button>
+                  <a href={`/boutique/${p.slug}/`} class="btn-primary w-full mt-4 text-center">
+                    Voir le produit
+                  </a>
                 </div>
               </article>
             ))}
@@ -392,4 +378,50 @@ const ogImage = product.couverture;
       }
     });
   });
+
+  // Order via WhatsApp — no online payment: the order is logged to Airtable
+  // (best-effort, never blocks the user) and WhatsApp opens with a prefilled
+  // message carrying the same reference so the client can match both.
+  const detail = document.querySelector('[data-product-detail]') as HTMLElement | null;
+  const orderBtn = document.querySelector('[data-order-whatsapp]');
+
+  if (detail && orderBtn) {
+    orderBtn.addEventListener('click', () => {
+      const nom = detail.dataset.nom || '';
+      const slug = detail.dataset.slug || '';
+      const prix = Number(detail.dataset.prix) || 0;
+      const qty = parseInt(quantityDisplay?.textContent || '1');
+      const taille = document.querySelector('[data-size-group] [data-selected]')?.getAttribute('data-size') || '';
+      const couleur = document.querySelector('[data-color-group] [data-selected]')?.getAttribute('data-color') || '';
+      const reference = 'MO-' + Date.now().toString(36).toUpperCase().slice(-6);
+      const total = prix * qty;
+
+      // Log the order to Airtable (non-blocking)
+      fetch('/.netlify/functions/submit-commande', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reference,
+          produit: nom,
+          slug,
+          quantite: qty,
+          prixUnitaire: prix,
+          total,
+          note: [taille && `Taille: ${taille}`, couleur && `Couleur: ${couleur}`].filter(Boolean).join(' · ') || undefined,
+          canal: 'whatsapp',
+        }),
+      }).catch((err) => console.warn('Airtable order log failed (non-blocking):', err));
+
+      // Open WhatsApp with the prefilled order message
+      const lines = [
+        `Bonjour Micro Office, je souhaite commander :`,
+        `• ${nom}${taille ? ` — taille ${taille}` : ''}${couleur ? ` — ${couleur}` : ''}`,
+        `• Quantité : ${qty}`,
+        `• Total : ${total.toLocaleString('fr-FR')} FCFA`,
+        `Réf : ${reference}`,
+      ];
+      const wa = detail.dataset.whatsapp || '';
+      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+    });
+  }
 </script>

@@ -1,6 +1,6 @@
 // Airtable API client for Micro Office — Portfolio (Projets + Images)
 
-import type { Projet, ProjetImage, AccueilItem, SolutionPage, Prestation, AirtableRecord, AirtableResponse } from '../types';
+import type { Projet, ProjetImage, AccueilItem, SolutionPage, Prestation, Produit, AirtableRecord, AirtableResponse } from '../types';
 
 const AIRTABLE_API_URL = 'https://api.airtable.com/v0';
 
@@ -12,6 +12,7 @@ interface AirtableClientConfig {
   accueilTableName?: string;
   solutionsPagesTableName?: string;
   solutionsPrestationsTableName?: string;
+  produitsTableName?: string;
 }
 
 // ---- Field mapping helpers -------------------------------------------------
@@ -92,6 +93,7 @@ export class AirtableClient {
   private accueilTableName: string;
   private solutionsPagesTableName: string;
   private solutionsPrestationsTableName: string;
+  private produitsTableName: string;
 
   constructor(config: AirtableClientConfig) {
     this.token = config.token;
@@ -101,6 +103,7 @@ export class AirtableClient {
     this.accueilTableName = config.accueilTableName || 'Accueil';
     this.solutionsPagesTableName = config.solutionsPagesTableName || 'SolutionsPages';
     this.solutionsPrestationsTableName = config.solutionsPrestationsTableName || 'SolutionsPrestations';
+    this.produitsTableName = config.produitsTableName || 'Produits';
   }
 
   private async request<T = Record<string, any>>(
@@ -231,6 +234,40 @@ export class AirtableClient {
       })
       .sort((a, b) => a.ordre - b.ordre);
   }
+
+  // Fetch active boutique products (Produits table).
+  async getProduits(): Promise<Produit[]> {
+    const records = await this.request(this.produitsTableName);
+    return records
+      .filter((r) => Boolean(pick(r.fields as Record<string, any>, 'Actif', 'actif')))
+      .map((r) => {
+        const f = r.fields as Record<string, any>;
+        // "Images" is a multiline field: one gallery URL per line
+        const gallery = String(pick(f, 'Images', 'images') || '')
+          .split('\n')
+          .map((s: string) => s.trim())
+          .filter(Boolean)
+          .map((src: string) => ({ src, alt: pick(f, 'Nom', 'nom') || '' }));
+        return {
+          id: r.id,
+          slug: pick(f, 'Slug', 'slug') || '',
+          nom: pick(f, 'Nom', 'nom') || '',
+          marque: pick(f, 'Marque', 'marque') || '',
+          categorie: pick(f, 'Catégorie', 'Categorie', 'categorie') || '',
+          prix: Number(pick(f, 'Prix', 'prix')) || 0,
+          prixPromo: pick(f, 'Prix promo', 'prixPromo') != null ? Number(pick(f, 'Prix promo', 'prixPromo')) : null,
+          accroche: pick(f, 'Accroche', 'accroche') || '',
+          description: pick(f, 'Description', 'description') || '',
+          couverture: toUrl(pick(f, 'Image', 'Couverture', 'couverture')),
+          images: gallery,
+          statut: (pick(f, 'Statut', 'statut') || 'en stock') as Produit['statut'],
+          quantiteStock: pick(f, 'Stock', 'quantiteStock') != null ? Number(pick(f, 'Stock', 'quantiteStock')) : undefined,
+          nouveaute: Boolean(pick(f, 'Nouveauté', 'Nouveaute', 'nouveaute')),
+          misEnAvant: Boolean(pick(f, 'Mis en avant', 'misEnAvant')),
+          createdAt: r.createdTime,
+        };
+      });
+  }
 }
 
 // ---- Singleton -------------------------------------------------------------
@@ -256,6 +293,7 @@ export function getAirtableClient(): AirtableClient | null {
       accueilTableName: env('AIRTABLE_TABLE_ACCUEIL') || 'Accueil',
       solutionsPagesTableName: env('AIRTABLE_TABLE_SOLUTIONS_PAGES') || 'SolutionsPages',
       solutionsPrestationsTableName: env('AIRTABLE_TABLE_SOLUTIONS_PRESTATIONS') || 'SolutionsPrestations',
+      produitsTableName: env('AIRTABLE_TABLE_PRODUITS') || 'Produits',
     });
   }
   return client;

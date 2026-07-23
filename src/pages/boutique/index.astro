@@ -143,17 +143,9 @@ const produitsTriés = sortBy(
                   )}
                 </div>
 
-                <button
-                  type="button"
-                  class="btn-primary w-full mt-4"
-                  data-add={p.slug}
-                  data-nom={p.nom}
-                  data-prix={p.prixPromo || p.prix}
-                  data-image={p.couverture}
-                  disabled={p.statut === 'rupture'}
-                >
-                  Ajouter au panier
-                </button>
+                <a href={`/boutique/${p.slug}/`} class="btn-primary w-full mt-4 text-center">
+                  Voir le produit
+                </a>
               </div>
             </article>
           ))

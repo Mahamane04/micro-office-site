@@ -12,9 +12,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.45.4"
-  },
   "devDependencies": {
     "@astrojs/netlify": "^5.2.3",
     "@astrojs/tailwind": "^5.1.0",

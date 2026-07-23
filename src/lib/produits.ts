@@ -1,8 +1,11 @@
-// Boutique products — mock data only (Airtable base is portfolio-focused).
-// Kept separate from portfolio data. Wire to Airtable later if a shop base is added.
+// Boutique products — Airtable "Produits" table with mock fallback,
+// same safety pattern as every other Airtable-backed loader.
 
 import type { Produit } from './types';
+import { getAirtableClient } from './airtable/client';
+import { cachedFetch, invalidateCache } from './cache';
 
+// Mock fallback: renders if Airtable is unreachable or not configured.
 const mockProduits: Produit[] = [
   {
     id: 'mock-1',
@@ -29,10 +32,27 @@ const mockProduits: Produit[] = [
   },
 ];
 
+/** Load all active boutique products (cached, mock fallback). */
 export async function loadAllProduits(): Promise<Produit[]> {
-  return mockProduits;
+  try {
+    const client = getAirtableClient();
+    if (!client) {
+      console.info('Airtable not configured, using mock produits');
+      return mockProduits;
+    }
+    return await cachedFetch('produits:all', () => client.getProduits(), 300);
+  } catch (error) {
+    console.warn('Airtable error loading produits, using mock data:', error);
+    return mockProduits;
+  }
 }
 
+/** Load one product by slug (cached via loadAllProduits, mock fallback). */
 export async function loadProduitBySlug(slug: string): Promise<Produit | null> {
-  return mockProduits.find((p) => p.slug === slug) || null;
+  const produits = await loadAllProduits();
+  return produits.find((p) => p.slug === slug) || null;
+}
+
+export function invalidateProduitsBoutiqueCache(): void {
+  invalidateCache('produits:');
 }
