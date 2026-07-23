@@ -13,11 +13,14 @@
 - Tailwind v4, tokens design façon Augment (rounded, pill, dark). Dev : `npm run dev` (port 8080).
 - Ancien site Eleventy (`src/*.njk`, `src/solutions/`, etc.) = **source de référence historique uniquement**, PAS servi. Ne pas éditer pour la prod.
 
-## ⚠️ Comportement du CACHE (cause n°1 des « mes modifs Airtable n'apparaissent pas »)
-Les données Airtable sont mises en cache **5 minutes** en mémoire (`cachedFetch(..., 300)` dans `src/lib/data.ts`).
-- **En dev** : après une modif dans Airtable, soit attendre 5 min, soit **redémarrer le serveur** (`preview_stop` + `preview_start`, ou relancer `npm run dev`). Un simple reload de page NE suffit PAS.
-- **En prod (Netlify)** : l'ISR revalide toutes les 5 min automatiquement, ou instantanément via le webhook `netlify/functions/revalidate.ts`.
-- Ce n'est **pas un bug** — ne jamais « corriger » en supprimant le cache sans raison.
+## Synchronisation Airtable ↔ site (ISR — mise à jour auto sans clic)
+Les pages de contenu sont en **rendu à la demande** (`export const prerender = false`) : accueil (`/`), `/solutions/` + les 4 pages détail, `/realisations/`, `/boutique/`, et les 2 pages `[slug]` (déjà ISR). Elles lisent Airtable en direct à chaque visite, avec cache CDN 5 min (`s-maxage=300, stale-while-revalidate` dans `netlify.toml`).
+- **Résultat** : une modif Airtable apparaît **automatiquement en ~5 min max** en prod, sans rebuild, sans webhook, sans Airtable Automation. Compatible plan gratuit (le cache CDN sert la quasi-totalité des visites → très peu d'invocations de fonction).
+- Pages **statiques** (pas d'Airtable) : à-propos, contact, mentions-légales, politique, présenter-mon-projet, 404 — prérendues au build.
+- **En dev** (`npm run dev`) : cache mémoire de 5 min (`cachedFetch(..., 300)`). Après une modif Airtable, redémarrer le serveur ou attendre 5 min ; un simple reload ne suffit pas.
+- Ne jamais remettre ces pages en statique sans raison — ça recasserait la synchro auto.
+- `netlify/functions/revalidate.ts` (purge + build hook) reste dispo pour **forcer** un rafraîchissement immédiat si besoin, mais n'est plus nécessaire au fonctionnement normal.
+- ⚠️ L'ancienne `schedule-revalidate.ts` (cron 5 min) a été **supprimée** : elle était cassée (fetch vers `localhost`, jamais exécuté en prod) et l'ISR la rend inutile.
 
 ## Tables Airtable et où elles alimentent le site
 

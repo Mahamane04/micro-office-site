@@ -7,6 +7,8 @@ import CtaBand from '@components/CtaBand.astro';
 import { loadAllProjets } from '@lib/data';
 import { smartCrop, isCloudinaryUrl } from '@lib/cloudinary';
 
+export const prerender = false; // on-demand ISR — see index.astro note
+
 const projets = await loadAllProjets();
 // Filter by clean families (from Airtable "Famille"), fallback to raw categories
 const familles = [...new Set(projets.flatMap((p) => (p.familles.length ? p.familles : p.categories)))].sort();

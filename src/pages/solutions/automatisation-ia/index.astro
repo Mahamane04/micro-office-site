@@ -6,6 +6,8 @@ import FramedImage from '@components/FramedImage.astro';
 import CtaBand from '@components/CtaBand.astro';
 import { loadSolutionPage, loadAccueil } from '@lib/data';
 
+export const prerender = false; // on-demand ISR — see index.astro note
+
 const { page, prestations } = await loadSolutionPage('automatisation-ia');
 const accueil = await loadAccueil();
 // Same source as the /solutions/ listing card ('solution-automatisation') — shows the

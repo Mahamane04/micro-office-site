@@ -5,6 +5,8 @@ import FramedImage from '@components/FramedImage.astro';
 import CtaBand from '@components/CtaBand.astro';
 import { loadSolutionPage, loadAccueil } from '@lib/data';
 
+export const prerender = false; // on-demand ISR — see index.astro note
+
 const { page, prestations } = await loadSolutionPage('creation-digitale-print');
 const accueil = await loadAccueil();
 const heroImage = accueil.solutions['solution-digital']?.image || '/images/portfolio/solution-digital.jpg';

@@ -39,13 +39,20 @@
     Cache-Control = "s-maxage=600, stale-while-revalidate=86400, public"
     X-Content-Type-Options = "nosniff"
 
-# Pages statiques: cache long
+# Accueil (ISR): revalidate toutes les 5 minutes
 [[headers]]
   for = "/"
   [headers.values]
-    Cache-Control = "public, max-age=3600, s-maxage=3600"
+    Cache-Control = "s-maxage=300, stale-while-revalidate=86400, public"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "SAMEORIGIN"
+
+# Solutions (ISR): revalidate toutes les 5 minutes
+[[headers]]
+  for = "/solutions/*"
+  [headers.values]
+    Cache-Control = "s-maxage=300, stale-while-revalidate=86400, public"
+    X-Content-Type-Options = "nosniff"
 
 # Images Cloudinary: cache très long (immuables)
 [[headers]]

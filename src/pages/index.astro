@@ -5,6 +5,10 @@ import CtaBand from '@components/CtaBand.astro';
 import { loadAllProjets, loadAccueil } from '@lib/data';
 import { smartCrop } from '@lib/cloudinary';
 
+// On-demand ISR: fetch Airtable live, cached 5 min at the edge (see netlify.toml).
+// An Airtable edit shows up automatically within ~5 min, no rebuild/webhook needed.
+export const prerender = false;
+
 const projets = await loadAllProjets();
 const accueil = await loadAccueil();
 // Hero cards flip between a narrow (16%) and wide (52%) frame on hover; a plain

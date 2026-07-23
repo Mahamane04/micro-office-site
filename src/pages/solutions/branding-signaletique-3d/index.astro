@@ -5,6 +5,8 @@ import FramedImage from '@components/FramedImage.astro';
 import CtaBand from '@components/CtaBand.astro';
 import { loadSolutionPage, loadAccueil } from '@lib/data';
 
+export const prerender = false; // on-demand ISR — see index.astro note
+
 const { page, prestations } = await loadSolutionPage('branding-signaletique-3d');
 const accueil = await loadAccueil();
 // Same Airtable image as the /solutions/ listing card ('solution-branding'), so both stay identical

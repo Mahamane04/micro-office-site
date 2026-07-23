@@ -6,6 +6,8 @@ import FramedImage from '@components/FramedImage.astro';
 import CtaBand from '@components/CtaBand.astro';
 import { loadAccueil } from '@lib/data';
 
+export const prerender = false; // on-demand ISR — see index.astro note
+
 const accueil = await loadAccueil();
 const solImg = (cle: string, local: string) => accueil.solutions[cle]?.image || local;
 const solTitle = (cle: string, local: string) => accueil.solutions[cle]?.titre || local;

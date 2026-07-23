@@ -3,6 +3,8 @@ import Base from '@layouts/Base.astro';
 import { loadAllProduits } from '@lib/produits';
 import { uniqueCategories, sortBy } from '@lib/filters';
 
+export const prerender = false; // on-demand ISR — see index.astro note
+
 const produits = await loadAllProduits();
 const categories = uniqueCategories(produits);
 
