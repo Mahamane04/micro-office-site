@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin-commandes/
+
+Sitemap: https://www.microofficeml.com/sitemap.xml
