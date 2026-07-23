@@ -22,19 +22,8 @@ export default defineConfig({
     }),
   ],
 
-  // Image optimization
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/sharp',
-    },
-  },
-
-  // Vite config
-  vite: {
-    ssr: {
-      external: ['sharp'],
-    },
-  },
+  // Images: served/optimized by Cloudinary (no local sharp pipeline —
+  // no astro:assets/<Image> usage anywhere in src/).
 
   // Site URL for canonicals and sitemap
   site: 'https://www.microofficeml.com',
